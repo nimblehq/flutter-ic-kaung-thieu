@@ -1,60 +1,48 @@
-# Flutter Templates
-
-[![codecov](https://codecov.io/gh/nimblehq/flutter-templates/branch/main/graph/badge.svg?token=ATUNXDX218)](https://codecov.io/gh/nimblehq/flutter-templates)
-
-All the templates that can be used to kick off a new Flutter application quickly.
-
-## Usage
-
-Clone the repository
-
-`git clone git@github.com:nimblehq/flutter-templates.git`
+# Survey Flutter
+A simple mobile application written in Flutter allows users to take surveys.
 
 ## Prerequisite
 
-- Flutter 2.10.3
-- Flutter version manager (recommend): [fvm](https://fvm.app/)
+- [FVM (Flutter Version Manager)](https://fvm.app/) helps with the need for consistent app builds by referencing the Flutter SDK version used on a per-project basis. It also allows you to have multiple Flutter versions installed to quickly validate and test upcoming Flutter releases with your apps without waiting for Flutter installation every time.
+  ```bash
+  brew tap leoafarias/fvm
+  brew install fvm
+  ```
 
 ## Getting Started
+1. Checkout this repository
+```bash
+git clone https://github.com/nimblehq/flutter-ic-kaung-thieu.git
+```
 
-### Setup
-
-- Create these `.env` files in the root directory according to the flavors and add the required
-  environment variables into them. The example environment variable is in `.env.sample`.
-
+2. Setup
+- Create these `.env` files in the root directory according to the flavors and add the required environment variables into them. The example environment variable is in `.env.sample`.
   - Staging: `.env.staging`
-
   - Production: `.env`
-
 - Run code generator
+  ```bash
+  fvm flutter packages pub run build_runner build --delete-conflicting-outputs
+  ```
 
-  - `$ fvm flutter packages pub run build_runner build --delete-conflicting-outputs`
+3. Run the app with the desire app flavor
+- Staging:
+  ```bash
+  fvm flutter run --flavor staging
+  ```
+- Production:
+  ```bash
+  fvm flutter run --flavor production
+  ```
 
-### Run
-
-- Run the app with the desire app flavor:
-
-  - Staging: `$ fvm flutter run --flavor staging`
-
-  - Production: `$ fvm flutter run --flavor production`
-
-### Test
-
+4. Test
 - Run unit testing:
-
-  - `$ fvm flutter test`
-
+  ```bash
+  fvm flutter test
+  ```
 - Run integration testing:
-
-  - `$ fvm flutter drive --driver=test_driver/integration_test.dart --target=integration_test/{test_file}.dart --flavor staging`
-
-  - For example:
-
-    `$ fvm flutter drive --driver=test_driver/integration_test.dart --target=integration_test/my_home_page_test.dart --flavor staging`
-
-- Code coverage integration:
-
-  - CodeCov: for the private repository, we need to set up a [TeamBot](https://docs.codecov.com/docs/team-bot) in `codecov.yml`.
+  ```bash
+  fvm flutter drive --driver=test_driver/integration_test.dart --target=integration_test/{test_file}.dart --flavor staging
+  ```
 
 ## License
 
