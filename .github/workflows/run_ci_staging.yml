@@ -1,9 +1,10 @@
 name: Run CI
 on:
-  # Trigger the workflow on push or pull request,
-  # but push action is only for the feature branch
   pull_request:
     types: [ opened, synchronize, edited, reopened ]
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
 jobs:
   lint_and_test:
     name: Static code analyze & Unit test
