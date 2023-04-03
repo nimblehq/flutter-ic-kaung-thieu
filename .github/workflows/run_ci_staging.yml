@@ -1,13 +1,10 @@
-name: CI
+name: Run CI
 on:
-  # Trigger the workflow on push or pull request,
-  # but push action is only for the feature branch
   pull_request:
     types: [ opened, synchronize, edited, reopened ]
-  push:
-    branches-ignore:
-      - develop
-      - 'release/**'
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
 jobs:
   lint_and_test:
     name: Static code analyze & Unit test
@@ -15,13 +12,19 @@ jobs:
     timeout-minutes: 30
     environment: staging
     steps:
-      - uses: actions/checkout@v2.3.2
+      - name: Checkout repo
+        uses: actions/checkout@v3
 
       - name: Set up Flutter environment
         uses: subosito/flutter-action@v2
         with:
           channel: 'stable'
-          flutter-version: '3.3.10'
+          flutter-version: '3.7.8'
+
+      - name: Set up staging environment
+        env:
+          ENV_STAGING: ${{ secrets.ENV_STAGING }}
+        run: echo "$ENV_STAGING" > .env.staging
 
       - name: Get Flutter dependencies
         run: flutter pub get
@@ -30,7 +33,7 @@ jobs:
         run: flutter packages pub run build_runner build --delete-conflicting-outputs
 
       - name: Check for any formatting issues in the code
-        run: flutter format --set-exit-if-changed .
+        run: dart format --set-exit-if-changed .
 
       - name: Statically analyze the Dart code for any errors
         run: flutter analyze .
@@ -38,7 +41,7 @@ jobs:
       - name: Run widget tests, unit tests
         run: flutter test --machine --coverage
 
-      - name: Upload coverage to codecov 
+      - name: Upload coverage to codecov
         uses: codecov/codecov-action@v2
         with:
           files: ./coverage/lcov.info
