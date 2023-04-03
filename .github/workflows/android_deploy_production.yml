@@ -38,7 +38,7 @@ jobs:
       - name: Setup release-keystore.jks
         run: |
           echo "${{ secrets.ANDROID_RELEASE_KEYSTORE }}" > release-keystore.jks.asc
-          gpg -d --passphrase "${{ secrets.ANDROID_PASSPHRASE }}" --batch release-keystore.jks.asc > ./android/release-keystore.jks
+          gpg -d --passphrase "${{ secrets.ANDROID_PASSPHRASE }}" --batch release-keystore.jks.asc > android/release-keystore.jks
 
       - name: Setup releasekey.properties
         env:
