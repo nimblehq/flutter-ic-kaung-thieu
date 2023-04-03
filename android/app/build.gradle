@@ -6,6 +6,22 @@ if (localPropertiesFile.exists()) {
     }
 }
 
+def debugKeyProperties = new Properties()
+def debugKeyPropertiesFile = rootProject.file('debugkey.properties')
+if (debugKeyPropertiesFile.exists()) {
+    debugKeyPropertiesFile.withReader('UTF-8') { reader ->
+        debugKeyProperties.load(reader)
+    }
+}
+
+def releaseKeyProperties = new Properties()
+def releaseKeyPropertiesFile = rootProject.file('releasekey.properties')
+if (releaseKeyPropertiesFile.exists()) {
+    releaseKeyPropertiesFile.withReader('UTF-8') { reader ->
+        releaseKeyProperties.load(reader)
+    }
+}
+
 def flutterRoot = localProperties.getProperty('flutter.sdk')
 if (flutterRoot == null) {
     throw new GradleException("Flutter SDK not found. Define location with flutter.sdk in the local.properties file.")
@@ -24,6 +40,7 @@ if (flutterVersionName == null) {
 apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
 apply from: "$flutterRoot/packages/flutter_tools/gradle/flutter.gradle"
+apply plugin: 'com.google.gms.google-services'
 
 project.ext.envConfigFiles = [
         stagingdebug: ".env.staging",
@@ -57,10 +74,26 @@ android {
         resValue "string", "build_config_package", "co.nimblehq.kaungthieu.survey"
     }
 
+    signingConfigs {
+        debug {
+            keyAlias debugKeyProperties['keyAlias']
+            keyPassword debugKeyProperties['keyPassword']
+            storeFile file(debugKeyProperties['storeFile'])
+            storePassword debugKeyProperties['storePassword']
+        }
+        release {
+            keyAlias releaseKeyProperties['keyAlias']
+            keyPassword releaseKeyProperties['keyPassword']
+            storeFile file(releaseKeyProperties['storeFile'])
+            storePassword releaseKeyProperties['storePassword']
+        }
+    }
+
     buildTypes {
         release {
-            // TODO: Add your own signing config for the release build.
-            // Signing with the debug keys for now, so `flutter run --release` works.
+            signingConfig signingConfigs.release
+        }
+        debug {
             signingConfig signingConfigs.debug
         }
     }
@@ -93,4 +126,7 @@ flutter {
 
 dependencies {
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
+
+    implementation platform('com.google.firebase:firebase-bom:31.3.0')
+    implementation 'com.google.firebase:firebase-analytics-ktx'
 }
