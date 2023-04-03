@@ -11,6 +11,8 @@ jobs:
     steps:
     - name: Check out the repository
       uses: actions/checkout@v3
+      with:
+        fetch-depth: 0
 
     - name: Install SSH key
       uses: webfactory/ssh-agent@v0.8.0
@@ -52,7 +54,7 @@ jobs:
         restore-keys: ${{ runner.os }}-pods-
 
     - name: Install iOS dependencies
-      run: cd ios && bundle install && bundle exec pod install
+      run: cd ios && bundle install --path vendor/bundle && bundle exec pod install
 
     - name: Sync certificates and profiles
       env:
