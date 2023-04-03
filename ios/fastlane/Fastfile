@@ -69,6 +69,23 @@ platform :ios do
     )
   end
 
+  desc 'Build and upload Production app to Test Flight'
+  lane :build_and_upload_production_to_testflight do
+    set_app_version
+    bump_build
+    builder.build_app_store(
+      Constants.SCHEME_NAME_PRODUCTION,
+      Constants.PRODUCT_NAME_PRODUCTION,
+      Constants.BUNDLE_ID_PRODUCTION,
+      false
+    )
+    set_appstore_connect_api_key
+    distribution_manager.upload_to_testflight(
+      product_name: Constants.PRODUCT_NAME_PRODUCTION,
+      bundle_identifier: Constants.BUNDLE_ID_PRODUCTION
+    )
+  end
+
   # Private helper lanes
 
   desc 'check if any specific version number in build environment'
