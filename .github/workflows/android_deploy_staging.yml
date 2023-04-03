@@ -43,7 +43,7 @@ jobs:
       - name: Setup debugkey.properties
         env:
           ANDROID_DEBUG_PROPERTIES: ${{ secrets.ANDROID_DEBUG_PROPERTIES }}
-        run: echo $ANDROID_DEBUG_PROPERTIES | base64 --decode > ./android/debugkey.properties
+        run: echo $ANDROID_DEBUG_PROPERTIES | base64 --decode > android/debugkey.properties
 
       - name: Set up .env.staging
         env:

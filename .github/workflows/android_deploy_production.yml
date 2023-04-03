@@ -43,7 +43,7 @@ jobs:
       - name: Setup releasekey.properties
         env:
           ANDROID_RELEASE_PROPERTIES: ${{ secrets.ANDROID_RELEASE_PROPERTIES }}
-        run: echo $ANDROID_RELEASE_PROPERTIES | base64 --decode > ./android/releasekey.properties
+        run: echo $ANDROID_RELEASE_PROPERTIES | base64 --decode > android/releasekey.properties
 
       - name: Set up .env
         env:
