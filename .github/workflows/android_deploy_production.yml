@@ -35,14 +35,14 @@ jobs:
         run: flutter packages pub run build_runner build --delete-conflicting-outputs
 
       - name: Setup release-keystore.jks
-          env:
-            ANDROID_RELEASE_KEYSTORE: ${{ secrets.ANDROID_RELEASE_KEYSTORE }}
-          run: echo $ANDROID_RELEASE_KEYSTORE | base64 --decode > ./android/release-keystore.jks
+        env:
+          ANDROID_RELEASE_KEYSTORE: ${{ secrets.ANDROID_RELEASE_KEYSTORE }}
+        run: echo $ANDROID_RELEASE_KEYSTORE | base64 --decode > ./android/release-keystore.jks
 
       - name: Setup releasekey.properties
-          env:
-            ANDROID_RELEASE_PROPERTIES: ${{ secrets.ANDROID_RELEASE_PROPERTIES }}
-          run: echo $ANDROID_RELEASE_PROPERTIES | base64 --decode > ./android/releasekey.properties
+        env:
+          ANDROID_RELEASE_PROPERTIES: ${{ secrets.ANDROID_RELEASE_PROPERTIES }}
+        run: echo $ANDROID_RELEASE_PROPERTIES | base64 --decode > ./android/releasekey.properties
 
       - name: Set up .env
         env:

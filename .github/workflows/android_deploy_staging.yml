@@ -35,14 +35,14 @@ jobs:
         run: flutter packages pub run build_runner build --delete-conflicting-outputs
 
       - name: Setup debug-keystore.jks
-          env:
-            ANDROID_DEBUG_KEYSTORE: ${{ secrets.ANDROID_DEBUG_KEYSTORE }}
-          run: echo $ANDROID_DEBUG_KEYSTORE | base64 --decode > ./android/debug-keystore.jks
+        env:
+          ANDROID_DEBUG_KEYSTORE: ${{ secrets.ANDROID_DEBUG_KEYSTORE }}
+        run: echo $ANDROID_DEBUG_KEYSTORE | base64 --decode > ./android/debug-keystore.jks
 
       - name: Setup debugkey.properties
-          env:
-            ANDROID_DEBUG_PROPERTIES: ${{ secrets.ANDROID_DEBUG_PROPERTIES }}
-          run: echo $ANDROID_DEBUG_PROPERTIES | base64 --decode > ./android/debugkey.properties
+        env:
+          ANDROID_DEBUG_PROPERTIES: ${{ secrets.ANDROID_DEBUG_PROPERTIES }}
+        run: echo $ANDROID_DEBUG_PROPERTIES | base64 --decode > ./android/debugkey.properties
 
       - name: Set up .env.staging
         env:
