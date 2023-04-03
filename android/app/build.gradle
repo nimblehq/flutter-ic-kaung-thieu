@@ -12,6 +12,8 @@ if (debugKeyPropertiesFile.exists()) {
     debugKeyPropertiesFile.withReader('UTF-8') { reader ->
         debugKeyProperties.load(reader)
     }
+} else {
+    throw new GradleException("Debug key property not found.")
 }
 
 def releaseKeyProperties = new Properties()
@@ -20,6 +22,8 @@ if (releaseKeyPropertiesFile.exists()) {
     releaseKeyPropertiesFile.withReader('UTF-8') { reader ->
         releaseKeyProperties.load(reader)
     }
+} else {
+    throw new GradleException("Release key property not found.")
 }
 
 def flutterRoot = localProperties.getProperty('flutter.sdk')
