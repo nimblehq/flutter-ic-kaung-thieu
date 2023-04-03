@@ -28,7 +28,7 @@ jobs:
 
     - name: Set up deployment environment
       env:
-        ENV_STAGING: ${{ secrets.ENV_PRODUCTION }}
+        ENV_PRODUCTION: ${{ secrets.ENV_PRODUCTION }}
       run: echo "$ENV_PRODUCTION" > .env
 
     - name: Get Flutter dependencies
