@@ -35,12 +35,12 @@ jobs:
       - name: Run code generator
         run: flutter packages pub run build_runner build --delete-conflicting-outputs
 
-      - name: Setup debug-keystore.jks
+      - name: Set up debug keystore
         run: |
           echo "${{ secrets.ANDROID_DEBUG_KEYSTORE }}" > debug-keystore.jks.asc
           gpg -d --passphrase "${{ secrets.ANDROID_PASSPHRASE }}" --batch debug-keystore.jks.asc > android/debug-keystore.jks
 
-      - name: Setup debugkey.properties
+      - name: Set up debug key properties
         run: |
           echo "${{ secrets.ANDROID_DEBUG_PROPERTIES }}" > debugkey.properties.asc
           gpg -d --passphrase "${{ secrets.ANDROID_PASSPHRASE }}" --batch debugkey.properties.asc > android/debugkey.properties
