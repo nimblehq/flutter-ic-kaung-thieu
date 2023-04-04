@@ -78,16 +78,16 @@ android {
 
     signingConfigs {
         debug {
-            keyAlias debugKeyProperties['keyAlias']
-            keyPassword debugKeyProperties['keyPassword']
-            storeFile file(debugKeyProperties['storeFile'])
-            storePassword debugKeyProperties['storePassword']
+            keyAlias debugKeyProperties.getProperty('keyAlias')
+            keyPassword debugKeyProperties.getProperty('keyPassword')
+            storeFile file(debugKeyProperties.getProperty('storeFile'))
+            storePassword debugKeyProperties.getProperty('storePassword')
         }
         release {
-            keyAlias releaseKeyProperties['keyAlias']
-            keyPassword releaseKeyProperties['keyPassword']
-            storeFile file(releaseKeyProperties['storeFile'])
-            storePassword releaseKeyProperties['storePassword']
+            keyAlias releaseKeyProperties.getProperty('keyAlias')
+            keyPassword releaseKeyProperties.getProperty('keyPassword')
+            storeFile file(releaseKeyProperties.getProperty('storeFile'))
+            storePassword releaseKeyProperties.getProperty('storePassword')
         }
     }
 

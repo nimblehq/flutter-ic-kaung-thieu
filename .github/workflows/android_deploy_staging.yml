@@ -45,9 +45,6 @@ jobs:
           ANDROID_DEBUG_PROPERTIES: ${{ secrets.ANDROID_DEBUG_PROPERTIES }}
         run: echo $ANDROID_DEBUG_PROPERTIES | base64 --decode > android/debugkey.properties
 
-      - name: Check properties file content
-        run: while read line; do echo $line; done < android/debugkey.properties
-
       - name: Set up .env.staging
         env:
           ENV_STAGING: ${{ secrets.ENV_STAGING }}
