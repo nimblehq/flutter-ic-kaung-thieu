@@ -24,6 +24,11 @@ if (releaseKeyPropertiesFile.exists()) {
     }
 }
 
+def releaseKeyStoreFilePath = releaseKeyProperties.getProperty('storeFile')
+if (releaseKeyStoreFilePath == null) {
+    releaseKeyStoreFilePath = debugKeyProperties.getProperty('storeFile')
+}
+
 def flutterRoot = localProperties.getProperty('flutter.sdk')
 if (flutterRoot == null) {
     throw new GradleException("Flutter SDK not found. Define location with flutter.sdk in the local.properties file.")
@@ -86,7 +91,7 @@ android {
         release {
             keyAlias releaseKeyProperties.getProperty('keyAlias')
             keyPassword releaseKeyProperties.getProperty('keyPassword')
-            storeFile file(releaseKeyProperties.getProperty('storeFile'))
+            storeFile file(releaseKeyStoreFilePath)
             storePassword releaseKeyProperties.getProperty('storePassword')
         }
     }
