@@ -41,9 +41,9 @@ jobs:
           gpg -d --passphrase "${{ secrets.ANDROID_PASSPHRASE }}" --batch debug-keystore.jks.asc > android/debug-keystore.jks
 
       - name: Setup debugkey.properties
-        env:
-          ANDROID_DEBUG_PROPERTIES: ${{ secrets.ANDROID_DEBUG_PROPERTIES }}
-        run: echo $ANDROID_DEBUG_PROPERTIES | base64 --decode > android/debugkey.properties
+        run: |
+          echo "${{ secrets.ANDROID_DEBUG_PROPERTIES }}" > debugkey.properties.asc
+          gpg -d --passphrase "${{ secrets.ANDROID_PASSPHRASE }}" --batch debugkey.properties.asc > android/debugkey.properties
 
       - name: Set up .env.staging
         env:
