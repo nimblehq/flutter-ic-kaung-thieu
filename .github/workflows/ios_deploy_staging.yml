@@ -2,7 +2,7 @@ name: iOS - Deploy Staging build to TestFlight
 on:
   push:
     branches:
-      - develop
+      - poc/deploy-ios-testflight
 
 jobs:
   build_and_upload_staging_to_testflight:

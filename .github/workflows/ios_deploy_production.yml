@@ -2,7 +2,7 @@ name: iOS - Deploy Production build to TestFlight
 on:
   push:
     branches:
-      - main
+      - poc/deploy-ios-testflight
 
 jobs:
   build_and_upload_production_to_testflight:
