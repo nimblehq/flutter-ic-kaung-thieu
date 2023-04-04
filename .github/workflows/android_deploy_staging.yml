@@ -62,3 +62,4 @@ jobs:
           serviceCredentialsFileContent: ${{ secrets.FIREBASE_DISTRIBUTION_CREDENTIAL_JSON }}
           groups: nimble
           file: build/app/outputs/flutter-apk/app-staging-debug.apk
+          debug: true
