@@ -12,6 +12,8 @@ if (debugKeyPropertiesFile.exists()) {
     debugKeyPropertiesFile.withReader('UTF-8') { reader ->
         debugKeyProperties.load(reader)
     }
+} else {
+    throw new GradleException("debugkey.properties not found")
 }
 
 def releaseKeyProperties = new Properties()
