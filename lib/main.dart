@@ -4,6 +4,7 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:survey_flutter/gen/assets.gen.dart';
 import 'package:go_router/go_router.dart';
 import 'package:package_info_plus/package_info_plus.dart';
+import 'package:survey_flutter/screens/splash/splash.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -22,14 +23,7 @@ class MyApp extends StatelessWidget {
       GoRoute(
         path: routePathRootScreen,
         builder: (BuildContext context, GoRouterState state) =>
-            const HomeScreen(),
-        routes: [
-          GoRoute(
-            path: routePathSecondScreen,
-            builder: (BuildContext context, GoRouterState state) =>
-                const SecondScreen(),
-          ),
-        ],
+            const SplashScreen(),
       ),
     ],
   );
