@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:survey_flutter/gen/assets.gen.dart';
@@ -28,19 +27,20 @@ class SplashScreenState extends State<SplashScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return LayoutBuilder(builder: (context, constraints) {
-      Offset centerOffset =
-          Offset(constraints.maxWidth / 2, constraints.maxHeight / 2);
-      return Stack(
+    return Scaffold(
+      body: LayoutBuilder(builder: (context, constraints) {
+        return Stack(
           alignment: AlignmentDirectional.center,
           fit: StackFit.expand,
           children: [
+            // Only this https://stackoverflow.com/a/64837703 way works for me to fill the image
             Image.asset(
               Assets.images.splashBackground.path,
+              fit: BoxFit.cover,
             ),
             AnimatedPositioned(
               duration: const Duration(seconds: 1),
-              top: _shouldAnimateLogo ? 153 : centerOffset.dy,
+              top: _shouldAnimateLogo ? 153 : constraints.maxHeight / 2,
               child: AnimatedOpacity(
                   opacity: _isLogoVisible ? 1.0 : 0.0,
                   duration: const Duration(milliseconds: 500),
@@ -54,7 +54,9 @@ class SplashScreenState extends State<SplashScreen> {
                   }),
               onEnd: () => context.go(routePathLoginScreen),
             )
-          ]);
-    });
+          ],
+        );
+      }),
+    );
   }
 }

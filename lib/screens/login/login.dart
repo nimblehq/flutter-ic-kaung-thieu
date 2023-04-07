@@ -1,4 +1,4 @@
-import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 
 import '../../gen/assets.gen.dart';
 
@@ -9,13 +9,14 @@ class LoginScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return LayoutBuilder(builder: (context, constraints) {
-      return Stack(
+    return Scaffold(
+      body: Stack(
           alignment: AlignmentDirectional.center,
           fit: StackFit.expand,
           children: [
             Image.asset(
               Assets.images.splashBackground.path,
+              fit: BoxFit.cover,
             ),
             Positioned(
               top: 153,
@@ -23,7 +24,7 @@ class LoginScreen extends StatelessWidget {
                 Assets.images.nimbleLogoWhite.path,
               ),
             )
-          ]);
-    });
+          ]),
+    );
   }
 }
