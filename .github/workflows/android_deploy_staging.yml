@@ -24,13 +24,23 @@ jobs:
         uses: subosito/flutter-action@v2
         with:
           channel: 'stable'
-          flutter-version: '3.3.10'
+          flutter-version: '3.7.8'
 
       - name: Get Flutter dependencies
         run: flutter pub get
 
       - name: Run code generator
         run: flutter packages pub run build_runner build --delete-conflicting-outputs
+
+      - name: Set up debug keystore
+        run: |
+          echo "${{ secrets.ANDROID_DEBUG_KEYSTORE }}" > debug-keystore.jks.asc
+          gpg -d --passphrase "${{ secrets.ANDROID_PASSPHRASE }}" --batch debug-keystore.jks.asc > android/debug-keystore.jks
+
+      - name: Set up debug key properties
+        run: |
+          echo "${{ secrets.ANDROID_DEBUG_PROPERTIES }}" > debugkey.properties.asc
+          gpg -d --passphrase "${{ secrets.ANDROID_PASSPHRASE }}" --batch debugkey.properties.asc > android/debugkey.properties
 
       - name: Set up .env.staging
         env:
@@ -49,3 +59,4 @@ jobs:
           serviceCredentialsFileContent: ${{ secrets.FIREBASE_DISTRIBUTION_CREDENTIAL_JSON }}
           groups: nimble
           file: build/app/outputs/flutter-apk/app-staging-debug.apk
+          debug: true
