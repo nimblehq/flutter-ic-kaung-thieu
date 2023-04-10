@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
-
-import '../../gen/assets.gen.dart';
+import 'package:survey_flutter/gen/assets.gen.dart';
 
 const routePathLoginScreen = '/login';
 
