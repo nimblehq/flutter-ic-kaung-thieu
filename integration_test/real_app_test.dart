@@ -11,8 +11,9 @@ void main() {
     await tester.pumpWidget(TestUtil.pumpWidgetWithRealApp('/'));
     await tester.pumpAndSettle();
 
-    expect(find.widgetWithText(AppBar, 'Flutter templates testing'),
-        findsOneWidget);
-    expect(find.text('This is only for testing'), findsOneWidget);
+    expect(
+      find.image(const AssetImage('assets/images/splash_background.png')),
+      findsOneWidget,
+    );
   });
 }

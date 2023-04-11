@@ -1,0 +1,68 @@
+{
+  "project_info": {
+    "project_number": "822548024297",
+    "project_id": "ic-flutter-kaung-thieu",
+    "storage_bucket": "ic-flutter-kaung-thieu.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:822548024297:android:ac2b05ef0402f78153d978",
+        "android_client_info": {
+          "package_name": "co.nimblehq.kaungthieu.survey"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "822548024297-k9i1vougq88dlbpgiq3mie3pjl0ltlc1.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyADxUY3E3jju4qeoHk2oids0P3GQrJcE5o"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "822548024297-k9i1vougq88dlbpgiq3mie3pjl0ltlc1.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:822548024297:android:9ada277d590cd1f953d978",
+        "android_client_info": {
+          "package_name": "co.nimblehq.kaungthieu.survey.staging"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "822548024297-k9i1vougq88dlbpgiq3mie3pjl0ltlc1.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyADxUY3E3jju4qeoHk2oids0P3GQrJcE5o"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "822548024297-k9i1vougq88dlbpgiq3mie3pjl0ltlc1.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

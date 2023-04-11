@@ -4,6 +4,8 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:survey_flutter/gen/assets.gen.dart';
 import 'package:go_router/go_router.dart';
 import 'package:package_info_plus/package_info_plus.dart';
+import 'package:survey_flutter/screens/login/login.dart';
+import 'package:survey_flutter/screens/splash/splash.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -11,7 +13,7 @@ void main() async {
   runApp(MyApp());
 }
 
-const routePathRootScreen = '/';
+const routePathSplashScreen = '/';
 const routePathSecondScreen = 'second';
 
 class MyApp extends StatelessWidget {
@@ -20,16 +22,16 @@ class MyApp extends StatelessWidget {
   final GoRouter _router = GoRouter(
     routes: <GoRoute>[
       GoRoute(
-        path: routePathRootScreen,
+        path: routePathSplashScreen,
         builder: (BuildContext context, GoRouterState state) =>
-            const HomeScreen(),
-        routes: [
-          GoRoute(
-            path: routePathSecondScreen,
-            builder: (BuildContext context, GoRouterState state) =>
-                const SecondScreen(),
-          ),
-        ],
+            const SplashScreen(),
+      ),
+      GoRoute(
+        path: routePathLoginScreen,
+        pageBuilder: (context, state) => NoTransitionPage<void>(
+          key: state.pageKey,
+          child: const LoginScreen(),
+        ),
       ),
     ],
   );
