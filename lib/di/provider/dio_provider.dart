@@ -1,4 +1,3 @@
-import 'package:chucker_flutter/chucker_flutter.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
 import 'package:survey_flutter/di/interceptor/app_interceptor.dart';
@@ -16,6 +15,7 @@ class DioProvider {
 
   Dio _createDio({bool requireAuthenticate = false}) {
     final dio = Dio();
+    late String baseUrl;
     final appInterceptor = AppInterceptor(
       requireAuthenticate,
       dio,
@@ -23,19 +23,24 @@ class DioProvider {
     final interceptors = <Interceptor>[];
     interceptors.add(appInterceptor);
     if (!kReleaseMode) {
+      // Debug Mode
       interceptors.add(LogInterceptor(
         request: true,
         responseBody: true,
         requestBody: true,
         requestHeader: true,
       ));
-      interceptors.add(ChuckerDioInterceptor());
+      baseUrl = 'https://survey-api.nimblehq.co/';
+    } else {
+      // Release Mode
+      baseUrl = 'https://survey-api.nimblehq.co/';
     }
 
     return dio
       ..options.connectTimeout = const Duration(seconds: 3)
       ..options.receiveTimeout = const Duration(seconds: 5)
       ..options.headers = {headerContentType: defaultContentType}
-      ..interceptors.addAll(interceptors);
+      ..interceptors.addAll(interceptors)
+      ..options.baseUrl = baseUrl;
   }
 }

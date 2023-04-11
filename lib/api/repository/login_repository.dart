@@ -1,6 +1,8 @@
 import 'package:flutter_config/flutter_config.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:survey_flutter/api/api_service.dart';
 import 'package:survey_flutter/api/exception/network_exceptions.dart';
+import 'package:survey_flutter/di/provider/dio_provider.dart';
 import 'package:survey_flutter/model/request/login_request.dart';
 import 'package:survey_flutter/model/response/login_response.dart';
 
@@ -27,3 +29,7 @@ class LoginRepositoryImpl extends LoginRepository {
     }
   }
 }
+
+final loginRepositoryProvider = Provider<LoginRepository>((ref) {
+  return LoginRepositoryImpl(ApiService(DioProvider().getDio()));
+});
