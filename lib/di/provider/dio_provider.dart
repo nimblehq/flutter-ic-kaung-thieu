@@ -1,3 +1,4 @@
+import 'package:chucker_flutter/chucker_flutter.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
 import 'package:survey_flutter/di/interceptor/app_interceptor.dart';
@@ -28,11 +29,12 @@ class DioProvider {
         requestBody: true,
         requestHeader: true,
       ));
+      interceptors.add(ChuckerDioInterceptor());
     }
 
     return dio
-      ..options.connectTimeout = 3000
-      ..options.receiveTimeout = 5000
+      ..options.connectTimeout = const Duration(seconds: 3)
+      ..options.receiveTimeout = const Duration(seconds: 5)
       ..options.headers = {headerContentType: defaultContentType}
       ..interceptors.addAll(interceptors);
   }
