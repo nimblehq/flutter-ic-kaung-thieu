@@ -1,5 +1,6 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
+import 'package:flutter_config/flutter_config.dart';
 import 'package:survey_flutter/di/interceptor/app_interceptor.dart';
 
 const String headerContentType = 'Content-Type';
@@ -30,10 +31,10 @@ class DioProvider {
         requestBody: true,
         requestHeader: true,
       ));
-      baseUrl = 'https://survey-api.nimblehq.co/';
+      baseUrl = FlutterConfig.get('BASE_URL_STAGING');
     } else {
       // Release Mode
-      baseUrl = 'https://survey-api.nimblehq.co/';
+      baseUrl = FlutterConfig.get('BASE_URL_PRODUCTION');
     }
 
     return dio

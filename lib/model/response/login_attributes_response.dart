@@ -15,8 +15,13 @@ class LoginAttributeResponse {
   @JsonKey(name: 'created_at')
   final int? createdAt;
 
-  LoginAttributeResponse(this.accessToken, this.tokenType, this.expiresIn,
-      this.refreshToken, this.createdAt);
+  LoginAttributeResponse({
+    this.accessToken,
+    this.tokenType,
+    this.expiresIn,
+    this.refreshToken,
+    this.createdAt,
+  });
 
   factory LoginAttributeResponse.fromJson(Map<String, dynamic> json) =>
       _$LoginAttributeResponseFromJson(json);

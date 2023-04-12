@@ -15,8 +15,13 @@ class LoginRequest {
   @JsonKey(name: 'client_secret')
   final String clientSecret;
 
-  LoginRequest(this.grantType, this.email, this.password, this.clientId,
-      this.clientSecret);
+  LoginRequest({
+    required this.grantType,
+    required this.email,
+    required this.password,
+    required this.clientId,
+    required this.clientSecret,
+  });
 
   factory LoginRequest.fromJson(Map<String, dynamic> json) =>
       _$LoginRequestFromJson(json);

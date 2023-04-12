@@ -13,7 +13,11 @@ class LoginResponse {
   @JsonKey(name: 'attributes')
   final LoginAttributeResponse? loginAttributeResponse;
 
-  LoginResponse(this.id, this.type, this.loginAttributeResponse);
+  LoginResponse({
+    this.id,
+    this.type,
+    this.loginAttributeResponse,
+  });
 
   factory LoginResponse.fromJson(Map<String, dynamic> json) =>
       _$LoginResponseFromJson(json);
