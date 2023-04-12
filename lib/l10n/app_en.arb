@@ -1,3 +1,7 @@
 {
-  "login": "Log in"
+    "@_LOGIN_SCREEN": {
+    },
+    "emailInputHint": "Email",
+    "passwordInputHint": "Password",
+    "loginButton": "Log in"
 }
