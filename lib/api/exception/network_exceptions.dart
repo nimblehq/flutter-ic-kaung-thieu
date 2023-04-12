@@ -103,14 +103,14 @@ class NetworkExceptions with _$NetworkExceptions {
               }
               break;
             case DioErrorType.badCertificate:
-              networkExceptions =
-              const NetworkExceptions.unauthorisedRequest();
+              networkExceptions = const NetworkExceptions.unauthorisedRequest();
               break;
             case DioErrorType.connectionError:
-              networkExceptions = const NetworkExceptions.noInternetConnection();
+              networkExceptions =
+                  const NetworkExceptions.noInternetConnection();
               break;
           }
-        }  else {
+        } else {
           networkExceptions = const NetworkExceptions.unexpectedError();
         }
         return networkExceptions;
