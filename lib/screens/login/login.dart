@@ -20,7 +20,7 @@ class _LoginScreenState extends State<LoginScreen>
   final _formKey = GlobalKey<FormState>();
 
   late final AnimationController _logoAnimationController = AnimationController(
-      duration: const Duration(milliseconds: 500), vsync: this)
+      duration: const Duration(milliseconds: 600), vsync: this)
     ..forward();
 
   late final Animation<double> _logoScaleAnimation = Tween(begin: 1.0, end: 0.8)
@@ -35,9 +35,17 @@ class _LoginScreenState extends State<LoginScreen>
     curve: Curves.easeIn,
   ));
 
+  late final AnimationController _formAnimationController = AnimationController(
+      duration: const Duration(milliseconds: 700), vsync: this)
+    ..forward();
+
+  late final Animation<double> _formAnimation =
+      CurvedAnimation(parent: _formAnimationController, curve: Curves.easeIn);
+
   @override
   void dispose() {
     _logoAnimationController.dispose();
+    _formAnimationController.dispose();
     super.dispose();
   }
 
@@ -90,10 +98,13 @@ class _LoginScreenState extends State<LoginScreen>
                     ScrollViewKeyboardDismissBehavior.onDrag,
                 child: Column(
                   children: [
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 24),
-                      child: _LoginForm(
-                        key: _formKey,
+                    FadeTransition(
+                      opacity: _formAnimation,
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 24),
+                        child: _LoginForm(
+                          key: _formKey,
+                        ),
                       ),
                     ),
                     SizedBox(
