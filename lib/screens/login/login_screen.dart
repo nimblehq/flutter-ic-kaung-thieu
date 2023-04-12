@@ -15,13 +15,36 @@ class LoginScreen extends StatefulWidget {
   State<StatefulWidget> createState() => _LoginScreenState();
 }
 
-class _LoginScreenState extends State<LoginScreen> {
+class _LoginScreenState extends State<LoginScreen>
+    with TickerProviderStateMixin {
   final _formKey = GlobalKey<FormState>();
+
+  late final AnimationController _logoAnimationController = AnimationController(
+      duration: const Duration(milliseconds: 500), vsync: this)
+    ..forward();
+
+  late final Animation<double> _logoScaleAnimation = Tween(begin: 1.0, end: 0.8)
+      .animate(
+          CurvedAnimation(parent: _logoAnimationController, curve: Curves.easeIn));
+
+  late final Animation<Offset> _logoOffsetAnimation = Tween<Offset>(
+    begin: Offset.zero,
+    end: const Offset(0.0, -0.3),
+  ).animate(CurvedAnimation(
+    parent: _logoAnimationController,
+    curve: Curves.easeIn,
+  ));
+
+  @override
+  void dispose() {
+    _logoAnimationController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
     double screenHeight = MediaQuery.of(context).size.height;
-    // Hack!!!
+    // A bit hack!!!
     double formHeight = 208;
 
     return GestureDetector(
@@ -52,10 +75,13 @@ class _LoginScreenState extends State<LoginScreen> {
                   ),
                 ),
               ),
-              Positioned(
-                top: 153,
-                child: Image.asset(
-                  Assets.images.nimbleLogoWhite.path,
+              SlideTransition(
+                position: _logoOffsetAnimation,
+                child: ScaleTransition(
+                  scale: _logoScaleAnimation,
+                  child: Image.asset(
+                    Assets.images.nimbleLogoWhite.path,
+                  ),
                 ),
               ),
               SingleChildScrollView(

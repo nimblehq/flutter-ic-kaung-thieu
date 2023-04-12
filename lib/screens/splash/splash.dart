@@ -38,7 +38,7 @@ class SplashScreenState extends State<SplashScreen> {
             ),
             AnimatedOpacity(
               opacity: _logoOpacity,
-              duration: const Duration(seconds: 2),
+              duration: const Duration(seconds: 1),
               child: Image.asset(
                 Assets.images.nimbleLogoWhite.path,
               ),
