@@ -1,5 +1,7 @@
+import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:survey_flutter/gen/assets.gen.dart';
+import 'package:survey_flutter/utils/keyboard_manager.dart';
 import 'package:survey_flutter/screens/login/login_component_id.dart';
 import 'package:survey_flutter/screens/widgets/form_field_decoration.dart';
 import 'package:survey_flutter/screens/widgets/blur_image.dart';
@@ -14,53 +16,93 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
+  final _formKey = GlobalKey<FormState>();
+
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: Stack(
-          alignment: AlignmentDirectional.center,
-          fit: StackFit.expand,
-          children: [
-            BlurImage(
-              image: Image.asset(
-                Assets.images.splashBackground.path,
-                fit: BoxFit.cover,
+    double screenHeight = MediaQuery.of(context).size.height;
+    // Hack!!!
+    double formHeight = 208;
+
+    return GestureDetector(
+      onTap: () {
+        KeyboardManager.dismiss(context);
+      },
+      child: Scaffold(
+        resizeToAvoidBottomInset: false,
+        body: Stack(
+            alignment: AlignmentDirectional.center,
+            fit: StackFit.expand,
+            children: [
+              BlurImage(
+                image: Image.asset(
+                  Assets.images.splashBackground.path,
+                  fit: BoxFit.cover,
+                ),
               ),
-            ),
-            Container(
-              decoration: BoxDecoration(
-                gradient: LinearGradient(
-                  begin: Alignment.topCenter,
-                  end: Alignment.bottomCenter,
-                  colors: [
-                    Colors.black.withOpacity(0.2),
-                    Colors.black,
+              Container(
+                decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                    begin: Alignment.topCenter,
+                    end: Alignment.bottomCenter,
+                    colors: [
+                      Colors.black.withOpacity(0.2),
+                      Colors.black,
+                    ],
+                  ),
+                ),
+              ),
+              Positioned(
+                top: 153,
+                child: Image.asset(
+                  Assets.images.nimbleLogoWhite.path,
+                ),
+              ),
+              SingleChildScrollView(
+                reverse: true,
+                keyboardDismissBehavior:
+                    ScrollViewKeyboardDismissBehavior.onDrag,
+                child: Column(
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 24),
+                      child: _LoginForm(
+                        key: _formKey,
+                      ),
+                    ),
+                    SizedBox(
+                        height: max(
+                      24,
+                      (screenHeight - formHeight) / 2 -
+                          MediaQuery.of(context).viewInsets.bottom,
+                    )),
+                    Padding(
+                      padding: EdgeInsets.only(
+                        bottom: MediaQuery.of(context).viewInsets.bottom,
+                      ),
+                    ),
                   ],
                 ),
               ),
-            ),
-            Positioned(
-              top: 153,
-              child: Image.asset(
-                Assets.images.nimbleLogoWhite.path,
-              ),
-            ),
-            const Padding(
-              padding: EdgeInsetsDirectional.symmetric(horizontal: 24),
-              child: _LoginForm(),
-            ),
-          ]),
+            ]),
+      ),
     );
   }
 }
 
-class _LoginForm extends StatelessWidget {
+class _LoginForm extends StatefulWidget {
   const _LoginForm({Key? key}) : super(key: key);
 
+  @override
+  State<StatefulWidget> createState() => _LoginFormState();
+}
+
+class _LoginFormState extends State<_LoginForm> {
   TextFormField _emailTextField(TextStyle? textStyle) {
     return TextFormField(
       key: LoginScreenKey.emailTextField,
       keyboardType: TextInputType.emailAddress,
+      autocorrect: false,
       decoration: FormFieldDecoration(
         hint: 'Email',
         hintTextStyle: textStyle,
@@ -88,7 +130,7 @@ class _LoginForm extends StatelessWidget {
         textStyle: MaterialStateProperty.all(textStyle),
         backgroundColor: MaterialStateProperty.all(Colors.white),
         foregroundColor: MaterialStateProperty.all(Colors.black),
-        overlayColor: MaterialStateProperty.all(Colors.white),
+        overlayColor: MaterialStateProperty.all(Colors.black12),
         shape: MaterialStateProperty.all<RoundedRectangleBorder>(
           RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(12),
@@ -97,6 +139,7 @@ class _LoginForm extends StatelessWidget {
       ),
       child: Text('Log in'),
       onPressed: () => {
+        KeyboardManager.dismiss(context)
         // TODO - implement login
       },
     );
