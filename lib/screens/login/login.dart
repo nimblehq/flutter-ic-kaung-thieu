@@ -24,8 +24,8 @@ class _LoginScreenState extends State<LoginScreen>
     ..forward();
 
   late final Animation<double> _logoScaleAnimation = Tween(begin: 1.0, end: 0.8)
-      .animate(
-          CurvedAnimation(parent: _logoAnimationController, curve: Curves.easeIn));
+      .animate(CurvedAnimation(
+          parent: _logoAnimationController, curve: Curves.easeIn));
 
   late final Animation<Offset> _logoOffsetAnimation = Tween<Offset>(
     begin: Offset.zero,
@@ -36,11 +36,54 @@ class _LoginScreenState extends State<LoginScreen>
   ));
 
   late final AnimationController _formAnimationController = AnimationController(
-      duration: const Duration(milliseconds: 700), vsync: this)
+      duration: const Duration(milliseconds: 600), vsync: this)
     ..forward();
 
-  late final Animation<double> _formAnimation =
+  late final Animation<double> _opacityAnimation =
       CurvedAnimation(parent: _formAnimationController, curve: Curves.easeIn);
+
+  late final SlideTransition _logo = SlideTransition(
+    position: _logoOffsetAnimation,
+    child: ScaleTransition(
+      scale: _logoScaleAnimation,
+      child: Image.asset(
+        Assets.images.nimbleLogoWhite.path,
+      ),
+    ),
+  );
+
+  late final BlurImage _blurBackground = BlurImage(
+    image: Image.asset(
+      Assets.images.splashBackground.path,
+      fit: BoxFit.cover,
+    ),
+  );
+
+  late final FadeTransition _gradientOverlay = FadeTransition(
+    opacity: _opacityAnimation,
+    child: Container(
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          begin: Alignment.topCenter,
+          end: Alignment.bottomCenter,
+          colors: [
+            Colors.black.withOpacity(0.2),
+            Colors.black,
+          ],
+        ),
+      ),
+    ),
+  );
+
+  late final FadeTransition _loginForm = FadeTransition(
+    opacity: _opacityAnimation,
+    child: Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 24),
+      child: _LoginForm(
+        key: _formKey,
+      ),
+    ),
+  );
 
   @override
   void dispose() {
@@ -52,72 +95,41 @@ class _LoginScreenState extends State<LoginScreen>
   @override
   Widget build(BuildContext context) {
     double screenHeight = MediaQuery.of(context).size.height;
-    // A bit hack!!!
     double formHeight = 208;
 
+    Column bottomPadding = Column(children: [
+      SizedBox(
+          height: max(
+        24,
+        (screenHeight - formHeight) / 2 -
+            MediaQuery.of(context).viewInsets.bottom,
+      )),
+      Padding(
+        padding: EdgeInsets.only(
+          bottom: MediaQuery.of(context).viewInsets.bottom,
+        ),
+      ),
+    ]);
+
     return GestureDetector(
-      onTap: () {
-        KeyboardManager.dismiss(context);
-      },
+      onTap: () => KeyboardManager.dismiss(context),
       child: Scaffold(
         resizeToAvoidBottomInset: false,
         body: Stack(
             alignment: AlignmentDirectional.center,
             fit: StackFit.expand,
             children: [
-              BlurImage(
-                image: Image.asset(
-                  Assets.images.splashBackground.path,
-                  fit: BoxFit.cover,
-                ),
-              ),
-              Container(
-                decoration: BoxDecoration(
-                  gradient: LinearGradient(
-                    begin: Alignment.topCenter,
-                    end: Alignment.bottomCenter,
-                    colors: [
-                      Colors.black.withOpacity(0.2),
-                      Colors.black,
-                    ],
-                  ),
-                ),
-              ),
-              SlideTransition(
-                position: _logoOffsetAnimation,
-                child: ScaleTransition(
-                  scale: _logoScaleAnimation,
-                  child: Image.asset(
-                    Assets.images.nimbleLogoWhite.path,
-                  ),
-                ),
-              ),
+              _blurBackground,
+              _gradientOverlay,
+              _logo,
               SingleChildScrollView(
                 reverse: true,
                 keyboardDismissBehavior:
                     ScrollViewKeyboardDismissBehavior.onDrag,
                 child: Column(
                   children: [
-                    FadeTransition(
-                      opacity: _formAnimation,
-                      child: Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 24),
-                        child: _LoginForm(
-                          key: _formKey,
-                        ),
-                      ),
-                    ),
-                    SizedBox(
-                        height: max(
-                      24,
-                      (screenHeight - formHeight) / 2 -
-                          MediaQuery.of(context).viewInsets.bottom,
-                    )),
-                    Padding(
-                      padding: EdgeInsets.only(
-                        bottom: MediaQuery.of(context).viewInsets.bottom,
-                      ),
-                    ),
+                    _loginForm,
+                    bottomPadding,
                   ],
                 ),
               ),
@@ -175,8 +187,8 @@ class _LoginFormState extends State<_LoginForm> {
         ),
       ),
       child: Text('Log in'),
-      onPressed: () => {
-        KeyboardManager.dismiss(context)
+      onPressed: () {
+        KeyboardManager.dismiss(context);
         // TODO - implement login
       },
     );
