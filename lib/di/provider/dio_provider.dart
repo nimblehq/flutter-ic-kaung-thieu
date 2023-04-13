@@ -1,7 +1,7 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
-import 'package:flutter_config/flutter_config.dart';
 import 'package:survey_flutter/di/interceptor/app_interceptor.dart';
+import 'package:survey_flutter/env.dart';
 
 const String headerContentType = 'Content-Type';
 const String defaultContentType = 'application/json; charset=utf-8';
@@ -16,7 +16,6 @@ class DioProvider {
 
   Dio _createDio({bool requireAuthenticate = false}) {
     final dio = Dio();
-    late String baseUrl;
     final appInterceptor = AppInterceptor(
       requireAuthenticate,
       dio,
@@ -31,10 +30,6 @@ class DioProvider {
         requestBody: true,
         requestHeader: true,
       ));
-      baseUrl = FlutterConfig.get('BASE_URL_STAGING');
-    } else {
-      // Release Mode
-      baseUrl = FlutterConfig.get('BASE_URL_PRODUCTION');
     }
 
     return dio
@@ -42,6 +37,6 @@ class DioProvider {
       ..options.receiveTimeout = const Duration(seconds: 5)
       ..options.headers = {headerContentType: defaultContentType}
       ..interceptors.addAll(interceptors)
-      ..options.baseUrl = baseUrl;
+      ..options.baseUrl = Env.restApiEndpoint;
   }
 }
