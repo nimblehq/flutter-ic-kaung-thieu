@@ -1,5 +1,6 @@
 import 'dart:math';
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:survey_flutter/gen/assets.gen.dart';
 import 'package:survey_flutter/utils/keyboard_manager.dart';
 import 'package:survey_flutter/screens/widgets/form_field_decoration.dart';
@@ -19,7 +20,6 @@ class LoginScreen extends StatefulWidget {
 class _LoginScreenState extends State<LoginScreen>
     with TickerProviderStateMixin {
   final _formKey = GlobalKey<FormState>();
-
   final _animationDurations = const Duration(milliseconds: 600);
 
   late final AnimationController _logoAnimationController = AnimationController(
@@ -96,6 +96,37 @@ class _LoginScreenState extends State<LoginScreen>
     ),
   );
 
+  double _loginFormHeight = 0;
+  Column get _bottomSpacer => Column(
+        children: [
+          SizedBox(
+            height: max(
+              24,
+              (MediaQuery.of(context).size.height - _loginFormHeight) / 2 -
+                  MediaQuery.of(context).viewInsets.bottom,
+            ),
+          ),
+          Padding(
+            padding: EdgeInsets.only(
+              bottom: MediaQuery.of(context).viewInsets.bottom,
+            ),
+          ),
+        ],
+      );
+
+  @override
+  void initState() {
+    SchedulerBinding.instance.addPostFrameCallback((_) {
+      double? height = _formKey.currentContext?.size?.height;
+      if (height != null) {
+        _loginFormHeight = height;
+        setState(() {});
+      }
+    });
+
+    super.initState();
+  }
+
   @override
   void dispose() {
     _logoAnimationController.dispose();
@@ -105,23 +136,6 @@ class _LoginScreenState extends State<LoginScreen>
 
   @override
   Widget build(BuildContext context) {
-    double screenHeight = MediaQuery.of(context).size.height;
-    double formHeight = 208;
-
-    Column bottomPadding = Column(children: [
-      SizedBox(
-          height: max(
-        24,
-        (screenHeight - formHeight) / 2 -
-            MediaQuery.of(context).viewInsets.bottom,
-      )),
-      Padding(
-        padding: EdgeInsets.only(
-          bottom: MediaQuery.of(context).viewInsets.bottom,
-        ),
-      ),
-    ]);
-
     return GestureDetector(
       onTap: () => KeyboardManager.dismiss(context),
       child: Scaffold(
@@ -140,7 +154,7 @@ class _LoginScreenState extends State<LoginScreen>
                 child: Column(
                   children: [
                     _loginForm,
-                    bottomPadding,
+                    _bottomSpacer,
                   ],
                 ),
               ),
