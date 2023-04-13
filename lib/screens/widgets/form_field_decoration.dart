@@ -10,7 +10,6 @@ class FormFieldDecoration extends InputDecoration {
             borderSide: BorderSide.none,
             borderRadius: BorderRadius.circular(12),
           ),
-          // contentPadding: const EdgeInsets.symmetric(horizontal: 18, vertical: 18),
           fillColor: Colors.white24,
           filled: true,
           hintStyle: hintTextStyle?.copyWith(color: Colors.white24),

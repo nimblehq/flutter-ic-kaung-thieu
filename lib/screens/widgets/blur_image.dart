@@ -9,7 +9,10 @@ class BlurImage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ImageFiltered(
-      imageFilter: ImageFilter.blur(sigmaX: 25, sigmaY: 25),
+      imageFilter: ImageFilter.blur(
+        sigmaX: 25,
+        sigmaY: 25,
+      ),
       child: image,
     );
   }

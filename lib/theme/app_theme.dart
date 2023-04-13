@@ -6,10 +6,17 @@ class AppTheme {
       fontFamily: FontFamily.neuzeit,
       textTheme: const TextTheme(
         bodyLarge: TextStyle(
-            color: Colors.white, fontSize: 17, fontWeight: FontWeight.w400),
+          color: Colors.white,
+          fontSize: 17,
+          fontWeight: FontWeight.w400,
+        ),
         labelLarge: TextStyle(
-            color: Colors.red, fontSize: 17, fontWeight: FontWeight.w800),
+          color: Colors.red,
+          fontSize: 17,
+          fontWeight: FontWeight.w800,
+        ),
       ),
-      textSelectionTheme:
-          const TextSelectionThemeData(cursorColor: Colors.white));
+      textSelectionTheme: const TextSelectionThemeData(
+        cursorColor: Colors.white,
+      ));
 }
