@@ -4,6 +4,7 @@ import 'package:survey_flutter/gen/assets.gen.dart';
 import 'package:survey_flutter/utils/keyboard_manager.dart';
 import 'package:survey_flutter/screens/widgets/form_field_decoration.dart';
 import 'package:survey_flutter/screens/widgets/blur_image.dart';
+import 'package:survey_flutter/theme/constant.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 const routePathLoginScreen = '/login';
@@ -19,13 +20,18 @@ class _LoginScreenState extends State<LoginScreen>
     with TickerProviderStateMixin {
   final _formKey = GlobalKey<FormState>();
 
-  late final AnimationController _logoAnimationController = AnimationController(
-      duration: const Duration(milliseconds: 600), vsync: this)
-    ..forward();
+  final _animationDurations = const Duration(milliseconds: 600);
 
-  late final Animation<double> _logoScaleAnimation = Tween(begin: 1.0, end: 0.8)
-      .animate(CurvedAnimation(
-          parent: _logoAnimationController, curve: Curves.easeIn));
+  late final AnimationController _logoAnimationController = AnimationController(
+    duration: _animationDurations,
+    vsync: this,
+  )..forward();
+
+  late final Animation<double> _logoScaleAnimation = Tween(
+    begin: 1.0,
+    end: 0.8,
+  ).animate(
+      CurvedAnimation(parent: _logoAnimationController, curve: Curves.easeIn));
 
   late final Animation<Offset> _logoOffsetAnimation = Tween<Offset>(
     begin: Offset.zero,
@@ -36,11 +42,14 @@ class _LoginScreenState extends State<LoginScreen>
   ));
 
   late final AnimationController _formAnimationController = AnimationController(
-      duration: const Duration(milliseconds: 600), vsync: this)
-    ..forward();
+    duration: _animationDurations,
+    vsync: this,
+  )..forward();
 
-  late final Animation<double> _opacityAnimation =
-      CurvedAnimation(parent: _formAnimationController, curve: Curves.easeIn);
+  late final Animation<double> _opacityAnimation = CurvedAnimation(
+    parent: _formAnimationController,
+    curve: Curves.easeIn,
+  );
 
   late final SlideTransition _logo = SlideTransition(
     position: _logoOffsetAnimation,
@@ -78,7 +87,9 @@ class _LoginScreenState extends State<LoginScreen>
   late final FadeTransition _loginForm = FadeTransition(
     opacity: _opacityAnimation,
     child: Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 24),
+      padding: const EdgeInsets.symmetric(
+        horizontal: Metrics.defaultHorizontalPadding,
+      ),
       child: _LoginForm(
         key: _formKey,
       ),
@@ -165,8 +176,9 @@ class _LoginFormState extends State<_LoginForm> {
         obscureText: true,
         obscuringCharacter: "●",
         decoration: FormFieldDecoration(
-            hint: _localizations.passwordInputHint,
-            hintTextStyle: _textTheme.bodyLarge),
+          hint: _localizations.passwordInputHint,
+          hintTextStyle: _textTheme.bodyLarge,
+        ),
         style: _textTheme.bodyLarge,
       );
 
@@ -179,7 +191,7 @@ class _LoginFormState extends State<_LoginForm> {
           overlayColor: MaterialStateProperty.all(Colors.black12),
           shape: MaterialStateProperty.all<RoundedRectangleBorder>(
             RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(12),
+              borderRadius: BorderRadius.circular(Metrics.defaultBorderRadius),
             ),
           ),
         ),
@@ -192,17 +204,18 @@ class _LoginFormState extends State<_LoginForm> {
 
   @override
   Widget build(BuildContext context) {
+    const fieldSpacing = 20.0;
     return Form(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           _emailTextField,
           const SizedBox(
-            height: 20,
+            height: fieldSpacing,
           ),
           _passwordTextField,
           const SizedBox(
-            height: 20,
+            height: fieldSpacing,
           ),
           SizedBox(
             height: 56,

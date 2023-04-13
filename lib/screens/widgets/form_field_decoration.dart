@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:survey_flutter/theme/constant.dart';
 
 class FormFieldDecoration extends InputDecoration {
   final String hint;
@@ -8,7 +9,7 @@ class FormFieldDecoration extends InputDecoration {
       : super(
           border: OutlineInputBorder(
             borderSide: BorderSide.none,
-            borderRadius: BorderRadius.circular(12),
+            borderRadius: BorderRadius.circular(Metrics.defaultBorderRadius),
           ),
           fillColor: Colors.white24,
           filled: true,
