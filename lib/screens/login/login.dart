@@ -171,24 +171,24 @@ class _LoginFormState extends State<_LoginForm> {
       );
 
   ElevatedButton get _loginButton => ElevatedButton(
-      style: ButtonStyle(
-        textStyle:
-            MaterialStateProperty.all(Theme.of(context).textTheme.labelLarge),
-        backgroundColor: MaterialStateProperty.all(Colors.white),
-        foregroundColor: MaterialStateProperty.all(Colors.black),
-        overlayColor: MaterialStateProperty.all(Colors.black12),
-        shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-          RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(12),
+        style: ButtonStyle(
+          textStyle:
+              MaterialStateProperty.all(Theme.of(context).textTheme.labelLarge),
+          backgroundColor: MaterialStateProperty.all(Colors.white),
+          foregroundColor: MaterialStateProperty.all(Colors.black),
+          overlayColor: MaterialStateProperty.all(Colors.black12),
+          shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+            RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(12),
+            ),
           ),
         ),
-      ),
-      child: Text(_localizations.loginButton),
-      onPressed: () {
-        KeyboardManager.dismiss(context);
-        // TODO - implement login
-      },
-    );
+        child: Text(_localizations.loginButton),
+        onPressed: () {
+          KeyboardManager.dismiss(context);
+          // TODO - implement login
+        },
+      );
 
   @override
   Widget build(BuildContext context) {
