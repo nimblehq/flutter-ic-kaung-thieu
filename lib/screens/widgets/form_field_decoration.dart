@@ -15,5 +15,6 @@ class FormFieldDecoration extends InputDecoration {
           filled: true,
           hintStyle: hintTextStyle?.copyWith(color: Colors.white24),
           hintText: hint,
+          errorMaxLines: 2,
         );
 }
