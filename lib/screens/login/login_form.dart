@@ -61,6 +61,8 @@ class _LoginFormState extends State<LoginForm> {
         child: Text(_localizations.loginButton),
       );
 
+  // TODO: Move the validation logic to the ViewModel
+  // upon implementing Integration task
   String? _emailValidator(String? email) {
     // Just use a simple rule, no need complex Regex!
     if (email == null || email.isEmpty || !email.contains('@')) {
