@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:survey_flutter/screens/widgets/form_field_decoration.dart';
-import 'package:survey_flutter/utils/keyboard_manager.dart';
 import 'package:survey_flutter/theme/constant.dart';
+import 'package:survey_flutter/utils/keyboard_manager.dart';
 
 class LoginForm extends StatefulWidget {
   const LoginForm({Key? key}) : super(key: key);
@@ -12,6 +12,7 @@ class LoginForm extends StatefulWidget {
 }
 
 class _LoginFormState extends State<LoginForm> {
+  final _formKey = GlobalKey<FormState>();
   AppLocalizations get _localizations => AppLocalizations.of(context)!;
   TextTheme get _textTheme => Theme.of(context).textTheme;
 
@@ -23,6 +24,10 @@ class _LoginFormState extends State<LoginForm> {
           hintTextStyle: _textTheme.bodyLarge,
         ),
         style: _textTheme.bodyLarge,
+        validator: _emailValidator,
+        autovalidateMode: _isFormSubmitted
+            ? AutovalidateMode.onUserInteraction
+            : AutovalidateMode.disabled,
       );
 
   TextFormField get _passwordTextField => TextFormField(
@@ -33,6 +38,10 @@ class _LoginFormState extends State<LoginForm> {
           hintTextStyle: _textTheme.bodyLarge,
         ),
         style: _textTheme.bodyLarge,
+        validator: _passwordValidator,
+        autovalidateMode: _isFormSubmitted
+            ? AutovalidateMode.onUserInteraction
+            : AutovalidateMode.disabled,
       );
 
   ElevatedButton get _loginButton => ElevatedButton(
@@ -48,17 +57,43 @@ class _LoginFormState extends State<LoginForm> {
             ),
           ),
         ),
+        onPressed: _submitForm,
         child: Text(_localizations.loginButton),
-        onPressed: () {
-          KeyboardManager.dismiss(context);
-          // TODO - implement login
-        },
       );
+
+  // TODO: Move the validation logic to the ViewModel
+  // upon implementing Integration task
+  String? _emailValidator(String? email) {
+    // Just use a simple rule, no need complex Regex!
+    if (email == null || email.isEmpty || !email.contains('@')) {
+      return _localizations.invalidEmailError;
+    }
+    return null;
+  }
+
+  String? _passwordValidator(String? password) {
+    if (password == null || password.isEmpty || password.length < 8) {
+      return _localizations.invalidPasswordError;
+    }
+    return null;
+  }
+
+  bool _isFormSubmitted = false;
+
+  void _submitForm() {
+    setState(() => _isFormSubmitted = true);
+
+    if (_formKey.currentState!.validate()) {
+      KeyboardManager.dismiss(context);
+      // TODO - implement login
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     const fieldSpacing = 20.0;
     return Form(
+      key: _formKey,
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
