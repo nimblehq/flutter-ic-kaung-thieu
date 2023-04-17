@@ -93,7 +93,7 @@ class _LoginFormState extends State<LoginForm> {
           message: _localizations.loginFailAlertMessage,
           actions: [
             TextButton(
-              child: Text(_localizations.loginFailAlertAction),
+              child: Text(_localizations.okText),
               onPressed: () => Navigator.pop(context),
             ),
           ]);
