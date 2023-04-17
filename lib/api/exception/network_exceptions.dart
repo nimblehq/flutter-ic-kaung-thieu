@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:dio/dio.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 
@@ -52,10 +50,10 @@ class NetworkExceptions with _$NetworkExceptions {
             case DioErrorType.cancel:
               networkExceptions = const NetworkExceptions.requestCancelled();
               break;
-            case DioErrorType.connectTimeout:
+            case DioErrorType.connectionTimeout:
               networkExceptions = const NetworkExceptions.requestTimeout();
               break;
-            case DioErrorType.other:
+            case DioErrorType.unknown:
               networkExceptions =
                   const NetworkExceptions.noInternetConnection();
               break;
@@ -65,7 +63,8 @@ class NetworkExceptions with _$NetworkExceptions {
             case DioErrorType.sendTimeout:
               networkExceptions = const NetworkExceptions.sendTimeout();
               break;
-            case DioErrorType.response:
+
+            case DioErrorType.badResponse:
               switch (error.response?.statusCode) {
                 case 400:
                   networkExceptions = const NetworkExceptions.badRequest();
@@ -103,9 +102,14 @@ class NetworkExceptions with _$NetworkExceptions {
                   );
               }
               break;
+            case DioErrorType.badCertificate:
+              networkExceptions = const NetworkExceptions.unauthorisedRequest();
+              break;
+            case DioErrorType.connectionError:
+              networkExceptions =
+                  const NetworkExceptions.noInternetConnection();
+              break;
           }
-        } else if (error is SocketException) {
-          networkExceptions = const NetworkExceptions.noInternetConnection();
         } else {
           networkExceptions = const NetworkExceptions.unexpectedError();
         }
