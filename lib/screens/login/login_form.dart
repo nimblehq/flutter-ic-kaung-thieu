@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:survey_flutter/screens/widgets/alert_dialog.dart';
 import 'package:survey_flutter/screens/widgets/form_field_decoration.dart';
 import 'package:survey_flutter/theme/constant.dart';
 import 'package:survey_flutter/utils/keyboard_manager.dart';
@@ -86,6 +87,16 @@ class _LoginFormState extends State<LoginForm> {
     if (_formKey.currentState!.validate()) {
       KeyboardManager.dismiss(context);
       // TODO - implement login
+      showAlertDialog(
+          context: context,
+          title: _localizations.loginFailAlertTitle,
+          message: _localizations.loginFailAlertMessage,
+          actions: [
+            TextButton(
+              child: Text(_localizations.loginFailAlertAction),
+              onPressed: () => Navigator.pop(context),
+            ),
+          ]);
     }
   }
 
