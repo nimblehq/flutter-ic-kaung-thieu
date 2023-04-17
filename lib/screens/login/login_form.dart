@@ -26,9 +26,8 @@ class _LoginFormState extends State<LoginForm> {
       );
 
   TextFormField get _passwordTextField => TextFormField(
-        keyboardType: TextInputType.emailAddress,
+        autocorrect: false,
         obscureText: true,
-        obscuringCharacter: "●",
         decoration: FormFieldDecoration(
           hint: _localizations.passwordInputHint,
           hintTextStyle: _textTheme.bodyLarge,
