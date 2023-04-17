@@ -11,15 +11,14 @@ class SplashScreen extends StatefulWidget {
 }
 
 class SplashScreenState extends State<SplashScreen> {
-  bool _isLogoVisible = false;
-  bool _shouldAnimateLogo = false;
+  double _logoOpacity = 0;
 
   @override
   void initState() {
     super.initState();
     Future.delayed(const Duration(seconds: 1), () {
       setState(() {
-        _isLogoVisible = true;
+        _logoOpacity = 1;
       });
     });
   }
@@ -37,22 +36,14 @@ class SplashScreenState extends State<SplashScreen> {
               Assets.images.splashBackground.path,
               fit: BoxFit.cover,
             ),
-            AnimatedPositioned(
+            AnimatedOpacity(
+              opacity: _logoOpacity,
               duration: const Duration(seconds: 1),
-              top: _shouldAnimateLogo ? 153 : constraints.maxHeight / 2,
-              child: AnimatedOpacity(
-                  opacity: _isLogoVisible ? 1.0 : 0.0,
-                  duration: const Duration(milliseconds: 500),
-                  child: Image.asset(
-                    Assets.images.nimbleLogoWhite.path,
-                  ),
-                  onEnd: () {
-                    setState(() {
-                      _shouldAnimateLogo = true;
-                    });
-                  }),
+              child: Image.asset(
+                Assets.images.nimbleLogoWhite.path,
+              ),
               onEnd: () => context.go(routePathLoginScreen),
-            )
+            ),
           ],
         );
       }),
