@@ -15,7 +15,7 @@ void main() {
 
     setUp(() => loginUseCase = LoginUseCase(mockLoginRepository));
     test(
-      'When login with correct email and password, it emit success',
+      'When login with correct email and password, it emits success',
       () async {
         when(mockLoginRepository.login(
           email: anyNamed('email'),
@@ -29,7 +29,7 @@ void main() {
     );
 
     test(
-      'When login with incorrect email and password, it emit failed',
+      'When login with incorrect email and password, it emits failed',
       () async {
         when(mockLoginRepository.login(
           email: anyNamed('email'),

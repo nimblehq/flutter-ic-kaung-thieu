@@ -5,7 +5,7 @@ import 'package:survey_flutter/model/response/login_response.dart';
 import 'package:survey_flutter/usecases/base/base_use_case.dart';
 
 final loginUseCaseProvider = Provider<LoginUseCase>((ref) {
-  return LoginUseCase(ref.read(loginRepositoryProvider));
+  return LoginUseCase(ref.watch(loginRepositoryProvider));
 });
 
 class LoginUseCase extends UseCase<LoginResponse, LoginRequestModel> {
