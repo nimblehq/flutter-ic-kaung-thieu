@@ -65,6 +65,7 @@ class HomeScreenState extends State<HomeScreen> {
               padding: const EdgeInsets.fromLTRB(20, 60, 0, 0),
               child: Column(
                 mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
                     'Monday, JUNE 15',
@@ -81,6 +82,7 @@ class HomeScreenState extends State<HomeScreen> {
                         fontSize: 34,
                         fontWeight: FontWeight.bold,
                       ),
+                      textAlign: TextAlign.start,
                     ),
                   ),
                 ],
