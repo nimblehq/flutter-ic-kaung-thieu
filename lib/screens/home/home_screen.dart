@@ -10,6 +10,9 @@ class HomeScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     // TODO Add home screen UI in part 2
-    return const HomeShimmerLoading();
+    return const Scaffold(
+      backgroundColor: Colors.black,
+      body: HomeShimmerLoading(),
+    );
   }
 }
