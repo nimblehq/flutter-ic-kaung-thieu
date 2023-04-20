@@ -19,28 +19,30 @@ void main() {
     setUp(() => repository = LoginRepositoryImpl(mockApiService));
 
     test(
-        'When login with correct email and password, it emits corresponding response',
-        () async {
-      when(mockApiService.logIn(any))
-          .thenAnswer((_) async => MockUtil.loginResponse);
+      'When login with correct email and password, it emits corresponding response',
+      () async {
+        when(mockApiService.logIn(any))
+            .thenAnswer((_) async => MockUtil.loginResponse);
 
-      final result = await repository.login(
-          email: MockUtil.loginRequest.email,
-          password: MockUtil.loginRequest.password);
-      expect(result.id, MockUtil.loginResponse.id);
-    });
+        final result = await repository.login(
+            email: MockUtil.loginRequest.email,
+            password: MockUtil.loginRequest.password);
+        expect(result.id, MockUtil.loginResponse.id);
+      },
+    );
 
     test(
-        'When login with incorrect email or password, it throws NetworkExceptions error',
-        () async {
-      when(mockApiService.logIn(any)).thenThrow(MockDioError());
+      'When login with incorrect email or password, it throws NetworkExceptions error',
+      () async {
+        when(mockApiService.logIn(any)).thenThrow(MockDioError());
 
-      expect(
-        () => repository.login(
-            email: MockUtil.loginRequest.email,
-            password: MockUtil.loginRequest.password),
-        throwsA(isA<NetworkExceptions>()),
-      );
-    });
+        expect(
+          () => repository.login(
+              email: MockUtil.loginRequest.email,
+              password: MockUtil.loginRequest.password),
+          throwsA(isA<NetworkExceptions>()),
+        );
+      },
+    );
   });
 }
