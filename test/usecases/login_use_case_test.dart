@@ -1,6 +1,6 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
-import 'package:survey_flutter/model/login_request_model.dart';
+import 'package:survey_flutter/model/login_parameters.dart';
 import 'package:survey_flutter/usecases/base/base_use_case.dart';
 import 'package:survey_flutter/usecases/login_use_case.dart';
 
@@ -22,7 +22,7 @@ void main() {
           password: anyNamed('password'),
         )).thenAnswer((_) async => MockUtil.loginResponse);
 
-        final result = await loginUseCase.call(const LoginRequestModel(
+        final result = await loginUseCase.call(const LoginParameters(
             email: 'test@gmail.com', password: 'password'));
         expect(result is Success, true);
       },
@@ -36,7 +36,7 @@ void main() {
           password: anyNamed('password'),
         )).thenThrow(MockDioError());
 
-        final result = await loginUseCase.call(const LoginRequestModel(
+        final result = await loginUseCase.call(const LoginParameters(
             email: 'test@gmail.com', password: 'password'));
         expect(result is Failed, true);
       },
