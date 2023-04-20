@@ -10,5 +10,7 @@
     "invalidEmailError": "Please enter the valid email format.",
     "invalidPasswordError": "Password must be at least 8 characters long.",
     "loginFailAlertTitle": "Unable to log in",
-    "loginFailAlertMessage": "There's something wrong. Please try again!"
+    "loginFailAlertMessage": "There's something wrong. Please try again!",
+
+    "homeTodayTitle": "Today"
 }

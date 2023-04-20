@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:page_view_dot_indicator/page_view_dot_indicator.dart';
 import 'package:survey_flutter/gen/assets.gen.dart';
 import 'package:survey_flutter/screens/home/home_view_model.dart';
+import 'package:survey_flutter/theme/constant.dart';
 
 import 'home_shimmer_loading.dart';
 
@@ -17,6 +19,8 @@ class HomeScreen extends ConsumerStatefulWidget {
 
 class HomeScreenState extends ConsumerState<HomeScreen> {
   TextTheme get _textTheme => Theme.of(context).textTheme;
+  AppLocalizations get _localizations => AppLocalizations.of(context)!;
+
   late BuildContext _scaffoldContext;
   int _selectedPage = 0;
   bool _isLoading = false;
@@ -93,7 +97,10 @@ class HomeScreenState extends ConsumerState<HomeScreen> {
         Align(
           alignment: Alignment.topLeft,
           child: Padding(
-            padding: const EdgeInsets.only(left: 20, top: 60),
+            padding: const EdgeInsets.only(
+              left: Metrics.spacingDefault,
+              top: Metrics.spacingXLarge,
+            ),
             child: Column(
               mainAxisSize: MainAxisSize.min,
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -101,16 +108,18 @@ class HomeScreenState extends ConsumerState<HomeScreen> {
                 Text(
                   viewModel.currentDate,
                   style: _textTheme.bodyLarge?.copyWith(
-                    fontSize: 13,
+                    fontSize: Metrics.fontXSmall,
                     fontWeight: FontWeight.bold,
                   ),
                 ),
                 Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 4),
+                  padding: const EdgeInsets.symmetric(
+                    vertical: Metrics.spacingXXSmall,
+                  ),
                   child: Text(
-                    'Today',
+                    _localizations.homeTodayTitle,
                     style: _textTheme.bodyLarge?.copyWith(
-                      fontSize: 34,
+                      fontSize: Metrics.fontLarge,
                       fontWeight: FontWeight.bold,
                     ),
                     textAlign: TextAlign.start,
@@ -125,10 +134,13 @@ class HomeScreenState extends ConsumerState<HomeScreen> {
           child: Align(
             alignment: Alignment.topRight,
             child: Padding(
-              padding: const EdgeInsets.only(top: 79, right: 20),
+              padding: const EdgeInsets.only(
+                top: Metrics.spacingXXLarge,
+                right: Metrics.spacingDefault,
+              ),
               child: ClipOval(
                 child: SizedBox.fromSize(
-                  size: const Size.fromRadius(18),
+                  size: const Size.fromRadius(Metrics.profileSmallRadius),
                   child: Image.network(
                     viewModel.profile?.imageUrl ?? '',
                     fit: BoxFit.cover,
@@ -149,17 +161,25 @@ class HomeScreenState extends ConsumerState<HomeScreen> {
                 count: viewModel.surveys.length,
                 unselectedColor: Colors.white24,
                 selectedColor: Colors.white,
-                duration: const Duration(milliseconds: 200),
+                duration: const Duration(
+                  milliseconds: Metrics.pageIndicatorAnimationDuration,
+                ),
                 alignment: Alignment.bottomLeft,
-                size: const Size(8, 8),
+                size: const Size(
+                  Metrics.pageIndicatorSize,
+                  Metrics.pageIndicatorSize,
+                ),
               ),
               Padding(
-                padding: const EdgeInsets.only(left: 20, top: 26, right: 20),
+                padding: const EdgeInsets.only(
+                    left: Metrics.spacingDefault,
+                    top: Metrics.spacingMedium,
+                    right: Metrics.spacingDefault),
                 child: Text(
                   viewModel.surveys[_selectedPage].title,
                   maxLines: 2,
                   style: _textTheme.bodyLarge?.copyWith(
-                    fontSize: 28,
+                    fontSize: Metrics.fontMedium,
                     fontWeight: FontWeight.bold,
                   ),
                   overflow: TextOverflow.ellipsis,
@@ -171,19 +191,29 @@ class HomeScreenState extends ConsumerState<HomeScreen> {
                 children: [
                   Flexible(
                     child: Padding(
-                      padding: const EdgeInsets.fromLTRB(20, 16, 20, 54),
+                      padding: const EdgeInsets.fromLTRB(
+                        Metrics.spacingDefault,
+                        Metrics.spacingSmall,
+                        Metrics.spacingDefault,
+                        Metrics.spacingLarge,
+                      ),
                       child: Text(
                         viewModel.surveys[_selectedPage].description,
                         maxLines: 2,
-                        style: _textTheme.bodyLarge
-                            ?.copyWith(color: Colors.white70),
+                        style: _textTheme.bodyLarge?.copyWith(
+                          color: Colors.white70,
+                          fontSize: Metrics.fontNormal,
+                        ),
                         overflow: TextOverflow.ellipsis,
                       ),
                     ),
                   ),
                   Padding(
-                    padding:
-                        const EdgeInsets.only(top: 16, right: 20, bottom: 54),
+                    padding: const EdgeInsets.only(
+                      top: Metrics.spacingSmall,
+                      right: Metrics.spacingDefault,
+                      bottom: Metrics.spacingLarge,
+                    ),
                     child: FloatingActionButton(
                       onPressed: () {
                         // TODO implement go to detail
