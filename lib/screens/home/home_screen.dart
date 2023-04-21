@@ -21,7 +21,6 @@ class HomeScreenState extends ConsumerState<HomeScreen> {
   TextTheme get _textTheme => Theme.of(context).textTheme;
 
   AppLocalizations get _localizations => AppLocalizations.of(context)!;
-  late BuildContext _scaffoldContext;
   int _selectedPage = 0;
 
   final _shouldShowShimmerProvider = StreamProvider.autoDispose<bool>(
@@ -37,75 +36,74 @@ class HomeScreenState extends ConsumerState<HomeScreen> {
   final _isErrorStreamProvider = StreamProvider.autoDispose(
       (ref) => ref.watch(homeViewModelProvider.notifier).isError);
 
+  late PageController _pageController;
+
   @override
   void initState() {
+    _pageController = PageController(initialPage: _selectedPage);
     super.initState();
   }
 
   @override
+  void dispose() {
+    _pageController.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
+    ref.listen<AsyncValue<String>>(_isErrorStreamProvider, (previous, next) {
+      final error = next.value ?? '';
+      if (error.isNotEmpty) {
+        WidgetsBinding.instance
+            .addPostFrameCallback((_) => createSnackBar(error));
+        ref.read(homeViewModelProvider.notifier).clearError();
+      }
+    });
+
     return Scaffold(
       backgroundColor: Colors.black,
       body: Builder(builder: (BuildContext context) {
-        _scaffoldContext = context;
-
-        var error = ref.watch(_isErrorStreamProvider).value ?? '';
-        if (error.isNotEmpty) {
-          WidgetsBinding.instance
-              .addPostFrameCallback((_) => createSnackBar(error));
-          ref.read(homeViewModelProvider.notifier).clearError();
-        }
-
-        var isShimmerLoading =
-            ref.watch(_shouldShowShimmerProvider).value ?? false;
-        return Stack(
-          children: [
-            Visibility(
-              visible: isShimmerLoading,
-              child: const HomeShimmerLoading(),
-            ),
-            Visibility(
-              visible: !isShimmerLoading,
-              child: _buildHomeScreenContent(),
-            )
-          ],
-        );
+        return Consumer(builder: (context, ref, child) {
+          var isShimmerLoading =
+              ref.watch(_shouldShowShimmerProvider).value ?? false;
+          if (isShimmerLoading) {
+            return const HomeShimmerLoading();
+          } else {
+            return _buildHomeScreenContent();
+          }
+        });
       }),
     );
   }
 
   void createSnackBar(String message) {
     final snackBar = SnackBar(content: Text(message));
-    ScaffoldMessenger.of(_scaffoldContext).showSnackBar(snackBar);
+    ScaffoldMessenger.of(context).showSnackBar(snackBar);
   }
 
   Widget _buildHomeScreenContent() {
-    final pageController = PageController(initialPage: _selectedPage);
-
-    var imageUrl = ref.watch(_profileStreamProvider).value?.imageUrl ?? '';
-
     return Stack(
       alignment: Alignment.center,
       fit: StackFit.expand,
       children: [
-        PageView(
-          controller: pageController,
-          onPageChanged: (page) {
-            setState(() {
-              _selectedPage = page;
-            });
-            if (page ==
-                (ref.watch(_surveysStreamProvider).value?.length ?? 0) - 2) {
-              ref.read(homeViewModelProvider.notifier).getSurveyList();
-            }
-          },
-          children: ref
-                  .watch(_surveysStreamProvider)
-                  .value
-                  ?.map((survey) => _buildBackgroundImage(survey.coverImageUrl))
-                  .toList() ??
-              [],
-        ),
+        Consumer(builder: (context, widgetRef, child) {
+          final surveys = widgetRef.watch(_surveysStreamProvider).value ?? [];
+          return PageView(
+            controller: _pageController,
+            onPageChanged: (page) {
+              setState(() {
+                _selectedPage = page;
+              });
+              if (page == surveys.length - 2) {
+                ref.read(homeViewModelProvider.notifier).getSurveyList();
+              }
+            },
+            children: surveys
+                .map((survey) => _buildBackgroundImage(survey.coverImageUrl))
+                .toList(),
+          );
+        }),
         Align(
           alignment: Alignment.topLeft,
           child: Padding(
@@ -117,13 +115,15 @@ class HomeScreenState extends ConsumerState<HomeScreen> {
               mainAxisSize: MainAxisSize.min,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(
-                  ref.watch(_currentDateStreamProvider).value ?? '',
-                  style: _textTheme.bodyLarge?.copyWith(
-                    fontSize: Metrics.fontXSmall,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
+                Consumer(builder: (context, widgetRef, child) {
+                  return Text(
+                    widgetRef.watch(_currentDateStreamProvider).value ?? '',
+                    style: _textTheme.bodyLarge?.copyWith(
+                      fontSize: Metrics.fontXSmall,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  );
+                }),
                 Padding(
                   padding: const EdgeInsets.symmetric(
                     vertical: Metrics.spacingXXSmall,
@@ -141,47 +141,56 @@ class HomeScreenState extends ConsumerState<HomeScreen> {
             ),
           ),
         ),
-        Visibility(
-          visible: imageUrl.isNotEmpty,
-          child: Align(
-            alignment: Alignment.topRight,
-            child: Padding(
-              padding: const EdgeInsets.only(
-                top: Metrics.spacingXXLarge,
-                right: Metrics.spacingDefault,
-              ),
-              child: ClipOval(
-                child: SizedBox.fromSize(
-                  size: const Size.fromRadius(Metrics.profileSmallRadius),
-                  child: Image.network(
-                    imageUrl,
-                    fit: BoxFit.cover,
+        Consumer(builder: (context, widgetRef, child) {
+          var imageUrl =
+              widgetRef.watch(_profileStreamProvider).value?.imageUrl ?? '';
+
+          return Visibility(
+            visible: imageUrl.isNotEmpty,
+            child: Align(
+              alignment: Alignment.topRight,
+              child: Padding(
+                padding: const EdgeInsets.only(
+                  top: Metrics.spacingXXLarge,
+                  right: Metrics.spacingDefault,
+                ),
+                child: ClipOval(
+                  child: SizedBox.fromSize(
+                    size: const Size.fromRadius(Metrics.profileSmallRadius),
+                    child: Image.network(
+                      imageUrl,
+                      fit: BoxFit.cover,
+                    ),
                   ),
                 ),
               ),
             ),
-          ),
-        ),
+          );
+        }),
         Align(
           alignment: Alignment.bottomLeft,
           child: Column(
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              PageViewDotIndicator(
-                currentItem: _selectedPage,
-                count: ref.watch(_surveysStreamProvider).value?.length ?? 1,
-                unselectedColor: Colors.white24,
-                selectedColor: Colors.white,
-                duration: const Duration(
-                  milliseconds: Metrics.pageIndicatorAnimationDuration,
-                ),
-                alignment: Alignment.bottomLeft,
-                size: const Size(
-                  Metrics.pageIndicatorSize,
-                  Metrics.pageIndicatorSize,
-                ),
-              ),
+              Consumer(builder: (context, widgetRef, child) {
+                return PageViewDotIndicator(
+                  currentItem: _selectedPage,
+                  count:
+                      widgetRef.watch(_surveysStreamProvider).value?.length ??
+                          1,
+                  unselectedColor: Colors.white24,
+                  selectedColor: Colors.white,
+                  duration: const Duration(
+                    milliseconds: Metrics.pageIndicatorAnimationDuration,
+                  ),
+                  alignment: Alignment.bottomLeft,
+                  size: const Size(
+                    Metrics.pageIndicatorSize,
+                    Metrics.pageIndicatorSize,
+                  ),
+                );
+              }),
               Padding(
                 padding: const EdgeInsets.only(
                     left: Metrics.spacingDefault,
@@ -249,10 +258,13 @@ class HomeScreenState extends ConsumerState<HomeScreen> {
         ),
         Align(
           alignment: Alignment.center,
-          child: Visibility(
-            visible: ref.watch(_isLoadMoreStreamProvider).value ?? false,
-            child: const CircularProgressIndicator(),
-          ),
+          child: Consumer(builder: (context, widgetRef, child) {
+            return Visibility(
+              visible:
+                  widgetRef.watch(_isLoadMoreStreamProvider).value ?? false,
+              child: const CircularProgressIndicator(),
+            );
+          }),
         ),
       ],
     );

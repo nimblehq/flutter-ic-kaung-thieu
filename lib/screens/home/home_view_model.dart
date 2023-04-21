@@ -13,35 +13,29 @@ class HomeViewModel extends AutoDisposeAsyncNotifier<void> {
   final _surveyCache = <SurveyModel>[];
 
   final _surveys = StreamController<List<SurveyModel>>();
-
   Stream<List<SurveyModel>> get surveys => _surveys.stream;
 
-  final _profile = StreamController<ProfileModel>();
-
+  final _profile = StreamController<ProfileModel>.broadcast();
   Stream<ProfileModel> get profile => _profile.stream;
 
-  final _currentDate = StreamController<String>();
-
+  final _currentDate = StreamController<String>.broadcast();
   Stream<String> get currentDate => _currentDate.stream;
 
   final _isError = StreamController<String>();
-
   Stream<String> get isError => _isError.stream;
 
-  final _isLoadMore = StreamController<bool>();
-
+  final _isLoadMore = StreamController<bool>.broadcast();
   Stream<bool> get isLoadMore => _isLoadMore.stream;
 
   final _shouldShowShimmer = StreamController<bool>();
-
   Stream<bool> get shouldShowShimmer => _shouldShowShimmer.stream;
 
   @override
   FutureOr<void> build() {
-    refresh();
+    fetchData();
   }
 
-  void refresh() {
+  void fetchData() {
     _surveyCache.clear();
     getSurveyList();
     getProfile();
