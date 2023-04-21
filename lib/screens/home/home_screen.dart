@@ -19,53 +19,59 @@ class HomeScreen extends ConsumerStatefulWidget {
 
 class HomeScreenState extends ConsumerState<HomeScreen> {
   TextTheme get _textTheme => Theme.of(context).textTheme;
-  AppLocalizations get _localizations => AppLocalizations.of(context)!;
 
+  AppLocalizations get _localizations => AppLocalizations.of(context)!;
   late BuildContext _scaffoldContext;
   int _selectedPage = 0;
-  bool _isLoading = false;
-  late HomeViewModel viewModel;
+
+  final _shouldShowShimmerProvider = StreamProvider.autoDispose<bool>(
+      (ref) => ref.watch(homeViewModelProvider.notifier).shouldShowShimmer);
+  final _currentDateStreamProvider = StreamProvider.autoDispose(
+      (ref) => ref.watch(homeViewModelProvider.notifier).currentDate);
+  final _surveysStreamProvider = StreamProvider.autoDispose(
+      (ref) => ref.watch(homeViewModelProvider.notifier).surveys);
+  final _profileStreamProvider = StreamProvider.autoDispose(
+      (ref) => ref.watch(homeViewModelProvider.notifier).profile);
+  final _isLoadMoreStreamProvider = StreamProvider.autoDispose(
+      (ref) => ref.watch(homeViewModelProvider.notifier).isLoadMore);
+  final _isErrorStreamProvider = StreamProvider.autoDispose(
+      (ref) => ref.watch(homeViewModelProvider.notifier).isError);
 
   @override
   void initState() {
     super.initState();
-    viewModel = ref.read(homeViewModelProvider.notifier);
   }
 
   @override
   Widget build(BuildContext context) {
-    final viewModelProvider = ref.watch(homeViewModelProvider);
+    return Scaffold(
+      backgroundColor: Colors.black,
+      body: Builder(builder: (BuildContext context) {
+        _scaffoldContext = context;
 
-    return Consumer(builder: (context, ref, child) {
-      return Scaffold(
-        backgroundColor: Colors.black,
-        body: Builder(builder: (BuildContext context) {
-          _scaffoldContext = context;
-          return viewModelProvider.when(
-            data: (result) {
-              if (viewModel.shouldShowShimmer) {
-                return const HomeShimmerLoading();
-              } else {
-                _isLoading = false;
-                return _buildHomeScreenContent();
-              }
-            },
-            error: (error, stack) {
-              WidgetsBinding.instance.addPostFrameCallback(
-                (_) => createSnackBar((error as Exception).toString()),
-              );
-              _isLoading = false;
-              return _buildHomeScreenContent();
-            },
-            loading: () {
-              // This is for load more
-              _isLoading = true;
-              return _buildHomeScreenContent();
-            },
-          );
-        }),
-      );
-    });
+        var error = ref.watch(_isErrorStreamProvider).value ?? '';
+        if (error.isNotEmpty) {
+          WidgetsBinding.instance
+              .addPostFrameCallback((_) => createSnackBar(error));
+          ref.read(homeViewModelProvider.notifier).clearError();
+        }
+
+        var isShimmerLoading =
+            ref.watch(_shouldShowShimmerProvider).value ?? false;
+        return Stack(
+          children: [
+            Visibility(
+              visible: isShimmerLoading,
+              child: const HomeShimmerLoading(),
+            ),
+            Visibility(
+              visible: !isShimmerLoading,
+              child: _buildHomeScreenContent(),
+            )
+          ],
+        );
+      }),
+    );
   }
 
   void createSnackBar(String message) {
@@ -76,6 +82,8 @@ class HomeScreenState extends ConsumerState<HomeScreen> {
   Widget _buildHomeScreenContent() {
     final pageController = PageController(initialPage: _selectedPage);
 
+    var imageUrl = ref.watch(_profileStreamProvider).value?.imageUrl ?? '';
+
     return Stack(
       alignment: Alignment.center,
       fit: StackFit.expand,
@@ -85,14 +93,18 @@ class HomeScreenState extends ConsumerState<HomeScreen> {
           onPageChanged: (page) {
             setState(() {
               _selectedPage = page;
-              if (page == viewModel.surveys.length - 2) {
-                ref.read(homeViewModelProvider.notifier).getSurveyList();
-              }
             });
+            if (page ==
+                (ref.watch(_surveysStreamProvider).value?.length ?? 0) - 2) {
+              ref.read(homeViewModelProvider.notifier).getSurveyList();
+            }
           },
-          children: viewModel.surveys
-              .map((survey) => _buildBackgroundImage(survey.coverImageUrl))
-              .toList(),
+          children: ref
+                  .watch(_surveysStreamProvider)
+                  .value
+                  ?.map((survey) => _buildBackgroundImage(survey.coverImageUrl))
+                  .toList() ??
+              [],
         ),
         Align(
           alignment: Alignment.topLeft,
@@ -106,7 +118,7 @@ class HomeScreenState extends ConsumerState<HomeScreen> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  viewModel.currentDate,
+                  ref.watch(_currentDateStreamProvider).value ?? '',
                   style: _textTheme.bodyLarge?.copyWith(
                     fontSize: Metrics.fontXSmall,
                     fontWeight: FontWeight.bold,
@@ -130,7 +142,7 @@ class HomeScreenState extends ConsumerState<HomeScreen> {
           ),
         ),
         Visibility(
-          visible: viewModel.profile != null,
+          visible: imageUrl.isNotEmpty,
           child: Align(
             alignment: Alignment.topRight,
             child: Padding(
@@ -142,7 +154,7 @@ class HomeScreenState extends ConsumerState<HomeScreen> {
                 child: SizedBox.fromSize(
                   size: const Size.fromRadius(Metrics.profileSmallRadius),
                   child: Image.network(
-                    viewModel.profile?.imageUrl ?? '',
+                    imageUrl,
                     fit: BoxFit.cover,
                   ),
                 ),
@@ -158,7 +170,7 @@ class HomeScreenState extends ConsumerState<HomeScreen> {
             children: [
               PageViewDotIndicator(
                 currentItem: _selectedPage,
-                count: viewModel.surveys.length,
+                count: ref.watch(_surveysStreamProvider).value?.length ?? 1,
                 unselectedColor: Colors.white24,
                 selectedColor: Colors.white,
                 duration: const Duration(
@@ -176,7 +188,11 @@ class HomeScreenState extends ConsumerState<HomeScreen> {
                     top: Metrics.spacingMedium,
                     right: Metrics.spacingDefault),
                 child: Text(
-                  viewModel.surveys[_selectedPage].title,
+                  ref
+                          .watch(_surveysStreamProvider)
+                          .value?[_selectedPage]
+                          .title ??
+                      '',
                   maxLines: 2,
                   style: _textTheme.bodyLarge?.copyWith(
                     fontSize: Metrics.fontMedium,
@@ -198,7 +214,11 @@ class HomeScreenState extends ConsumerState<HomeScreen> {
                         Metrics.spacingLarge,
                       ),
                       child: Text(
-                        viewModel.surveys[_selectedPage].description,
+                        ref
+                                .watch(_surveysStreamProvider)
+                                .value?[_selectedPage]
+                                .description ??
+                            '',
                         maxLines: 2,
                         style: _textTheme.bodyLarge?.copyWith(
                           color: Colors.white70,
@@ -230,10 +250,10 @@ class HomeScreenState extends ConsumerState<HomeScreen> {
         Align(
           alignment: Alignment.center,
           child: Visibility(
-            visible: _isLoading,
+            visible: ref.watch(_isLoadMoreStreamProvider).value ?? false,
             child: const CircularProgressIndicator(),
           ),
-        )
+        ),
       ],
     );
   }
