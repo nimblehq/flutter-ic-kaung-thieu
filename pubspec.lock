@@ -544,10 +544,10 @@ packages:
     dependency: "direct main"
     description:
       name: page_view_dot_indicator
-      sha256: "1854af4007e669c566d472c3982f0b49c166d6fe23c3302d95c923c4b5e28b19"
+      sha256: "072aa63f4fe94351d921ea0f83ae86089aed9b53a624ae34317e96caff73a635"
       url: "https://pub.dev"
     source: hosted
-    version: "1.1.0"
+    version: "2.1.0"
   path:
     dependency: transitive
     description:
