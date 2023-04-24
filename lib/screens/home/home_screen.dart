@@ -97,7 +97,7 @@ class HomeScreenState extends ConsumerState<HomeScreen> {
                 _selectedPage = page;
               });
               if (page == surveys.length - 2) {
-                ref.read(homeViewModelProvider.notifier).getSurveyList();
+                widgetRef.read(homeViewModelProvider.notifier).getSurveyList();
               }
             },
             children: surveys
@@ -188,7 +188,7 @@ class HomeScreenState extends ConsumerState<HomeScreen> {
                       top: Metrics.spacingMedium,
                       right: Metrics.spacingDefault),
                   child: Text(
-                    ref
+                    widgetRef
                             .watch(_surveysStreamProvider)
                             .value?[_selectedPage]
                             .title ??
@@ -214,7 +214,7 @@ class HomeScreenState extends ConsumerState<HomeScreen> {
                           Metrics.spacingLarge,
                         ),
                         child: Text(
-                          ref
+                          widgetRef
                                   .watch(_surveysStreamProvider)
                                   .value?[_selectedPage]
                                   .description ??
