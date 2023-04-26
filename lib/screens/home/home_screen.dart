@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:page_view_dot_indicator/page_view_dot_indicator.dart';
 import 'package:survey_flutter/gen/assets.gen.dart';
+import 'package:survey_flutter/model/survey_model.dart';
 import 'package:survey_flutter/screens/home/home_view_model.dart';
 import 'package:survey_flutter/theme/constant.dart';
 
@@ -62,16 +63,31 @@ class HomeScreenState extends ConsumerState<HomeScreen> {
     });
 
     return Scaffold(
-      backgroundColor: Colors.black,
-      body: Consumer(builder: (context, ref, child) {
+      body: Consumer(builder: (context, widgetRef, child) {
         var isShimmerLoading =
-            ref.watch(_shouldShowShimmerProvider).value ?? false;
+            widgetRef.watch(_shouldShowShimmerProvider).value ?? false;
+        final surveys = widgetRef.watch(_surveysStreamProvider).value ?? [];
+        final imageUrl =
+            widgetRef.watch(_profileStreamProvider).value?.imageUrl ?? '';
+        final isLoadMore =
+            widgetRef.watch(_isLoadMoreStreamProvider).value ?? false;
+        final currentDate =
+            widgetRef.watch(_currentDateStreamProvider).value ?? '';
+
         if (isShimmerLoading) {
           return const HomeShimmerLoading();
         } else {
-          return _buildHomeScreenContent();
+          return _buildHomeScreenContent(
+              surveys: surveys,
+              imageUrl: imageUrl,
+              isLoadMore: isLoadMore,
+              currentDate: currentDate,
+              onLoadMore: () {
+                widgetRef.read(homeViewModelProvider.notifier).getSurveyList();
+              });
         }
       }),
+      backgroundColor: Colors.black,
     );
   }
 
@@ -80,16 +96,17 @@ class HomeScreenState extends ConsumerState<HomeScreen> {
     ScaffoldMessenger.of(context).showSnackBar(snackBar);
   }
 
-  Widget _buildHomeScreenContent() {
-    return Consumer(builder: (context, widgetRef, child) {
-      final surveys = widgetRef.watch(_surveysStreamProvider).value ?? [];
-      var imageUrl =
-          widgetRef.watch(_profileStreamProvider).value?.imageUrl ?? '';
-
-      return Stack(
-        alignment: Alignment.center,
-        fit: StackFit.expand,
-        children: [
+  Widget _buildHomeScreenContent(
+      {required List<SurveyModel> surveys,
+      required String imageUrl,
+      required bool isLoadMore,
+      required String currentDate,
+      required VoidCallback onLoadMore}) {
+    return Stack(
+      alignment: Alignment.center,
+      fit: StackFit.expand,
+      children: [
+        if (surveys.isNotEmpty) ...[
           PageView(
             controller: _pageController,
             onPageChanged: (page) {
@@ -97,7 +114,7 @@ class HomeScreenState extends ConsumerState<HomeScreen> {
                 _selectedPage = page;
               });
               if (page == surveys.length - 2) {
-                widgetRef.read(homeViewModelProvider.notifier).getSurveyList();
+                onLoadMore();
               }
             },
             children: surveys
@@ -116,7 +133,7 @@ class HomeScreenState extends ConsumerState<HomeScreen> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    widgetRef.watch(_currentDateStreamProvider).value ?? '',
+                    currentDate,
                     style: _textTheme.bodyLarge?.copyWith(
                       fontSize: Metrics.fontXSmall,
                       fontWeight: FontWeight.bold,
@@ -168,9 +185,7 @@ class HomeScreenState extends ConsumerState<HomeScreen> {
               children: [
                 PageViewDotIndicator(
                   currentItem: _selectedPage,
-                  count:
-                      widgetRef.watch(_surveysStreamProvider).value?.length ??
-                          1,
+                  count: surveys.length,
                   unselectedColor: Colors.white24,
                   selectedColor: Colors.white,
                   duration: const Duration(
@@ -188,11 +203,7 @@ class HomeScreenState extends ConsumerState<HomeScreen> {
                       top: Metrics.spacingMedium,
                       right: Metrics.spacingDefault),
                   child: Text(
-                    widgetRef
-                            .watch(_surveysStreamProvider)
-                            .value?[_selectedPage]
-                            .title ??
-                        '',
+                    surveys[_selectedPage].title,
                     maxLines: 2,
                     style: _textTheme.bodyLarge?.copyWith(
                       fontSize: Metrics.fontMedium,
@@ -214,11 +225,7 @@ class HomeScreenState extends ConsumerState<HomeScreen> {
                           Metrics.spacingLarge,
                         ),
                         child: Text(
-                          widgetRef
-                                  .watch(_surveysStreamProvider)
-                                  .value?[_selectedPage]
-                                  .description ??
-                              '',
+                          surveys[_selectedPage].description,
                           maxLines: 2,
                           style: _textTheme.bodyLarge?.copyWith(
                             color: Colors.white70,
@@ -250,14 +257,13 @@ class HomeScreenState extends ConsumerState<HomeScreen> {
           Align(
             alignment: Alignment.center,
             child: Visibility(
-              visible:
-                  widgetRef.watch(_isLoadMoreStreamProvider).value ?? false,
+              visible: isLoadMore,
               child: const CircularProgressIndicator(),
             ),
           ),
-        ],
-      );
-    });
+        ]
+      ],
+    );
   }
 
   Widget _buildBackgroundImage(String imageUrl) {
