@@ -48,6 +48,7 @@ class HomeScreenState extends ConsumerState<HomeScreen> {
   @override
   void dispose() {
     _pageController.dispose();
+    ref.read(homeViewModelProvider.notifier).disposeStreams();
     super.dispose();
   }
 
@@ -78,13 +79,14 @@ class HomeScreenState extends ConsumerState<HomeScreen> {
           return const HomeShimmerLoading();
         } else {
           return _buildHomeScreenContent(
-              surveys: surveys,
-              imageUrl: imageUrl,
-              isLoadMore: isLoadMore,
-              currentDate: currentDate,
-              onLoadMore: () {
-                widgetRef.read(homeViewModelProvider.notifier).getSurveyList();
-              });
+            surveys: surveys,
+            imageUrl: imageUrl,
+            isLoadMore: isLoadMore,
+            currentDate: currentDate,
+            onLoadMore: () {
+              widgetRef.read(homeViewModelProvider.notifier).getSurveyList();
+            },
+          );
         }
       }),
       backgroundColor: Colors.black,
@@ -96,12 +98,13 @@ class HomeScreenState extends ConsumerState<HomeScreen> {
     ScaffoldMessenger.of(context).showSnackBar(snackBar);
   }
 
-  Widget _buildHomeScreenContent(
-      {required List<SurveyModel> surveys,
-      required String imageUrl,
-      required bool isLoadMore,
-      required String currentDate,
-      required VoidCallback onLoadMore}) {
+  Widget _buildHomeScreenContent({
+    required List<SurveyModel> surveys,
+    required String imageUrl,
+    required bool isLoadMore,
+    required String currentDate,
+    required VoidCallback onLoadMore,
+  }) {
     return Stack(
       alignment: Alignment.center,
       fit: StackFit.expand,
@@ -121,146 +124,10 @@ class HomeScreenState extends ConsumerState<HomeScreen> {
                 .map((survey) => _buildBackgroundImage(survey.coverImageUrl))
                 .toList(),
           ),
-          Align(
-            alignment: Alignment.topLeft,
-            child: Padding(
-              padding: const EdgeInsets.only(
-                left: Metrics.spacingDefault,
-                top: Metrics.spacingXLarge,
-              ),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    currentDate,
-                    style: _textTheme.bodyLarge?.copyWith(
-                      fontSize: Metrics.fontXSmall,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(
-                      vertical: Metrics.spacingXXSmall,
-                    ),
-                    child: Text(
-                      _localizations.homeTodayTitle,
-                      style: _textTheme.bodyLarge?.copyWith(
-                        fontSize: Metrics.fontLarge,
-                        fontWeight: FontWeight.bold,
-                      ),
-                      textAlign: TextAlign.start,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ),
-          Visibility(
-            visible: imageUrl.isNotEmpty,
-            child: Align(
-              alignment: Alignment.topRight,
-              child: Padding(
-                padding: const EdgeInsets.only(
-                  top: Metrics.spacingXXLarge,
-                  right: Metrics.spacingDefault,
-                ),
-                child: ClipOval(
-                  child: SizedBox.fromSize(
-                    size: const Size.fromRadius(Metrics.profileSmallRadius),
-                    child: Image.network(
-                      imageUrl,
-                      fit: BoxFit.cover,
-                    ),
-                  ),
-                ),
-              ),
-            ),
-          ),
-          Align(
-            alignment: Alignment.bottomLeft,
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                PageViewDotIndicator(
-                  currentItem: _selectedPage,
-                  count: surveys.length,
-                  unselectedColor: Colors.white24,
-                  selectedColor: Colors.white,
-                  duration: const Duration(
-                    milliseconds: Metrics.pageIndicatorAnimationDuration,
-                  ),
-                  alignment: Alignment.bottomLeft,
-                  size: const Size(
-                    Metrics.pageIndicatorSize,
-                    Metrics.pageIndicatorSize,
-                  ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.only(
-                      left: Metrics.spacingDefault,
-                      top: Metrics.spacingMedium,
-                      right: Metrics.spacingDefault),
-                  child: Text(
-                    surveys[_selectedPage].title,
-                    maxLines: 2,
-                    style: _textTheme.bodyLarge?.copyWith(
-                      fontSize: Metrics.fontMedium,
-                      fontWeight: FontWeight.bold,
-                    ),
-                    overflow: TextOverflow.ellipsis,
-                  ),
-                ),
-                Row(
-                  mainAxisSize: MainAxisSize.max,
-                  crossAxisAlignment: CrossAxisAlignment.end,
-                  children: [
-                    Flexible(
-                      child: Padding(
-                        padding: const EdgeInsets.fromLTRB(
-                          Metrics.spacingDefault,
-                          Metrics.spacingSmall,
-                          Metrics.spacingDefault,
-                          Metrics.spacingLarge,
-                        ),
-                        child: Text(
-                          surveys[_selectedPage].description,
-                          maxLines: 2,
-                          style: _textTheme.bodyLarge?.copyWith(
-                            color: Colors.white70,
-                            fontSize: Metrics.fontNormal,
-                          ),
-                          overflow: TextOverflow.ellipsis,
-                        ),
-                      ),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.only(
-                        top: Metrics.spacingSmall,
-                        right: Metrics.spacingDefault,
-                        bottom: Metrics.spacingLarge,
-                      ),
-                      child: FloatingActionButton(
-                        onPressed: () {
-                          // TODO implement go to detail
-                        },
-                        backgroundColor: Colors.white,
-                        child: Image.asset(Assets.images.icNavNext.path),
-                      ),
-                    ),
-                  ],
-                )
-              ],
-            ),
-          ),
-          Align(
-            alignment: Alignment.center,
-            child: Visibility(
-              visible: isLoadMore,
-              child: const CircularProgressIndicator(),
-            ),
-          ),
+          _buildHeader(currentDate),
+          _buildUserAvatar(imageUrl),
+          _buildSurveyContent(surveys),
+          _buildLoadMoreIndicator(isLoadMore),
         ]
       ],
     );
@@ -279,6 +146,158 @@ class HomeScreenState extends ConsumerState<HomeScreen> {
           fit: BoxFit.cover,
         ),
       ],
+    );
+  }
+
+  Widget _buildHeader(String currentDate) {
+    return Align(
+      alignment: Alignment.topLeft,
+      child: Padding(
+        padding: const EdgeInsets.only(
+          left: Metrics.spacingDefault,
+          top: Metrics.spacingXLarge,
+        ),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              currentDate,
+              style: _textTheme.bodyLarge?.copyWith(
+                fontSize: Metrics.fontXSmall,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.symmetric(
+                vertical: Metrics.spacingXXSmall,
+              ),
+              child: Text(
+                _localizations.homeTodayTitle,
+                style: _textTheme.bodyLarge?.copyWith(
+                  fontSize: Metrics.fontLarge,
+                  fontWeight: FontWeight.bold,
+                ),
+                textAlign: TextAlign.start,
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildUserAvatar(String imageUrl) {
+    return Visibility(
+      visible: imageUrl.isNotEmpty,
+      child: Align(
+        alignment: Alignment.topRight,
+        child: Padding(
+          padding: const EdgeInsets.only(
+            top: Metrics.spacingXXLarge,
+            right: Metrics.spacingDefault,
+          ),
+          child: ClipOval(
+            child: SizedBox.fromSize(
+              size: const Size.fromRadius(Metrics.profileSmallRadius),
+              child: Image.network(
+                imageUrl,
+                fit: BoxFit.cover,
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildSurveyContent(List<SurveyModel> surveys) {
+    return Align(
+      alignment: Alignment.bottomLeft,
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          PageViewDotIndicator(
+            currentItem: _selectedPage,
+            count: surveys.length,
+            unselectedColor: Colors.white24,
+            selectedColor: Colors.white,
+            duration: const Duration(
+              milliseconds: Metrics.pageIndicatorAnimationDuration,
+            ),
+            alignment: Alignment.bottomLeft,
+            size: const Size(
+              Metrics.pageIndicatorSize,
+              Metrics.pageIndicatorSize,
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.only(
+                left: Metrics.spacingDefault,
+                top: Metrics.spacingMedium,
+                right: Metrics.spacingDefault),
+            child: Text(
+              surveys[_selectedPage].title,
+              maxLines: 2,
+              style: _textTheme.bodyLarge?.copyWith(
+                fontSize: Metrics.fontMedium,
+                fontWeight: FontWeight.bold,
+              ),
+              overflow: TextOverflow.ellipsis,
+            ),
+          ),
+          Row(
+            mainAxisSize: MainAxisSize.max,
+            crossAxisAlignment: CrossAxisAlignment.end,
+            children: [
+              Flexible(
+                child: Padding(
+                  padding: const EdgeInsets.fromLTRB(
+                    Metrics.spacingDefault,
+                    Metrics.spacingSmall,
+                    Metrics.spacingDefault,
+                    Metrics.spacingLarge,
+                  ),
+                  child: Text(
+                    surveys[_selectedPage].description,
+                    maxLines: 2,
+                    style: _textTheme.bodyLarge?.copyWith(
+                      color: Colors.white70,
+                      fontSize: Metrics.fontNormal,
+                    ),
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.only(
+                  top: Metrics.spacingSmall,
+                  right: Metrics.spacingDefault,
+                  bottom: Metrics.spacingLarge,
+                ),
+                child: FloatingActionButton(
+                  onPressed: () {
+                    // TODO implement go to detail
+                  },
+                  backgroundColor: Colors.white,
+                  child: Image.asset(Assets.images.icNavNext.path),
+                ),
+              ),
+            ],
+          )
+        ],
+      ),
+    );
+  }
+
+  Widget _buildLoadMoreIndicator(bool isLoadMore) {
+    return Align(
+      alignment: Alignment.center,
+      child: Visibility(
+        visible: isLoadMore,
+        child: const CircularProgressIndicator(),
+      ),
     );
   }
 }

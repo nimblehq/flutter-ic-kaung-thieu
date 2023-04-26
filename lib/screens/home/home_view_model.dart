@@ -15,16 +15,16 @@ class HomeViewModel extends AutoDisposeAsyncNotifier<void> {
   final _surveys = StreamController<List<SurveyModel>>();
   Stream<List<SurveyModel>> get surveys => _surveys.stream;
 
-  final _profile = StreamController<ProfileModel>.broadcast();
+  final _profile = StreamController<ProfileModel>();
   Stream<ProfileModel> get profile => _profile.stream;
 
-  final _currentDate = StreamController<String>.broadcast();
+  final _currentDate = StreamController<String>();
   Stream<String> get currentDate => _currentDate.stream;
 
   final _isError = StreamController<String>();
   Stream<String> get isError => _isError.stream;
 
-  final _isLoadMore = StreamController<bool>.broadcast();
+  final _isLoadMore = StreamController<bool>();
   Stream<bool> get isLoadMore => _isLoadMore.stream;
 
   final _shouldShowShimmer = StreamController<bool>();
@@ -33,6 +33,23 @@ class HomeViewModel extends AutoDisposeAsyncNotifier<void> {
   @override
   FutureOr<void> build() {
     fetchData();
+    ref.onDispose(() async {
+      await _surveys.close();
+      await _profile.close();
+      await _currentDate.close();
+      await _isError.close();
+      await _isLoadMore.close();
+      await _shouldShowShimmer.close();
+    });
+  }
+
+  void disposeStreams() {
+    _surveys.close();
+    _profile.close();
+    _currentDate.close();
+    _isError.close();
+    _isLoadMore.close();
+    _shouldShowShimmer.close();
   }
 
   void fetchData() {
