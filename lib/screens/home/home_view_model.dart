@@ -43,15 +43,6 @@ class HomeViewModel extends AutoDisposeAsyncNotifier<void> {
     });
   }
 
-  void disposeStreams() {
-    _surveys.close();
-    _profile.close();
-    _currentDate.close();
-    _isError.close();
-    _isLoadMore.close();
-    _shouldShowShimmer.close();
-  }
-
   void fetchData() {
     _surveyCache.clear();
     getSurveyList();

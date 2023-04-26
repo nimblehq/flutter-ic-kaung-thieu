@@ -48,7 +48,6 @@ class HomeScreenState extends ConsumerState<HomeScreen> {
   @override
   void dispose() {
     _pageController.dispose();
-    ref.read(homeViewModelProvider.notifier).disposeStreams();
     super.dispose();
   }
 
