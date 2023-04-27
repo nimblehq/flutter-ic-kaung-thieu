@@ -15,7 +15,7 @@ void main() {
         repository = SharedPreferenceRepositoryImpl(mockFlutterSecureStorage));
 
     test(
-      'When save authentication, secure storage stores with correct data',
+      'When save authentication, it stores with correct data',
       () async {
         await repository.saveAuthentication(
             authenticationModel: MockUtil.authenticationParameters);
@@ -56,7 +56,7 @@ void main() {
     );
 
     test(
-      'When get saved authentication result',
+      'When get saved authentication result, it return correct data',
       () async {
         when(mockFlutterSecureStorage.read(key: accessTokenKey)).thenAnswer(
             (_) async => MockUtil.authenticationParameters.accessToken);
@@ -71,6 +71,23 @@ void main() {
         expect(result.refreshToken,
             MockUtil.authenticationParameters.refreshToken);
         expect(result.tokenType, MockUtil.authenticationParameters.tokenType);
+      },
+    );
+
+    test(
+      'When get saved authentication result without saving anything ahead, it return blank data',
+      () async {
+        when(mockFlutterSecureStorage.read(key: accessTokenKey))
+            .thenAnswer((_) async => null);
+        when(mockFlutterSecureStorage.read(key: refreshTokenKey))
+            .thenAnswer((_) async => null);
+        when(mockFlutterSecureStorage.read(key: tokenTypeKey))
+            .thenAnswer((_) async => null);
+
+        final result = await repository.getSavedAuthentication();
+        expect(result.accessToken, '');
+        expect(result.refreshToken, '');
+        expect(result.tokenType, '');
       },
     );
   });

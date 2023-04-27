@@ -1,7 +1,7 @@
 class AuthenticationParameters {
-  String accessToken;
-  String tokenType;
-  String refreshToken;
+  String? accessToken;
+  String? tokenType;
+  String? refreshToken;
 
   AuthenticationParameters({
     required this.accessToken,
