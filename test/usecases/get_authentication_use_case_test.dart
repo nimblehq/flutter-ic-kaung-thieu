@@ -18,7 +18,8 @@ void main() {
       () => useCase = GetAuthenticationUseCase(mockSharedPreferenceRepository),
     );
 
-    test('When get saved authentication, it emits success', () async {
+    test('When get saved authentication, it emits success with correct data',
+        () async {
       when(mockSharedPreferenceRepository.getSavedAuthentication())
           .thenAnswer((_) async => MockUtil.authenticationParameters);
 
