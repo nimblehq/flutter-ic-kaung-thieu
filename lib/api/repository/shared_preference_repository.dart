@@ -1,7 +1,6 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:survey_flutter/di/provider/flutter_secure_storage_provider.dart';
-import 'package:survey_flutter/model/authentication_parameters.dart';
 
 const String accessTokenKey = 'access_token';
 const String tokenTypeKey = 'token_type';
@@ -14,10 +13,17 @@ final sharedPreferenceRepositoryProvider = Provider((ref) {
 });
 
 abstract class SharedPreferenceRepository {
-  Future<void> saveAuthentication(
-      {required AuthenticationParameters authenticationModel});
+  Future<void> saveAccessToken(String accessToken);
 
-  Future<AuthenticationParameters> getSavedAuthentication();
+  Future<void> saveTokenType(String tokenType);
+
+  Future<void> saveRefreshToken(String refreshToken);
+
+  Future<String?> getAccessToken();
+
+  Future<String?> getTokenType();
+
+  Future<String?> getRefreshToken();
 }
 
 class SharedPreferenceRepositoryImpl extends SharedPreferenceRepository {
@@ -34,36 +40,47 @@ class SharedPreferenceRepositoryImpl extends SharedPreferenceRepository {
       );
 
   @override
-  Future<void> saveAuthentication(
-      {required AuthenticationParameters authenticationModel}) async {
+  Future<String?> getAccessToken() async {
+    return await _storage.read(key: accessTokenKey);
+  }
+
+  @override
+  Future<String?> getRefreshToken() async {
+    return await _storage.read(key: refreshTokenKey);
+  }
+
+  @override
+  Future<String?> getTokenType() async {
+    return await _storage.read(key: tokenTypeKey);
+  }
+
+  @override
+  Future<void> saveAccessToken(String accessToken) async {
     await _storage.write(
       key: accessTokenKey,
-      value: authenticationModel.accessToken,
-      iOptions: getIOSOptions(),
-      aOptions: getAndroidOptions(),
-    );
-
-    await _storage.write(
-      key: tokenTypeKey,
-      value: authenticationModel.tokenType,
-      iOptions: getIOSOptions(),
-      aOptions: getAndroidOptions(),
-    );
-
-    await _storage.write(
-      key: refreshTokenKey,
-      value: authenticationModel.refreshToken,
+      value: accessToken,
       iOptions: getIOSOptions(),
       aOptions: getAndroidOptions(),
     );
   }
 
   @override
-  Future<AuthenticationParameters> getSavedAuthentication() async {
-    return AuthenticationParameters(
-      accessToken: await _storage.read(key: accessTokenKey) ?? '',
-      tokenType: await _storage.read(key: tokenTypeKey) ?? '',
-      refreshToken: await _storage.read(key: refreshTokenKey) ?? '',
+  Future<void> saveRefreshToken(String refreshToken) async {
+    await _storage.write(
+      key: refreshTokenKey,
+      value: refreshToken,
+      iOptions: getIOSOptions(),
+      aOptions: getAndroidOptions(),
+    );
+  }
+
+  @override
+  Future<void> saveTokenType(String tokenType) async {
+    await _storage.write(
+      key: tokenTypeKey,
+      value: tokenType,
+      iOptions: getIOSOptions(),
+      aOptions: getAndroidOptions(),
     );
   }
 }
