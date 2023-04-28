@@ -1,6 +1,6 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
-import 'package:survey_flutter/api/repository/shared_preference_repository.dart';
+import 'package:survey_flutter/api/storage/shared_preference.dart';
 
 import '../../mocks/generate_mocks.mocks.dart';
 
@@ -8,10 +8,9 @@ void main() {
   group('SharedPreferenceRepository', () {
     MockFlutterSecureStorage mockFlutterSecureStorage =
         MockFlutterSecureStorage();
-    late SharedPreferenceRepository repository;
+    late SharedPreference repository;
 
-    setUp(() =>
-        repository = SharedPreferenceRepositoryImpl(mockFlutterSecureStorage));
+    setUp(() => repository = SharedPreferenceImpl(mockFlutterSecureStorage));
 
     test(
       'When save accessToken, it stores with correct data',
@@ -22,10 +21,8 @@ void main() {
           mockFlutterSecureStorage.write(
             key: accessTokenKey,
             value: 'accessToken',
-            aOptions: (repository as SharedPreferenceRepositoryImpl)
-                .getAndroidOptions(),
-            iOptions:
-                (repository as SharedPreferenceRepositoryImpl).getIOSOptions(),
+            aOptions: (repository as SharedPreferenceImpl).getAndroidOptions(),
+            iOptions: (repository as SharedPreferenceImpl).getIOSOptions(),
           ),
         ).called(1);
       },
@@ -40,10 +37,8 @@ void main() {
           mockFlutterSecureStorage.write(
             key: refreshTokenKey,
             value: 'refreshToken',
-            aOptions: (repository as SharedPreferenceRepositoryImpl)
-                .getAndroidOptions(),
-            iOptions:
-                (repository as SharedPreferenceRepositoryImpl).getIOSOptions(),
+            aOptions: (repository as SharedPreferenceImpl).getAndroidOptions(),
+            iOptions: (repository as SharedPreferenceImpl).getIOSOptions(),
           ),
         ).called(1);
       },
@@ -58,10 +53,8 @@ void main() {
           mockFlutterSecureStorage.write(
             key: tokenTypeKey,
             value: 'tokenType',
-            aOptions: (repository as SharedPreferenceRepositoryImpl)
-                .getAndroidOptions(),
-            iOptions:
-                (repository as SharedPreferenceRepositoryImpl).getIOSOptions(),
+            aOptions: (repository as SharedPreferenceImpl).getAndroidOptions(),
+            iOptions: (repository as SharedPreferenceImpl).getIOSOptions(),
           ),
         ).called(1);
       },

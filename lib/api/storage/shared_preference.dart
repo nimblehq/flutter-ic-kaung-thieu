@@ -6,13 +6,13 @@ const String accessTokenKey = 'access_token';
 const String tokenTypeKey = 'token_type';
 const String refreshTokenKey = 'refresh_token';
 
-final sharedPreferenceRepositoryProvider = Provider((ref) {
-  return SharedPreferenceRepositoryImpl(
+final sharedPreferenceProvider = Provider((ref) {
+  return SharedPreferenceImpl(
     FlutterSecureStorageProvider().getFlutterSecureStorage(),
   );
 });
 
-abstract class SharedPreferenceRepository {
+abstract class SharedPreference {
   Future<void> saveAccessToken(String accessToken);
 
   Future<void> saveTokenType(String tokenType);
@@ -26,10 +26,10 @@ abstract class SharedPreferenceRepository {
   Future<String?> getRefreshToken();
 }
 
-class SharedPreferenceRepositoryImpl extends SharedPreferenceRepository {
+class SharedPreferenceImpl extends SharedPreference {
   final FlutterSecureStorage _storage;
 
-  SharedPreferenceRepositoryImpl(this._storage);
+  SharedPreferenceImpl(this._storage);
 
   IOSOptions getIOSOptions() => const IOSOptions(
         accountName: 'flutter_secure_storage_service',
