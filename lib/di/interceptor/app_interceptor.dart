@@ -1,23 +1,28 @@
 import 'dart:io';
 
 import 'package:dio/dio.dart';
+import 'package:survey_flutter/api/storage/shared_preference.dart';
+
+const String _headerAuthorization = 'Bearer';
 
 class AppInterceptor extends Interceptor {
   final bool _requireAuthenticate;
   final Dio _dio;
+  final SharedPreference? _sharedPreference;
 
   AppInterceptor(
     this._requireAuthenticate,
     this._dio,
+    this._sharedPreference,
   );
 
   @override
   Future onRequest(
       RequestOptions options, RequestInterceptorHandler handler) async {
     if (_requireAuthenticate) {
-      // TODO header authorization here
-      // options.headers
-      //     .putIfAbsent(HEADER_AUTHORIZATION, () => "");
+      final accessToken = await _sharedPreference?.getAccessToken();
+      options.headers
+          .putIfAbsent(_headerAuthorization, () => accessToken ?? '');
     }
     return super.onRequest(options, handler);
   }

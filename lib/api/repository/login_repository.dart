@@ -7,7 +7,7 @@ import 'package:survey_flutter/model/request/login_request.dart';
 import 'package:survey_flutter/model/response/login_response.dart';
 
 final loginRepositoryProvider = Provider<LoginRepository>((ref) {
-  return LoginRepositoryImpl(ApiService(DioProvider().getDio()));
+  return LoginRepositoryImpl(ApiService(DioProvider().getDioUnauthorized()));
 });
 
 abstract class LoginRepository {
