@@ -22,12 +22,12 @@ void main() {
       'When login with correct email and password, it emits corresponding response',
       () async {
         when(mockApiService.logIn(any))
-            .thenAnswer((_) async => MockUtil.loginResponse);
+            .thenAnswer((_) async => MockUtil.loginDataResponse);
 
         final result = await repository.login(
             email: MockUtil.loginRequest.email,
             password: MockUtil.loginRequest.password);
-        expect(result.id, MockUtil.loginResponse.id);
+        expect(result.loginResponse?.id, MockUtil.loginResponse.id);
       },
     );
 

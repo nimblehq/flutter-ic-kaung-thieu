@@ -4,14 +4,14 @@ import 'package:survey_flutter/api/api_service.dart';
 import 'package:survey_flutter/api/exception/network_exceptions.dart';
 import 'package:survey_flutter/di/provider/dio_provider.dart';
 import 'package:survey_flutter/model/request/login_request.dart';
-import 'package:survey_flutter/model/response/login_response.dart';
+import 'package:survey_flutter/model/response/login_data_response.dart';
 
 final loginRepositoryProvider = Provider<LoginRepository>((ref) {
   return LoginRepositoryImpl(ApiService(DioProvider().getDioUnauthorized()));
 });
 
 abstract class LoginRepository {
-  Future<LoginResponse> login(
+  Future<LoginDataResponse> login(
       {required String email, required String password});
 }
 
@@ -23,7 +23,7 @@ class LoginRepositoryImpl extends LoginRepository {
   final String _grantType = 'password';
 
   @override
-  Future<LoginResponse> login(
+  Future<LoginDataResponse> login(
       {required String email, required String password}) async {
     try {
       return await _apiService.logIn(LoginRequest(
