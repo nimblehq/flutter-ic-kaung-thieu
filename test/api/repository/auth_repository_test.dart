@@ -28,7 +28,7 @@ void main() {
     test('When refresh with refreshToken, it save corresponding result',
         () async {
       when(mockApiService.refreshToken(any))
-          .thenAnswer((_) async => MockUtil.loginResponse);
+          .thenAnswer((_) async => MockUtil.loginDataResponse);
       when(mockSharedPreference.getRefreshToken())
           .thenAnswer((realInvocation) async => 'refreshToken');
 
