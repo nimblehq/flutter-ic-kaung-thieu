@@ -16,7 +16,7 @@ void main() {
 
     test('When refresh with refreshToken, it emits success', () async {
       when(mockAuthRepository.refreshToken())
-          .thenAnswer((realInvocation) async => MockUtil.loginResponse);
+          .thenAnswer((realInvocation) async => MockUtil.loginDataResponse);
 
       final result = await refreshTokenUseCase.call();
       expect(result is Success, true);
