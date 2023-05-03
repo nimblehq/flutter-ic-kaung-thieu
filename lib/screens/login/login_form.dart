@@ -1,20 +1,26 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
+import 'package:survey_flutter/screens/home/home_screen.dart';
+import 'package:survey_flutter/screens/login/login_view_model.dart';
 import 'package:survey_flutter/screens/widgets/alert_dialog.dart';
 import 'package:survey_flutter/screens/widgets/form_field_decoration.dart';
 import 'package:survey_flutter/theme/constant.dart';
 import 'package:survey_flutter/utils/keyboard_manager.dart';
 
-class LoginForm extends StatefulWidget {
+class LoginForm extends ConsumerStatefulWidget {
   const LoginForm({Key? key}) : super(key: key);
 
   @override
-  State<StatefulWidget> createState() => _LoginFormState();
+  ConsumerState<ConsumerStatefulWidget> createState() => _LoginFormState();
 }
 
-class _LoginFormState extends State<LoginForm> {
+class _LoginFormState extends ConsumerState<LoginForm> {
   final _formKey = GlobalKey<FormState>();
+
   AppLocalizations get _localizations => AppLocalizations.of(context)!;
+
   TextTheme get _textTheme => Theme.of(context).textTheme;
 
   TextFormField get _emailTextField => TextFormField(
@@ -59,21 +65,31 @@ class _LoginFormState extends State<LoginForm> {
           ),
         ),
         onPressed: _submitForm,
-        child: Text(_localizations.loginButton),
+        child: Consumer(
+          builder: (context, widgetRef, child) {
+            return (widgetRef.watch(loginViewModelProvider).isLoading &&
+                        !widgetRef.watch(loginViewModelProvider).hasError) ||
+                    widgetRef.watch(loginViewModelProvider).isReloading
+                ? const CircularProgressIndicator()
+                : Text(_localizations.loginButton);
+          },
+        ),
       );
 
-  // TODO: Move the validation logic to the ViewModel
-  // upon implementing Integration task
   String? _emailValidator(String? email) {
     // Just use a simple rule, no need complex Regex!
-    if (email == null || email.isEmpty || !email.contains('@')) {
+    final isValidEmail =
+        ref.watch(loginViewModelProvider.notifier).isValidEmail(email);
+    if (!isValidEmail) {
       return _localizations.invalidEmailError;
     }
     return null;
   }
 
   String? _passwordValidator(String? password) {
-    if (password == null || password.isEmpty || password.length < 8) {
+    final isValidPassword =
+        ref.watch(loginViewModelProvider.notifier).isValidPassword(password);
+    if (!isValidPassword) {
       return _localizations.invalidPasswordError;
     }
     return null;
@@ -86,43 +102,55 @@ class _LoginFormState extends State<LoginForm> {
 
     if (_formKey.currentState!.validate()) {
       KeyboardManager.dismiss(context);
-      // TODO - implement login
-      showAlertDialog(
-          context: context,
-          title: _localizations.loginFailAlertTitle,
-          message: _localizations.loginFailAlertMessage,
-          actions: [
-            TextButton(
-              child: Text(_localizations.okText),
-              onPressed: () => Navigator.pop(context),
-            ),
-          ]);
+      ref.read(loginViewModelProvider.notifier).login();
     }
   }
 
   @override
   Widget build(BuildContext context) {
     const fieldSpacing = 20.0;
-    return Form(
-      key: _formKey,
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          _emailTextField,
-          const SizedBox(
-            height: fieldSpacing,
-          ),
-          _passwordTextField,
-          const SizedBox(
-            height: fieldSpacing,
-          ),
-          SizedBox(
-            height: 56,
-            width: double.infinity,
-            child: _loginButton,
-          )
-        ],
-      ),
-    );
+    return Consumer(builder: (context, widgetRef, child) {
+      widgetRef.listen<AsyncValue<void>>(loginViewModelProvider,
+          (previous, next) {
+        next.maybeWhen(
+          data: (_) => context.go(routePathHomeScreen),
+          error: (error, _) {
+            showAlertDialog(
+                context: context,
+                title: _localizations.loginFailAlertTitle,
+                message:
+                    (error as String?) ?? _localizations.loginFailAlertMessage,
+                actions: [
+                  TextButton(
+                    child: Text(_localizations.okText),
+                    onPressed: () => Navigator.pop(context),
+                  ),
+                ]);
+          },
+          orElse: () {},
+        );
+      });
+      return Form(
+        key: _formKey,
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            _emailTextField,
+            const SizedBox(
+              height: fieldSpacing,
+            ),
+            _passwordTextField,
+            const SizedBox(
+              height: fieldSpacing,
+            ),
+            SizedBox(
+              height: 56,
+              width: double.infinity,
+              child: _loginButton,
+            )
+          ],
+        ),
+      );
+    });
   }
 }

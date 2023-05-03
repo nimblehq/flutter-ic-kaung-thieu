@@ -10,8 +10,8 @@ import 'package:survey_flutter/model/response/login_data_response.dart';
 
 final loginRepositoryProvider = Provider<LoginRepository>((ref) {
   return LoginRepositoryImpl(
-    ApiService(DioProvider().getDioUnauthorized()),
-    ref.watch(sharedPreferenceProvider),
+    apiService: ApiService(DioProvider().getDioUnauthorized()),
+    sharedPreference: ref.watch(sharedPreferenceProvider),
   );
 });
 
@@ -27,9 +27,10 @@ class LoginRepositoryImpl extends LoginRepository {
   final SharedPreference _sharedPreference;
 
   LoginRepositoryImpl(
-    this._apiService,
-    this._sharedPreference,
-  );
+      {required ApiService apiService,
+      required SharedPreference sharedPreference})
+      : _apiService = apiService,
+        _sharedPreference = sharedPreference;
 
   final String _grantType = 'password';
 
@@ -44,6 +45,12 @@ class LoginRepositoryImpl extends LoginRepository {
         clientId: FlutterConfigPlus.get('CLIENT_ID'),
         clientSecret: FlutterConfigPlus.get('CLIENT_SECRET'),
       ));
+      await _sharedPreference.saveRefreshToken(
+          result.loginResponse?.loginAttributeResponse?.refreshToken ?? '');
+      await _sharedPreference.saveAccessToken(
+          result.loginResponse?.loginAttributeResponse?.accessToken ?? '');
+      await _sharedPreference.saveTokenType(
+          result.loginResponse?.loginAttributeResponse?.tokenType ?? '');
       return result;
     } catch (exception) {
       throw NetworkExceptions.fromDioException(exception);
