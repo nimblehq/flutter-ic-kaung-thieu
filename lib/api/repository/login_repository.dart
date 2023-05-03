@@ -26,13 +26,14 @@ class LoginRepositoryImpl extends LoginRepository {
   Future<LoginDataResponse> login(
       {required String email, required String password}) async {
     try {
-      return await _apiService.logIn(LoginRequest(
+      final result = await _apiService.logIn(LoginRequest(
         grantType: _grantType,
         email: email,
         password: password,
         clientId: FlutterConfigPlus.get('CLIENT_ID'),
         clientSecret: FlutterConfigPlus.get('CLIENT_SECRET'),
       ));
+      return result;
     } catch (exception) {
       throw NetworkExceptions.fromDioException(exception);
     }
