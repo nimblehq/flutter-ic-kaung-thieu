@@ -16,17 +16,18 @@ void main() {
       'CLIENT_ID': MockUtil.loginRequest.clientId,
       'CLIENT_SECRET': MockUtil.loginRequest.clientSecret,
     });
+
     late LoginRepository repository;
 
     setUp(
       () => repository = LoginRepositoryImpl(
-        mockApiService,
-        mockSharedPreference,
+        apiService: mockApiService,
+        sharedPreference: mockSharedPreference,
       ),
     );
 
     test(
-      'When login with correct email and password, it emits corresponding response',
+      'When login with correct email and password, it emits corresponding response and save tokens',
       () async {
         when(mockApiService.logIn(any))
             .thenAnswer((_) async => MockUtil.loginDataResponse);
@@ -35,6 +36,21 @@ void main() {
             email: MockUtil.loginRequest.email,
             password: MockUtil.loginRequest.password);
         expect(result.loginResponse?.id, MockUtil.loginResponse.id);
+
+        verify(
+          mockSharedPreference
+              .saveAccessToken(MockUtil.loginAttributeResponse.accessToken),
+        ).called(1);
+
+        verify(
+          mockSharedPreference
+              .saveTokenType(MockUtil.loginAttributeResponse.tokenType),
+        ).called(1);
+
+        verify(
+          mockSharedPreference
+              .saveRefreshToken(MockUtil.loginAttributeResponse.refreshToken),
+        ).called(1);
       },
     );
 

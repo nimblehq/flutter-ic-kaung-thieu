@@ -1,5 +1,8 @@
+import 'package:collection/collection.dart';
+
 import 'package:dio/dio.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
+import 'package:survey_flutter/api/error/error_list_response.dart';
 
 part 'network_exceptions.freezed.dart';
 
@@ -41,11 +44,18 @@ class NetworkExceptions with _$NetworkExceptions {
 
   const factory NetworkExceptions.unexpectedError() = UnexpectedError;
 
+  static ErrorListResponse? errors;
+
   static NetworkExceptions fromDioException(error) {
     if (error is Exception) {
       try {
         NetworkExceptions networkExceptions;
         if (error is DioError) {
+          final data = error.response?.data;
+          if (data != null) {
+            errors = ErrorListResponse.fromJson(data);
+          }
+
           switch (error.type) {
             case DioErrorType.cancel:
               networkExceptions = const NetworkExceptions.requestCancelled();
@@ -128,7 +138,10 @@ class NetworkExceptions with _$NetworkExceptions {
     }
   }
 
-  static String getErrorMessage(NetworkExceptions networkExceptions) {
+  static String getErrorMessage(
+    NetworkExceptions networkExceptions, {
+    bool useCustomMessage = false,
+  }) {
     var errorMessage = "";
     networkExceptions.when(notImplemented: () {
       errorMessage = "Not Implemented";
@@ -167,6 +180,9 @@ class NetworkExceptions with _$NetworkExceptions {
     }, notAcceptable: () {
       errorMessage = "Not acceptable";
     });
+    if (useCustomMessage) {
+      return '$errorMessage. ${errors?.errors.firstOrNull?.detail}';
+    }
     return errorMessage;
   }
 }
