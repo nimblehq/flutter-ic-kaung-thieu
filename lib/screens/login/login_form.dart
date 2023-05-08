@@ -9,6 +9,12 @@ import 'package:survey_flutter/screens/widgets/form_field_decoration.dart';
 import 'package:survey_flutter/theme/constant.dart';
 import 'package:survey_flutter/utils/keyboard_manager.dart';
 
+final isValidEmailStreamProvider = StreamProvider.autoDispose(
+    (ref) => ref.watch(loginViewModelProvider.notifier).isValidEmail);
+
+final isValidPasswordStreamProvider = StreamProvider.autoDispose(
+    (ref) => ref.watch(loginViewModelProvider.notifier).isValidPassword);
+
 class LoginForm extends ConsumerStatefulWidget {
   const LoginForm({Key? key}) : super(key: key);
 
@@ -78,8 +84,8 @@ class _LoginFormState extends ConsumerState<LoginForm> {
 
   String? _emailValidator(String? email) {
     // Just use a simple rule, no need complex Regex!
-    final isValidEmail =
-        ref.watch(loginViewModelProvider.notifier).isValidEmail(email);
+    ref.read(loginViewModelProvider.notifier).checkEmail(email);
+    final isValidEmail = ref.watch(isValidEmailStreamProvider).value ?? false;
     if (!isValidEmail) {
       return _localizations.invalidEmailError;
     }
@@ -87,8 +93,9 @@ class _LoginFormState extends ConsumerState<LoginForm> {
   }
 
   String? _passwordValidator(String? password) {
+    ref.read(loginViewModelProvider.notifier).checkPassword(password);
     final isValidPassword =
-        ref.watch(loginViewModelProvider.notifier).isValidPassword(password);
+        ref.watch(isValidPasswordStreamProvider).value ?? false;
     if (!isValidPassword) {
       return _localizations.invalidPasswordError;
     }
