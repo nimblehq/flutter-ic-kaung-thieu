@@ -14,7 +14,8 @@ void main() {
 
     setUp(() => refreshTokenUseCase = RefreshTokenUseCase(mockAuthRepository));
 
-    test('When refresh with refreshToken, it emits success', () async {
+    test('When calling the use case successfully, it emits success result',
+        () async {
       when(mockAuthRepository.refreshToken())
           .thenAnswer((realInvocation) async => MockUtil.loginDataResponse);
 
@@ -22,7 +23,8 @@ void main() {
       expect(result is Success, true);
     });
 
-    test('When refresh with incorrect refreshToken, it emits failed', () async {
+    test('When calling the use case unsuccessfully, it emits failed result',
+        () async {
       when(mockAuthRepository.refreshToken()).thenThrow(MockDioError());
 
       final result = await refreshTokenUseCase.call();
