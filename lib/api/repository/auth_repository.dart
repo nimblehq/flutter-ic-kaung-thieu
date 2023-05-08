@@ -6,6 +6,8 @@ import 'package:survey_flutter/api/storage/shared_preference.dart';
 import 'package:survey_flutter/di/provider/dio_provider.dart';
 import 'package:survey_flutter/model/request/auth_request.dart';
 
+const String _grantType = 'refresh_token';
+
 final authRepositoryProvider = Provider((ref) {
   return AuthRepositoryImpl(
     ApiService(DioProvider().getDioUnauthorized()),
@@ -20,7 +22,6 @@ abstract class AuthRepository {
 class AuthRepositoryImpl extends AuthRepository {
   final ApiService _apiService;
   final SharedPreference _sharedPreference;
-  final String _grantType = 'refresh_token';
 
   AuthRepositoryImpl(
     this._apiService,

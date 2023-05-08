@@ -25,7 +25,8 @@ void main() {
       ),
     );
 
-    test('When refresh with refreshToken, it save corresponding result',
+    test(
+        'When calling refreshToken successfully, it saves the corresponding result',
         () async {
       when(mockApiService.refreshToken(any))
           .thenAnswer((_) async => MockUtil.loginDataResponse);
@@ -44,7 +45,7 @@ void main() {
     });
 
     test(
-      'When refresh with incorrect refreshToken, it throws NetworkExceptions error',
+      'When calling refreshToken unsuccessfully, it throws the NetworkExceptions error',
       () async {
         when(mockApiService.refreshToken(any)).thenThrow(MockDioError());
 
