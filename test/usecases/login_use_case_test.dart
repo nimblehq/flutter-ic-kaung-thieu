@@ -20,7 +20,7 @@ void main() {
         when(mockLoginRepository.login(
           email: anyNamed('email'),
           password: anyNamed('password'),
-        )).thenAnswer((_) async => MockUtil.loginResponse);
+        )).thenAnswer((_) async => MockUtil.loginDataResponse);
 
         final result = await loginUseCase.call(const LoginParameters(
             email: 'test@gmail.com', password: 'password'));
