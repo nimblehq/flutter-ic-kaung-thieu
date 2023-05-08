@@ -14,23 +14,36 @@ class LoginViewModel extends AutoDisposeAsyncNotifier<void> {
   String _email = '';
   String _password = '';
 
-  bool isValidEmail(String? email) {
+  final _isValidEmail = StreamController<bool>();
+  Stream<bool> get isValidEmail => _isValidEmail.stream;
+
+  final _isValidPassword = StreamController<bool>();
+  Stream<bool> get isValidPassword => _isValidPassword.stream;
+
+  void checkEmail(String? email) {
     _email = email ?? '';
-    return !(email == null || email.isEmpty || !email.contains('@'));
+    _isValidEmail
+        .add(!(email == null || email.isEmpty || !email.contains('@')));
   }
 
-  bool isValidPassword(String? password) {
+  void checkPassword(String? password) {
     _password = password ?? '';
-    return !(password == null || password.isEmpty || password.length < 8);
+    _isValidPassword
+        .add(!(password == null || password.isEmpty || password.length < 8));
   }
 
   @override
-  FutureOr<void> build() {}
+  FutureOr<void> build() {
+    ref.onDispose(() {
+      _isValidPassword.close();
+      _isValidEmail.close();
+    });
+  }
 
   login() async {
-    loginUseCase = ref.read(loginUseCaseProvider);
     state = const AsyncLoading();
-    final result = await loginUseCase.call(
+    loginUseCase = ref.read(loginUseCaseProvider);
+    final result = await loginUseCase(
       LoginParameters(
         email: _email,
         password: _password,
