@@ -1,4 +1,4 @@
-import 'package:flutter_config/flutter_config.dart';
+import 'package:flutter_config_plus/flutter_config_plus.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
 import 'package:survey_flutter/api/exception/network_exceptions.dart';
@@ -10,7 +10,7 @@ import '../../mocks/mock_util.dart';
 void main() {
   group('LoginRepository', () {
     MockApiService mockApiService = MockApiService();
-    FlutterConfig.loadValueForTesting({
+    FlutterConfigPlus.loadValueForTesting({
       'CLIENT_ID': MockUtil.loginRequest.clientId,
       'CLIENT_SECRET': MockUtil.loginRequest.clientSecret,
     });

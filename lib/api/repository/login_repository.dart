@@ -1,4 +1,4 @@
-import 'package:flutter_config/flutter_config.dart';
+import 'package:flutter_config_plus/flutter_config_plus.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:survey_flutter/api/api_service.dart';
 import 'package:survey_flutter/api/exception/network_exceptions.dart';
@@ -30,8 +30,8 @@ class LoginRepositoryImpl extends LoginRepository {
         grantType: _grantType,
         email: email,
         password: password,
-        clientId: FlutterConfig.get('CLIENT_ID'),
-        clientSecret: FlutterConfig.get('CLIENT_SECRET'),
+        clientId: FlutterConfigPlus.get('CLIENT_ID'),
+        clientSecret: FlutterConfigPlus.get('CLIENT_SECRET'),
       ));
     } catch (exception) {
       throw NetworkExceptions.fromDioException(exception);
