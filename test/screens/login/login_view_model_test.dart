@@ -9,7 +9,6 @@ import 'package:survey_flutter/usecases/login_use_case.dart';
 
 import '../../mocks/generate_mocks.mocks.dart';
 import '../../mocks/mock_util.dart';
-import '../../util/custom_matcher.dart';
 
 void main() {
   final MockLoginUseCase mockLoginUseCase = MockLoginUseCase();
@@ -47,7 +46,8 @@ void main() {
       );
     });
 
-    test('When login with correct email and password, it returns success',
+    test(
+        'When calling login successfully, it emits loading and data correspondingly',
         () async {
       when(mockLoginUseCase.call(any))
           .thenAnswer((_) async => Success(MockUtil.loginDataResponse));
@@ -61,17 +61,15 @@ void main() {
       viewModel.checkPassword('12345678');
       await viewModel.login();
 
-      expect(
-        verifyInOrder([
-          mockListener(data, captureAny),
-          mockListener(captureAny, data),
-        ]).captured,
-        isLoading,
-      );
+      verifyInOrder([
+        mockListener(data, isA<AsyncLoading<void>>()),
+        mockListener(isA<AsyncLoading<void>>(), data),
+      ]);
       verifyNoMoreInteractions(mockListener);
     });
 
-    test('When login with incorrect email and password, it returns error',
+    test(
+        'When calling login unsuccessfully, it emits loading and error correspondingly',
         () async {
       final exception =
           UseCaseException(const NetworkExceptions.unauthorisedRequest());
@@ -87,13 +85,10 @@ void main() {
       viewModel.checkPassword('invalid');
       await viewModel.login();
 
-      expect(
-        verifyInOrder([
-          mockListener(data, any),
-          mockListener(any, captureAny),
-        ]).captured,
-        isError,
-      );
+      verifyInOrder([
+        mockListener(data, isA<AsyncLoading<void>>()),
+        mockListener(isA<AsyncLoading<void>>(), isA<AsyncError<void>>()),
+      ]);
       verifyNoMoreInteractions(mockListener);
     });
   });
