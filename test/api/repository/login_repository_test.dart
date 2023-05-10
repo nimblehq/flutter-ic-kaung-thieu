@@ -54,30 +54,30 @@ void main() {
 
     test(
         'When calling refreshToken successfully, it saves the corresponding result',
-            () async {
-          when(mockApiService.refreshToken(any))
-              .thenAnswer((_) async => MockUtil.loginDataResponse);
-          when(mockSharedPreference.getRefreshToken())
-              .thenAnswer((realInvocation) async => 'refreshToken');
+        () async {
+      when(mockApiService.refreshToken(any))
+          .thenAnswer((_) async => MockUtil.loginDataResponse);
+      when(mockSharedPreference.getRefreshToken())
+          .thenAnswer((realInvocation) async => 'refreshToken');
 
-          await repository.refreshToken();
-          verify(
-            mockSharedPreference
-                .saveAccessToken(MockUtil.loginAttributeResponse.accessToken),
-          ).called(1);
-          verify(
-            mockSharedPreference
-                .saveRefreshToken(MockUtil.loginAttributeResponse.refreshToken),
-          ).called(1);
-        });
+      await repository.refreshToken();
+      verify(
+        mockSharedPreference
+            .saveAccessToken(MockUtil.loginAttributeResponse.accessToken),
+      ).called(1);
+      verify(
+        mockSharedPreference
+            .saveRefreshToken(MockUtil.loginAttributeResponse.refreshToken),
+      ).called(1);
+    });
 
     test(
       'When calling refreshToken unsuccessfully, it throws the NetworkExceptions error',
-          () async {
+      () async {
         when(mockApiService.refreshToken(any)).thenThrow(MockDioError());
 
         expect(
-              () => repository.refreshToken(),
+          () => repository.refreshToken(),
           throwsA(isA<NetworkExceptions>()),
         );
       },
