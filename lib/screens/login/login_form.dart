@@ -23,25 +23,62 @@ class LoginForm extends ConsumerStatefulWidget {
 }
 
 class _LoginFormState extends ConsumerState<LoginForm> {
-  final _formKey = GlobalKey<FormState>();
-
   AppLocalizations get _localizations => AppLocalizations.of(context)!;
 
   TextTheme get _textTheme => Theme.of(context).textTheme;
 
-  TextFormField get _emailTextField => TextFormField(
-        keyboardType: TextInputType.emailAddress,
-        autocorrect: false,
-        decoration: FormFieldDecoration(
-          hint: _localizations.emailInputHint,
-          hintTextStyle: _textTheme.bodyLarge,
-        ),
-        style: _textTheme.bodyLarge,
-        validator: _emailValidator,
-        autovalidateMode: _isFormSubmitted
-            ? AutovalidateMode.onUserInteraction
-            : AutovalidateMode.disabled,
-      );
+  late TextEditingController emailController;
+  late TextEditingController passwordController;
+
+  bool _isFormSubmitted = false;
+
+  @override
+  void initState() {
+    super.initState();
+    emailController = TextEditingController();
+    emailController.addListener(() {
+      ref
+          .read(loginViewModelProvider.notifier)
+          .checkEmail(emailController.text);
+    });
+    passwordController = TextEditingController();
+    passwordController.addListener(() {
+      ref
+          .read(loginViewModelProvider.notifier)
+          .checkPassword(passwordController.text);
+    });
+  }
+
+  String? _emailValidator() {
+    final isValidEmail = ref.watch(isValidEmailStreamProvider).value ?? false;
+    if (!isValidEmail && _isFormSubmitted) {
+      return _localizations.invalidEmailError;
+    }
+    return null;
+  }
+
+  String? _passwordValidator() {
+    final isValidPassword =
+        ref.watch(isValidPasswordStreamProvider).value ?? false;
+    if (!isValidPassword && _isFormSubmitted) {
+      return _localizations.invalidPasswordError;
+    }
+    return null;
+  }
+
+  Widget get _emailTextField => Consumer(builder: (context, widgetRef, _) {
+        return TextFormField(
+          keyboardType: TextInputType.emailAddress,
+          autocorrect: false,
+          decoration: FormFieldDecoration(
+            hint: _localizations.emailInputHint,
+            hintTextStyle: _textTheme.bodyLarge,
+            errorString: _emailValidator(),
+          ),
+          style: _textTheme.bodyLarge,
+          controller: emailController,
+        );
+      });
 
   TextFormField get _passwordTextField => TextFormField(
         autocorrect: false,
@@ -49,12 +86,10 @@ class _LoginFormState extends ConsumerState<LoginForm> {
         decoration: FormFieldDecoration(
           hint: _localizations.passwordInputHint,
           hintTextStyle: _textTheme.bodyLarge,
+          errorString: _passwordValidator(),
         ),
         style: _textTheme.bodyLarge,
-        validator: _passwordValidator,
-        autovalidateMode: _isFormSubmitted
-            ? AutovalidateMode.onUserInteraction
-            : AutovalidateMode.disabled,
+        controller: passwordController,
       );
 
   ElevatedButton get _loginButton => ElevatedButton(
@@ -73,42 +108,23 @@ class _LoginFormState extends ConsumerState<LoginForm> {
         onPressed: _submitForm,
         child: Consumer(
           builder: (context, widgetRef, child) {
-            return (widgetRef.watch(loginViewModelProvider).isLoading &&
-                        !widgetRef.watch(loginViewModelProvider).hasError) ||
-                    widgetRef.watch(loginViewModelProvider).isReloading
+            final loginViewModel = widgetRef.watch(loginViewModelProvider);
+            return (loginViewModel.isLoading && !loginViewModel.hasError) ||
+                    loginViewModel.isReloading
                 ? const CircularProgressIndicator()
                 : Text(_localizations.loginButton);
           },
         ),
       );
 
-  String? _emailValidator(String? email) {
-    // Just use a simple rule, no need complex Regex!
-    ref.read(loginViewModelProvider.notifier).checkEmail(email);
-    final isValidEmail = ref.watch(isValidEmailStreamProvider).value ?? false;
-    if (!isValidEmail) {
-      return _localizations.invalidEmailError;
-    }
-    return null;
-  }
-
-  String? _passwordValidator(String? password) {
-    ref.read(loginViewModelProvider.notifier).checkPassword(password);
-    final isValidPassword =
-        ref.watch(isValidPasswordStreamProvider).value ?? false;
-    if (!isValidPassword) {
-      return _localizations.invalidPasswordError;
-    }
-    return null;
-  }
-
-  bool _isFormSubmitted = false;
-
   void _submitForm() {
     setState(() => _isFormSubmitted = true);
 
-    if (_formKey.currentState!.validate()) {
-      KeyboardManager.dismiss(context);
+    final isReadyToLogin =
+        (ref.watch(isValidEmailStreamProvider).value ?? false) &&
+            (ref.watch(isValidPasswordStreamProvider).value ?? false);
+    KeyboardManager.dismiss(context);
+    if (isReadyToLogin) {
       ref.read(loginViewModelProvider.notifier).login();
     }
   }
@@ -116,48 +132,42 @@ class _LoginFormState extends ConsumerState<LoginForm> {
   @override
   Widget build(BuildContext context) {
     const fieldSpacing = 20.0;
-    return Consumer(builder: (context, widgetRef, child) {
-      widgetRef.listen<AsyncValue<void>>(loginViewModelProvider,
-          (previous, next) {
-        next.maybeWhen(
-          data: (_) => context.go(routePathHomeScreen),
-          error: (error, _) {
-            showAlertDialog(
-                context: context,
-                title: _localizations.loginFailAlertTitle,
-                message:
-                    (error as String?) ?? _localizations.loginFailAlertMessage,
-                actions: [
-                  TextButton(
-                    child: Text(_localizations.okText),
-                    onPressed: () => Navigator.pop(context),
-                  ),
-                ]);
-          },
-          orElse: () {},
-        );
-      });
-      return Form(
-        key: _formKey,
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            _emailTextField,
-            const SizedBox(
-              height: fieldSpacing,
-            ),
-            _passwordTextField,
-            const SizedBox(
-              height: fieldSpacing,
-            ),
-            SizedBox(
-              height: 56,
-              width: double.infinity,
-              child: _loginButton,
-            )
-          ],
-        ),
+    ref.listen<AsyncValue<void>>(loginViewModelProvider, (previous, next) {
+      next.maybeWhen(
+        data: (_) => context.go(routePathHomeScreen),
+        error: (error, _) {
+          showAlertDialog(
+              context: context,
+              title: _localizations.loginFailAlertTitle,
+              message:
+                  (error as String?) ?? _localizations.loginFailAlertMessage,
+              actions: [
+                TextButton(
+                  child: Text(_localizations.okText),
+                  onPressed: () => Navigator.pop(context),
+                ),
+              ]);
+        },
+        orElse: () {},
       );
     });
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        _emailTextField,
+        const SizedBox(
+          height: fieldSpacing,
+        ),
+        _passwordTextField,
+        const SizedBox(
+          height: fieldSpacing,
+        ),
+        SizedBox(
+          height: 56,
+          width: double.infinity,
+          child: _loginButton,
+        )
+      ],
+    );
   }
 }
