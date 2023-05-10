@@ -26,10 +26,10 @@ class LoginRepositoryImpl extends LoginRepository {
   final ApiService _apiService;
   final SharedPreference _sharedPreference;
 
-  LoginRepositoryImpl(
-      {required ApiService apiService,
-      required SharedPreference sharedPreference})
-      : _apiService = apiService,
+  LoginRepositoryImpl({
+    required ApiService apiService,
+    required SharedPreference sharedPreference,
+  })  : _apiService = apiService,
         _sharedPreference = sharedPreference;
 
   final String _grantType = 'password';
@@ -45,12 +45,12 @@ class LoginRepositoryImpl extends LoginRepository {
         clientId: FlutterConfigPlus.get('CLIENT_ID'),
         clientSecret: FlutterConfigPlus.get('CLIENT_SECRET'),
       ));
-      await _sharedPreference.saveRefreshToken(
-          result.loginResponse?.loginAttributeResponse?.refreshToken ?? '');
-      await _sharedPreference.saveAccessToken(
-          result.loginResponse?.loginAttributeResponse?.accessToken ?? '');
-      await _sharedPreference.saveTokenType(
-          result.loginResponse?.loginAttributeResponse?.tokenType ?? '');
+      final loginAttribute = result.loginResponse?.loginAttributeResponse;
+      await _sharedPreference
+          .saveRefreshToken(loginAttribute?.refreshToken ?? '');
+      await _sharedPreference
+          .saveAccessToken(loginAttribute?.accessToken ?? '');
+      await _sharedPreference.saveTokenType(loginAttribute?.tokenType ?? '');
       return result;
     } catch (exception) {
       throw NetworkExceptions.fromDioException(exception);
