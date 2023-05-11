@@ -14,30 +14,20 @@ class LoginViewModel extends AutoDisposeAsyncNotifier<void> {
   String _email = '';
   String _password = '';
 
-  final _isValidEmail = StreamController<bool>();
-  Stream<bool> get isValidEmail => _isValidEmail.stream;
-
-  final _isValidPassword = StreamController<bool>();
-  Stream<bool> get isValidPassword => _isValidPassword.stream;
-
-  void checkEmail(String? email) {
+  String? checkEmail(String? email, String errorMessage) {
     _email = email ?? '';
-    _isValidEmail
-        .add(!(email == null || email.isEmpty || !email.contains('@')));
+    if (email == null || email.isEmpty || !email.contains('@')) {
+      return errorMessage;
+    }
+    return null;
   }
 
-  void checkPassword(String? password) {
+  String? checkPassword(String? password, String errorMessage) {
     _password = password ?? '';
-    _isValidPassword
-        .add(!(password == null || password.isEmpty || password.length < 8));
-  }
-
-  @override
-  FutureOr<void> build() {
-    ref.onDispose(() {
-      _isValidPassword.close();
-      _isValidEmail.close();
-    });
+    if (password == null || password.isEmpty || password.length < 8) {
+      return errorMessage;
+    }
+    return null;
   }
 
   login() async {
@@ -57,4 +47,7 @@ class LoginViewModel extends AutoDisposeAsyncNotifier<void> {
           error.getErrorMessage(useCustomMessage: true), StackTrace.empty);
     }
   }
+
+  @override
+  FutureOr<void> build() {}
 }

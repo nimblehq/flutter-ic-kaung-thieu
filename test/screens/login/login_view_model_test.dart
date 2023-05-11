@@ -57,8 +57,8 @@ void main() {
       verify(mockListener(null, data));
       final viewModel = container.read(loginViewModelProvider.notifier);
 
-      viewModel.checkEmail('example@gmail.com');
-      viewModel.checkPassword('12345678');
+      viewModel.checkEmail('example@gmail.com', 'Error email');
+      viewModel.checkPassword('12345678', 'Error password');
       await viewModel.login();
 
       verifyInOrder([
@@ -81,8 +81,8 @@ void main() {
       verify(mockListener(null, data));
       final viewModel = container.read(loginViewModelProvider.notifier);
 
-      viewModel.checkEmail('invalid@gmail.com');
-      viewModel.checkPassword('invalid');
+      viewModel.checkEmail('example@gmail.com', 'Error email');
+      viewModel.checkPassword('12345678', 'Error password');
       await viewModel.login();
 
       verifyInOrder([
