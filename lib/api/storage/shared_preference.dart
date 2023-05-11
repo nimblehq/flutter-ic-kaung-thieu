@@ -24,6 +24,8 @@ abstract class SharedPreference {
   Future<String?> getTokenType();
 
   Future<String?> getRefreshToken();
+
+  Future<bool> isAlreadyLoggedIn();
 }
 
 class SharedPreferenceImpl extends SharedPreference {
@@ -82,5 +84,11 @@ class SharedPreferenceImpl extends SharedPreference {
       iOptions: getIOSOptions(),
       aOptions: getAndroidOptions(),
     );
+  }
+
+  @override
+  Future<bool> isAlreadyLoggedIn() async {
+    final accessToken = await _storage.read(key: accessTokenKey);
+    return accessToken?.isNotEmpty ?? false;
   }
 }

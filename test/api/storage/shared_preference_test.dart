@@ -125,5 +125,27 @@ void main() {
         expect(result, null);
       },
     );
+
+    test(
+      'When there is no saved accessToken, isAlreadyLoggedIn return false',
+      () async {
+        when(mockFlutterSecureStorage.read(key: accessTokenKey))
+            .thenAnswer((_) async => null);
+
+        final result = await repository.isAlreadyLoggedIn();
+        expect(result, false);
+      },
+    );
+
+    test(
+      'When there is saved accessToken, isAlreadyLoggedIn return true',
+      () async {
+        when(mockFlutterSecureStorage.read(key: accessTokenKey))
+            .thenAnswer((_) async => 'accessToken');
+
+        final result = await repository.isAlreadyLoggedIn();
+        expect(result, true);
+      },
+    );
   });
 }
