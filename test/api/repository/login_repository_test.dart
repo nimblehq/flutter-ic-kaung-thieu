@@ -69,6 +69,10 @@ void main() {
         mockSharedPreference
             .saveRefreshToken(MockUtil.loginAttributeResponse.refreshToken),
       ).called(1);
+      verify(
+        mockSharedPreference
+            .saveTokenType(MockUtil.loginAttributeResponse.tokenType),
+      ).called(1);
     });
 
     test(

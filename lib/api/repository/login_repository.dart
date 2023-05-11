@@ -61,10 +61,10 @@ class LoginRepositoryImpl extends LoginRepository {
           clientSecret: FlutterConfigPlus.get('CLIENT_SECRET'),
         ),
       );
-      await _sharedPreference.saveRefreshToken(
-          result.loginResponse?.loginAttributeResponse?.refreshToken ?? '');
-      await _sharedPreference.saveAccessToken(
-          result.loginResponse?.loginAttributeResponse?.accessToken ?? '');
+      final attribute = result.loginResponse?.loginAttributeResponse;
+      await _sharedPreference.saveRefreshToken(attribute?.refreshToken ?? '');
+      await _sharedPreference.saveAccessToken(attribute?.accessToken ?? '');
+      await _sharedPreference.saveTokenType(attribute?.tokenType ?? '');
     } catch (exception) {
       throw NetworkExceptions.fromDioException(exception);
     }
