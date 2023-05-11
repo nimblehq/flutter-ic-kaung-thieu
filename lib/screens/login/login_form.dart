@@ -9,12 +9,6 @@ import 'package:survey_flutter/screens/widgets/form_field_decoration.dart';
 import 'package:survey_flutter/theme/constant.dart';
 import 'package:survey_flutter/utils/keyboard_manager.dart';
 
-final isValidEmailStreamProvider = StreamProvider.autoDispose(
-    (ref) => ref.watch(loginViewModelProvider.notifier).isValidEmail);
-
-final isValidPasswordStreamProvider = StreamProvider.autoDispose(
-    (ref) => ref.watch(loginViewModelProvider.notifier).isValidPassword);
-
 class LoginForm extends ConsumerStatefulWidget {
   const LoginForm({Key? key}) : super(key: key);
 
@@ -23,62 +17,28 @@ class LoginForm extends ConsumerStatefulWidget {
 }
 
 class _LoginFormState extends ConsumerState<LoginForm> {
+  final _formKey = GlobalKey<FormState>();
+  bool _isFormSubmitted = false;
+
   AppLocalizations get _localizations => AppLocalizations.of(context)!;
 
   TextTheme get _textTheme => Theme.of(context).textTheme;
 
-  late TextEditingController emailController;
-  late TextEditingController passwordController;
-
-  bool _isFormSubmitted = false;
-
-  @override
-  void initState() {
-    super.initState();
-    emailController = TextEditingController();
-    emailController.addListener(() {
-      ref
-          .read(loginViewModelProvider.notifier)
-          .checkEmail(emailController.text);
-    });
-    passwordController = TextEditingController();
-    passwordController.addListener(() {
-      ref
-          .read(loginViewModelProvider.notifier)
-          .checkPassword(passwordController.text);
-    });
-  }
-
-  String? _emailValidator() {
-    final isValidEmail = ref.watch(isValidEmailStreamProvider).value ?? false;
-    if (!isValidEmail && _isFormSubmitted) {
-      return _localizations.invalidEmailError;
-    }
-    return null;
-  }
-
-  String? _passwordValidator() {
-    final isValidPassword =
-        ref.watch(isValidPasswordStreamProvider).value ?? false;
-    if (!isValidPassword && _isFormSubmitted) {
-      return _localizations.invalidPasswordError;
-    }
-    return null;
-  }
-
-  Widget get _emailTextField => Consumer(builder: (context, widgetRef, _) {
-        return TextFormField(
-          keyboardType: TextInputType.emailAddress,
-          autocorrect: false,
-          decoration: FormFieldDecoration(
-            hint: _localizations.emailInputHint,
-            hintTextStyle: _textTheme.bodyLarge,
-            errorString: _emailValidator(),
-          ),
-          style: _textTheme.bodyLarge,
-          controller: emailController,
-        );
-      });
+  TextFormField get _emailTextField => TextFormField(
+        keyboardType: TextInputType.emailAddress,
+        autocorrect: false,
+        decoration: FormFieldDecoration(
+          hint: _localizations.emailInputHint,
+          hintTextStyle: _textTheme.bodyLarge,
+        ),
+        style: _textTheme.bodyLarge,
+        validator: (value) => ref
+            .read(loginViewModelProvider.notifier)
+            .checkEmail(value, _localizations.invalidEmailError),
+        autovalidateMode: _isFormSubmitted
+            ? AutovalidateMode.onUserInteraction
+            : AutovalidateMode.disabled,
+      );
 
   TextFormField get _passwordTextField => TextFormField(
         autocorrect: false,
@@ -86,10 +46,14 @@ class _LoginFormState extends ConsumerState<LoginForm> {
         decoration: FormFieldDecoration(
           hint: _localizations.passwordInputHint,
           hintTextStyle: _textTheme.bodyLarge,
-          errorString: _passwordValidator(),
         ),
         style: _textTheme.bodyLarge,
-        controller: passwordController,
+        validator: (value) => ref
+            .read(loginViewModelProvider.notifier)
+            .checkPassword(value, _localizations.invalidPasswordError),
+        autovalidateMode: _isFormSubmitted
+            ? AutovalidateMode.onUserInteraction
+            : AutovalidateMode.disabled,
       );
 
   ElevatedButton get _loginButton => ElevatedButton(
@@ -118,13 +82,11 @@ class _LoginFormState extends ConsumerState<LoginForm> {
       );
 
   void _submitForm() {
-    setState(() => _isFormSubmitted = true);
-
-    final isReadyToLogin =
-        (ref.watch(isValidEmailStreamProvider).value ?? false) &&
-            (ref.watch(isValidPasswordStreamProvider).value ?? false);
+    setState(() {
+      _isFormSubmitted = true;
+    });
     KeyboardManager.dismiss(context);
-    if (isReadyToLogin) {
+    if (_formKey.currentState!.validate()) {
       ref.read(loginViewModelProvider.notifier).login();
     }
   }
@@ -151,23 +113,26 @@ class _LoginFormState extends ConsumerState<LoginForm> {
         orElse: () {},
       );
     });
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        _emailTextField,
-        const SizedBox(
-          height: fieldSpacing,
-        ),
-        _passwordTextField,
-        const SizedBox(
-          height: fieldSpacing,
-        ),
-        SizedBox(
-          height: 56,
-          width: double.infinity,
-          child: _loginButton,
-        )
-      ],
+    return Form(
+      key: _formKey,
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          _emailTextField,
+          const SizedBox(
+            height: fieldSpacing,
+          ),
+          _passwordTextField,
+          const SizedBox(
+            height: fieldSpacing,
+          ),
+          SizedBox(
+            height: 56,
+            width: double.infinity,
+            child: _loginButton,
+          )
+        ],
+      ),
     );
   }
 }
