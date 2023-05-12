@@ -39,17 +39,16 @@ void main() {
 
         verify(
           mockSharedPreference
-              .saveAccessToken(MockUtil.loginAttributeResponse.accessToken),
+              .saveAccessToken(MockUtil.loginResponse.accessToken),
+        ).called(1);
+
+        verify(
+          mockSharedPreference.saveTokenType(MockUtil.loginResponse.tokenType),
         ).called(1);
 
         verify(
           mockSharedPreference
-              .saveTokenType(MockUtil.loginAttributeResponse.tokenType),
-        ).called(1);
-
-        verify(
-          mockSharedPreference
-              .saveRefreshToken(MockUtil.loginAttributeResponse.refreshToken),
+              .saveRefreshToken(MockUtil.loginResponse.refreshToken),
         ).called(1);
       },
     );
@@ -79,15 +78,14 @@ void main() {
       await repository.refreshToken();
       verify(
         mockSharedPreference
-            .saveAccessToken(MockUtil.loginAttributeResponse.accessToken),
+            .saveAccessToken(MockUtil.loginResponse.accessToken),
       ).called(1);
       verify(
         mockSharedPreference
-            .saveRefreshToken(MockUtil.loginAttributeResponse.refreshToken),
+            .saveRefreshToken(MockUtil.loginResponse.refreshToken),
       ).called(1);
       verify(
-        mockSharedPreference
-            .saveTokenType(MockUtil.loginAttributeResponse.tokenType),
+        mockSharedPreference.saveTokenType(MockUtil.loginResponse.tokenType),
       ).called(1);
     });
 
