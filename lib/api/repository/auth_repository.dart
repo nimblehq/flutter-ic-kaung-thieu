@@ -8,28 +8,29 @@ import 'package:survey_flutter/model/request/auth_request.dart';
 import 'package:survey_flutter/model/request/login_request.dart';
 import 'package:survey_flutter/model/response/login_data_response.dart';
 
-final loginRepositoryProvider = Provider<LoginRepository>((ref) {
-  return LoginRepositoryImpl(
-    ApiService(DioProvider().getDioUnauthorized()),
-    ref.watch(sharedPreferenceProvider),
+final authRepositoryProvider = Provider<AuthRepository>((ref) {
+  return AuthRepositoryImpl(
+    apiService: ApiService(DioProvider().getDioUnauthorized()),
+    sharedPreference: ref.watch(sharedPreferenceProvider),
   );
 });
 
-abstract class LoginRepository {
+abstract class AuthRepository {
   Future<LoginDataResponse> login(
       {required String email, required String password});
 
   Future<void> refreshToken();
 }
 
-class LoginRepositoryImpl extends LoginRepository {
+class AuthRepositoryImpl extends AuthRepository {
   final ApiService _apiService;
   final SharedPreference _sharedPreference;
 
-  LoginRepositoryImpl(
-    this._apiService,
-    this._sharedPreference,
-  );
+  AuthRepositoryImpl({
+    required ApiService apiService,
+    required SharedPreference sharedPreference,
+  })  : _apiService = apiService,
+        _sharedPreference = sharedPreference;
 
   final String _grantType = 'password';
 
@@ -44,6 +45,12 @@ class LoginRepositoryImpl extends LoginRepository {
         clientId: FlutterConfigPlus.get('CLIENT_ID'),
         clientSecret: FlutterConfigPlus.get('CLIENT_SECRET'),
       ));
+      final loginAttribute = result.loginResponse?.loginAttributeResponse;
+      await _sharedPreference
+          .saveRefreshToken(loginAttribute?.refreshToken ?? '');
+      await _sharedPreference
+          .saveAccessToken(loginAttribute?.accessToken ?? '');
+      await _sharedPreference.saveTokenType(loginAttribute?.tokenType ?? '');
       return result;
     } catch (exception) {
       throw NetworkExceptions.fromDioException(exception);

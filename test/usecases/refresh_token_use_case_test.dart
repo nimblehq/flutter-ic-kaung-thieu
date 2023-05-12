@@ -8,15 +8,15 @@ import '../mocks/mock_util.dart';
 
 void main() {
   group('RefreshTokenUseCase', () {
-    MockLoginRepository mockLoginRepository = MockLoginRepository();
+    MockAuthRepository mockAuthRepository = MockAuthRepository();
 
     late RefreshTokenUseCase refreshTokenUseCase;
 
-    setUp(() => refreshTokenUseCase = RefreshTokenUseCase(mockLoginRepository));
+    setUp(() => refreshTokenUseCase = RefreshTokenUseCase(mockAuthRepository));
 
     test('When calling the use case successfully, it emits success result',
         () async {
-      when(mockLoginRepository.refreshToken())
+      when(mockAuthRepository.refreshToken())
           .thenAnswer((realInvocation) async => MockUtil.loginDataResponse);
 
       final result = await refreshTokenUseCase.call();
@@ -25,7 +25,7 @@ void main() {
 
     test('When calling the use case unsuccessfully, it emits failed result',
         () async {
-      when(mockLoginRepository.refreshToken()).thenThrow(MockDioError());
+      when(mockAuthRepository.refreshToken()).thenThrow(MockDioError());
 
       final result = await refreshTokenUseCase.call();
       expect(result is Failed, true);

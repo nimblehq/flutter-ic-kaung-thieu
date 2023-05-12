@@ -2,13 +2,13 @@ import 'package:flutter_config_plus/flutter_config_plus.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
 import 'package:survey_flutter/api/exception/network_exceptions.dart';
-import 'package:survey_flutter/api/repository/login_repository.dart';
+import 'package:survey_flutter/api/repository/auth_repository.dart';
 
 import '../../mocks/generate_mocks.mocks.dart';
 import '../../mocks/mock_util.dart';
 
 void main() {
-  group('LoginRepository', () {
+  group('AuthRepository', () {
     MockApiService mockApiService = MockApiService();
     MockSharedPreference mockSharedPreference = MockSharedPreference();
 
@@ -16,17 +16,18 @@ void main() {
       'CLIENT_ID': MockUtil.loginRequest.clientId,
       'CLIENT_SECRET': MockUtil.loginRequest.clientSecret,
     });
-    late LoginRepository repository;
+
+    late AuthRepository repository;
 
     setUp(
-      () => repository = LoginRepositoryImpl(
-        mockApiService,
-        mockSharedPreference,
+      () => repository = AuthRepositoryImpl(
+        apiService: mockApiService,
+        sharedPreference: mockSharedPreference,
       ),
     );
 
     test(
-      'When login with correct email and password, it emits corresponding response',
+      'When login with correct email and password, it emits corresponding response and save tokens',
       () async {
         when(mockApiService.logIn(any))
             .thenAnswer((_) async => MockUtil.loginDataResponse);
@@ -35,6 +36,21 @@ void main() {
             email: MockUtil.loginRequest.email,
             password: MockUtil.loginRequest.password);
         expect(result.loginResponse?.id, MockUtil.loginResponse.id);
+
+        verify(
+          mockSharedPreference
+              .saveAccessToken(MockUtil.loginAttributeResponse.accessToken),
+        ).called(1);
+
+        verify(
+          mockSharedPreference
+              .saveTokenType(MockUtil.loginAttributeResponse.tokenType),
+        ).called(1);
+
+        verify(
+          mockSharedPreference
+              .saveRefreshToken(MockUtil.loginAttributeResponse.refreshToken),
+        ).called(1);
       },
     );
 
