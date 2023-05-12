@@ -5,7 +5,7 @@ import 'package:survey_flutter/model/response/surveys_parameters.dart';
 import 'package:survey_flutter/usecases/base/base_use_case.dart';
 
 final getSurveysUseCaseProvider =
-Provider((ref) => GetSurveysUseCase(ref.watch(homeRepositoryProvider)));
+    Provider((ref) => GetSurveysUseCase(ref.watch(homeRepositoryProvider)));
 
 class GetSurveysUseCase extends UseCase<SurveyDataResponse, SurveysParameters> {
   final HomeRepository _homeRepository;
@@ -16,7 +16,9 @@ class GetSurveysUseCase extends UseCase<SurveyDataResponse, SurveysParameters> {
   Future<Result<SurveyDataResponse>> call(SurveysParameters params) async {
     try {
       final result = await _homeRepository.getSurveys(
-        pageNumber: params.pageNumber, pageSize: params.pageSize,);
+        pageNumber: params.pageNumber,
+        pageSize: params.pageSize,
+      );
       return Success(result);
     } catch (e) {
       return Failed(UseCaseException(e));
