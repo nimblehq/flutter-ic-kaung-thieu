@@ -2,13 +2,13 @@ import 'package:flutter_config_plus/flutter_config_plus.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
 import 'package:survey_flutter/api/exception/network_exceptions.dart';
-import 'package:survey_flutter/api/repository/login_repository.dart';
+import 'package:survey_flutter/api/repository/auth_repository.dart';
 
 import '../../mocks/generate_mocks.mocks.dart';
 import '../../mocks/mock_util.dart';
 
 void main() {
-  group('LoginRepository', () {
+  group('AuthRepository', () {
     MockApiService mockApiService = MockApiService();
     MockSharedPreference mockSharedPreference = MockSharedPreference();
 
@@ -17,10 +17,10 @@ void main() {
       'CLIENT_SECRET': MockUtil.loginRequest.clientSecret,
     });
 
-    late LoginRepository repository;
+    late AuthRepository repository;
 
     setUp(
-      () => repository = LoginRepositoryImpl(
+      () => repository = AuthRepositoryImpl(
         apiService: mockApiService,
         sharedPreference: mockSharedPreference,
       ),
