@@ -21,5 +21,5 @@ class MockUtil {
   static LoginDataResponse loginDataResponse = LoginDataResponse(loginResponse);
 
   static LoginResponse loginResponse = LoginResponse(
-      id: 1, type: 'token', loginAttributeResponse: loginAttributeResponse);
+      id: '1', type: 'token', loginAttributeResponse: loginAttributeResponse);
 }

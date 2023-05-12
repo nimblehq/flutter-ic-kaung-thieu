@@ -6,7 +6,7 @@ import 'package:survey_flutter/api/storage/shared_preference.dart';
 import 'package:survey_flutter/di/provider/dio_provider.dart';
 import 'package:survey_flutter/model/request/auth_request.dart';
 import 'package:survey_flutter/model/request/login_request.dart';
-import 'package:survey_flutter/model/response/login_response.dart';
+import 'package:survey_flutter/model/response/login_data_response.dart';
 
 final loginRepositoryProvider = Provider<LoginRepository>((ref) {
   return LoginRepositoryImpl(
@@ -16,7 +16,7 @@ final loginRepositoryProvider = Provider<LoginRepository>((ref) {
 });
 
 abstract class LoginRepository {
-  Future<LoginResponse> login(
+  Future<LoginDataResponse> login(
       {required String email, required String password});
 
   Future<void> refreshToken();
@@ -34,16 +34,17 @@ class LoginRepositoryImpl extends LoginRepository {
   final String _grantType = 'password';
 
   @override
-  Future<LoginResponse> login(
+  Future<LoginDataResponse> login(
       {required String email, required String password}) async {
     try {
-      return await _apiService.logIn(LoginRequest(
+      final result = await _apiService.logIn(LoginRequest(
         grantType: _grantType,
         email: email,
         password: password,
         clientId: FlutterConfigPlus.get('CLIENT_ID'),
         clientSecret: FlutterConfigPlus.get('CLIENT_SECRET'),
       ));
+      return result;
     } catch (exception) {
       throw NetworkExceptions.fromDioException(exception);
     }
