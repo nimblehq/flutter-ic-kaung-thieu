@@ -9,18 +9,18 @@ import '../mocks/mock_util.dart';
 
 void main() {
   group('Login Use Case', () {
-    MockLoginRepository mockLoginRepository = MockLoginRepository();
+    MockAuthRepository mockAuthRepository = MockAuthRepository();
 
     late LoginUseCase loginUseCase;
 
-    setUp(() => loginUseCase = LoginUseCase(mockLoginRepository));
+    setUp(() => loginUseCase = LoginUseCase(mockAuthRepository));
     test(
       'When login with correct email and password, it emits success',
       () async {
-        when(mockLoginRepository.login(
+        when(mockAuthRepository.login(
           email: anyNamed('email'),
           password: anyNamed('password'),
-        )).thenAnswer((_) async => MockUtil.loginResponse);
+        )).thenAnswer((_) async => MockUtil.loginDataResponse);
 
         final result = await loginUseCase.call(const LoginParameters(
             email: 'test@gmail.com', password: 'password'));
@@ -31,7 +31,7 @@ void main() {
     test(
       'When login with incorrect email and password, it emits failed',
       () async {
-        when(mockLoginRepository.login(
+        when(mockAuthRepository.login(
           email: anyNamed('email'),
           password: anyNamed('password'),
         )).thenThrow(MockDioError());

@@ -1,5 +1,6 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
+import 'package:survey_flutter/api/storage/shared_preference.dart';
 import 'package:survey_flutter/di/interceptor/app_interceptor.dart';
 import 'package:survey_flutter/env.dart';
 
@@ -8,18 +9,23 @@ const String defaultContentType = 'application/json; charset=utf-8';
 
 class DioProvider {
   Dio? _dio;
+  SharedPreference? _sharedPreference;
 
-  Dio getDio() {
+  Dio getDioAuthorized(SharedPreference sharedPreference) {
+    _sharedPreference = sharedPreference;
+    _dio ??= _createDio(requireAuthenticate: true);
+    return _dio!;
+  }
+
+  Dio getDioUnauthorized() {
     _dio ??= _createDio();
     return _dio!;
   }
 
   Dio _createDio({bool requireAuthenticate = false}) {
     final dio = Dio();
-    final appInterceptor = AppInterceptor(
-      requireAuthenticate,
-      dio,
-    );
+    final appInterceptor =
+        AppInterceptor(requireAuthenticate, dio, _sharedPreference);
     final interceptors = <Interceptor>[];
     interceptors.add(appInterceptor);
     if (!kReleaseMode) {
