@@ -2,6 +2,8 @@ import 'dart:io';
 
 import 'package:dio/dio.dart';
 import 'package:survey_flutter/api/storage/shared_preference.dart';
+import 'package:survey_flutter/usecases/base/base_use_case.dart';
+import 'package:survey_flutter/usecases/refresh_token_use_case.dart';
 
 const String _headerAuthorization = 'Authorization';
 
@@ -9,11 +11,13 @@ class AppInterceptor extends Interceptor {
   final bool _requireAuthenticate;
   final Dio _dio;
   final SharedPreference? _sharedPreference;
+  final RefreshTokenUseCase? _refreshTokenUseCase;
 
   AppInterceptor(
     this._requireAuthenticate,
     this._dio,
     this._sharedPreference,
+    this._refreshTokenUseCase,
   );
 
   @override
@@ -23,7 +27,7 @@ class AppInterceptor extends Interceptor {
       final accessToken = await _sharedPreference?.getAccessToken();
       final tokenType = await _sharedPreference?.getTokenType();
       options.headers.putIfAbsent(_headerAuthorization,
-          () => "${tokenType ?? ''} ${accessToken ?? ''}");
+          () => "${tokenType ?? ''} ${accessToken  ?? ''}");
     }
     return super.onRequest(options, handler);
   }
@@ -45,25 +49,27 @@ class AppInterceptor extends Interceptor {
     ErrorInterceptorHandler handler,
   ) async {
     try {
-      // TODO Request new token
+      final result = await _refreshTokenUseCase?.call();
 
-      // if (result is Success) {
-      // TODO Update new token header
-      // err.requestOptions.headers[_headerAuthorization] = newToken;
+      if (result is Success) {
+        final accessToken = await _sharedPreference?.getAccessToken();
+        final tokenType = await _sharedPreference?.getTokenType();
+        final newToken = "${tokenType ?? ''} ${accessToken ?? ''}";
+        err.requestOptions.headers[_headerAuthorization] = newToken;
 
-      // Create request with new access token
-      final options = Options(
-          method: err.requestOptions.method,
-          headers: err.requestOptions.headers);
-      final newRequest = await _dio.request(
-          "${err.requestOptions.baseUrl}${err.requestOptions.path}",
-          options: options,
-          data: err.requestOptions.data,
-          queryParameters: err.requestOptions.queryParameters);
-      handler.resolve(newRequest);
-      //  } else {
-      //    handler.next(err);
-      //  }
+        // Create request with new access token
+        final options = Options(
+            method: err.requestOptions.method,
+            headers: err.requestOptions.headers);
+        final newRequest = await _dio.request(
+            "${err.requestOptions.baseUrl}${err.requestOptions.path}",
+            options: options,
+            data: err.requestOptions.data,
+            queryParameters: err.requestOptions.queryParameters);
+        handler.resolve(newRequest);
+      } else {
+        handler.next(err);
+      }
     } catch (exception) {
       if (exception is DioError) {
         handler.next(exception);
