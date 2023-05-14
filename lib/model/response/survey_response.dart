@@ -1,4 +1,6 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
+import 'package:survey_flutter/model/hives/survey.dart';
+import 'package:survey_flutter/utils/string_extension.dart';
 
 part 'survey_response.g.dart';
 
@@ -48,4 +50,21 @@ class SurveyResponse {
       _$SurveyResponseFromJson(json);
 
   Map<String, dynamic> toJson() => _$SurveyResponseToJson(this);
+}
+
+extension SurveyResponseMapping on SurveyResponse {
+  Survey toSurvey() => Survey(
+        id: id.orEmpty(),
+        type: type.orEmpty(),
+        title: title.orEmpty(),
+        description: description.orEmpty(),
+        thankEmailAboveThreshold: thankEmailAboveThreshold.orEmpty(),
+        thankEmailBelowThreshold: thankEmailBelowThreshold.orEmpty(),
+        isActive: isActive,
+        coverImageUrl: coverImageUrl.orEmpty(),
+        createdAt: createdAt.orEmpty(),
+        activeAt: activeAt.orEmpty(),
+        inactiveAt: inactiveAt.orEmpty(),
+        surveyType: surveyType.orEmpty(),
+      );
 }

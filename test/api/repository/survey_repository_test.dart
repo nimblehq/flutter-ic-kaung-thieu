@@ -9,18 +9,22 @@ import '../../mocks/mock_util.dart';
 void main() {
   group('SurveyRepository', () {
     MockApiService mockApiService = MockApiService();
+    MockHiveStorage mockHiveStorage = MockHiveStorage();
 
     late SurveyRepository repository;
 
-    setUp(() => repository = SurveyRepositoryImpl(mockApiService));
+    setUp(() => repository = SurveyRepositoryImpl(
+          apiService: mockApiService,
+          hiveStorage: mockHiveStorage,
+        ));
 
     test('When calling getSurveys successfully, it emits surveys', () async {
       when(mockApiService.getSurveys(any, any))
           .thenAnswer((_) async => MockUtil.surveyDataResponse);
 
-      final result = await repository.getSurveys(pageNumber: 1, pageSize: 1);
+      await repository.getSurveys(pageNumber: 1, pageSize: 1);
 
-      expect(result.surveys.length, 1);
+      verify(mockHiveStorage.saveSurveys(any, any)).called(1);
     });
 
     test(
