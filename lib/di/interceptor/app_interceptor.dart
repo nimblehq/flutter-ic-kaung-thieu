@@ -27,7 +27,7 @@ class AppInterceptor extends Interceptor {
       final accessToken = await _sharedPreference?.getAccessToken();
       final tokenType = await _sharedPreference?.getTokenType();
       options.headers.putIfAbsent(_headerAuthorization,
-          () => "${tokenType ?? ''} ${accessToken  ?? ''}");
+          () => "${tokenType ?? ''} ${accessToken ?? ''}");
     }
     return super.onRequest(options, handler);
   }

@@ -30,8 +30,8 @@ class DioProvider {
 
   Dio _createDio({bool requireAuthenticate = false}) {
     final dio = Dio();
-    final appInterceptor =
-        AppInterceptor(requireAuthenticate, dio, _sharedPreference, _refreshTokenUseCase);
+    final appInterceptor = AppInterceptor(
+        requireAuthenticate, dio, _sharedPreference, _refreshTokenUseCase);
     final interceptors = <Interceptor>[];
     interceptors.add(appInterceptor);
     if (!kReleaseMode) {
