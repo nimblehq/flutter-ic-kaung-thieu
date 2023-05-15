@@ -3,6 +3,7 @@ import 'package:hive_flutter/hive_flutter.dart';
 import 'package:survey_flutter/model/hives/survey.dart';
 
 const String surveysBoxKey = 'surveys';
+Box<Survey>? surveysBox;
 
 void setupHive() async {
   await Hive.initFlutter();
@@ -10,8 +11,16 @@ void setupHive() async {
 }
 
 final hiveStorageProvider = Provider((ref) {
+  _setupBox();
+  ref.onDispose(() {
+    surveysBox?.close();
+  });
   return HiveStorageImpl();
 });
+
+void _setupBox() async {
+  surveysBox = await Hive.openBox(surveysBoxKey);
+}
 
 abstract class HiveStorage {
   Future<void> saveSurveys(List<Survey> surveys, bool shouldClear);
@@ -22,21 +31,17 @@ abstract class HiveStorage {
 class HiveStorageImpl extends HiveStorage {
   @override
   Future<void> saveSurveys(List<Survey> surveys, bool shouldClear) async {
-    final Box<Survey> surveysBox = await Hive.openBox(surveysBoxKey);
     if (shouldClear) {
-      await surveysBox.clear();
+      await surveysBox?.clear();
     }
-    await surveysBox.addAll(surveys);
-    surveysBox.close();
+    await surveysBox?.addAll(surveys);
   }
 
   @override
   Future<List<Survey>> getSurveys(int numberOfSurvey) async {
-    final Box<Survey> surveysBox = await Hive.openBox(surveysBoxKey);
     final surveys = surveysBox
-        .valuesBetween(startKey: 0, endKey: numberOfSurvey - 1)
+        ?.valuesBetween(startKey: 0, endKey: numberOfSurvey - 1)
         .toList();
-    surveysBox.close();
-    return surveys;
+    return surveys ?? List.empty();
   }
 }
