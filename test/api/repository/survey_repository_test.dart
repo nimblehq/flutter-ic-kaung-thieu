@@ -1,7 +1,7 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
 import 'package:survey_flutter/api/exception/network_exceptions.dart';
-import 'package:survey_flutter/api/repository/home_repository.dart';
+import 'package:survey_flutter/api/repository/survey_repository.dart';
 
 import '../../mocks/generate_mocks.mocks.dart';
 import '../../mocks/mock_util.dart';

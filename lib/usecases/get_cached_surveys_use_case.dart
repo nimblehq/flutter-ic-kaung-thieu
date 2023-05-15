@@ -1,7 +1,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:survey_flutter/api/storage/hive_storage.dart';
 import 'package:survey_flutter/model/hives/survey.dart';
-import 'package:survey_flutter/model/response/surveys_parameters.dart';
+import 'package:survey_flutter/model/surveys_parameters.dart';
 import 'package:survey_flutter/usecases/base/base_use_case.dart';
 
 final getCachedSurveyUseCaseProvider =
