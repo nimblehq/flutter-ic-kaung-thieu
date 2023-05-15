@@ -6,7 +6,7 @@ const String accessTokenKey = 'access_token';
 const String tokenTypeKey = 'token_type';
 const String refreshTokenKey = 'refresh_token';
 
-final sharedPreferenceProvider = Provider((ref) {
+final sharedPreferenceProvider = Provider<SharedPreference>((ref) {
   return SharedPreferenceImpl(
     FlutterSecureStorageProvider().getFlutterSecureStorage(),
   );
