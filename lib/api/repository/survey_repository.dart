@@ -48,6 +48,7 @@ class SurveyRepositoryImpl extends SurveyRepository {
           result.toSurveys(),
           pageNumber.isFirstPage(),
         );
+        await _hiveStorage.saveNumberOfPage(result.meta.pages);
       }
     } catch (exception) {
       throw NetworkExceptions.fromDioException(exception);
