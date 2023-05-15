@@ -1,14 +1,14 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:survey_flutter/api/repository/home_repository.dart';
 import 'package:survey_flutter/model/response/survey_data_response.dart';
-import 'package:survey_flutter/model/response/surveys_parameters.dart';
+import 'package:survey_flutter/model/surveys_parameters.dart';
 import 'package:survey_flutter/usecases/base/base_use_case.dart';
 
 final getSurveysUseCaseProvider =
-    Provider((ref) => GetSurveysUseCase(ref.watch(homeRepositoryProvider)));
+    Provider((ref) => GetSurveysUseCase(ref.watch(surveyRepositoryProvider)));
 
 class GetSurveysUseCase extends UseCase<SurveyDataResponse, SurveysParameters> {
-  final HomeRepository _homeRepository;
+  final SurveyRepository _homeRepository;
 
   GetSurveysUseCase(this._homeRepository);
 

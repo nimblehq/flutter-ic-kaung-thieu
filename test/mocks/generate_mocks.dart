@@ -17,7 +17,7 @@ import '../util/async_listener.dart';
   SharedPreference,
   LoginUseCase,
   AsyncListener,
-  HomeRepository,
+  SurveyRepository,
 ])
 main() {
   // empty class to generate mock repository classes

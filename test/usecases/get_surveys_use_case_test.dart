@@ -1,6 +1,6 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
-import 'package:survey_flutter/model/response/surveys_parameters.dart';
+import 'package:survey_flutter/model/surveys_parameters.dart';
 import 'package:survey_flutter/usecases/base/base_use_case.dart';
 import 'package:survey_flutter/usecases/get_surveys_use_case.dart';
 
@@ -9,7 +9,7 @@ import '../mocks/mock_util.dart';
 
 void main() {
   group('GetSurveyUseCase', () {
-    MockHomeRepository mockHomeRepository = MockHomeRepository();
+    MockSurveyRepository mockHomeRepository = MockSurveyRepository();
 
     late GetSurveysUseCase getSurveysUseCase;
 

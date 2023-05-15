@@ -7,14 +7,14 @@ import '../../mocks/generate_mocks.mocks.dart';
 import '../../mocks/mock_util.dart';
 
 void main() {
-  group('HomeRepository', () {
+  group('SurveyRepository', () {
     MockApiService mockApiService = MockApiService();
 
-    late HomeRepository repository;
+    late SurveyRepository repository;
 
-    setUp(() => repository = HomeRepositoryImpl(mockApiService));
+    setUp(() => repository = SurveyRepositoryImpl(mockApiService));
 
-    test('When get surveys successfully, it emits surveys', () async {
+    test('When calling getSurveys successfully, it emits surveys', () async {
       when(mockApiService.getSurveys(any, any))
           .thenAnswer((_) async => MockUtil.surveyDataResponse);
 
@@ -23,7 +23,8 @@ void main() {
       expect(result.surveys.length, 1);
     });
 
-    test('When get surveys unsuccessfully, it throws NetworkExceptions error ',
+    test(
+        'When calling getSurveys unsuccessfully, it throws NetworkExceptions error ',
         () async {
       when(mockApiService.getSurveys(any, any)).thenThrow(MockDioError());
 
