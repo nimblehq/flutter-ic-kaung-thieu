@@ -45,7 +45,7 @@ class AuthRepositoryImpl extends AuthRepository {
         clientId: FlutterConfigPlus.get('CLIENT_ID'),
         clientSecret: FlutterConfigPlus.get('CLIENT_SECRET'),
       ));
-      final loginAttribute = result.loginResponse?.loginAttributeResponse;
+      final loginAttribute = result.loginResponse;
       await _sharedPreference
           .saveRefreshToken(loginAttribute?.refreshToken ?? '');
       await _sharedPreference
@@ -69,7 +69,7 @@ class AuthRepositoryImpl extends AuthRepository {
           clientSecret: FlutterConfigPlus.get('CLIENT_SECRET'),
         ),
       );
-      final attribute = result.loginResponse?.loginAttributeResponse;
+      final attribute = result.loginResponse;
       await _sharedPreference.saveRefreshToken(attribute?.refreshToken ?? '');
       await _sharedPreference.saveAccessToken(attribute?.accessToken ?? '');
       await _sharedPreference.saveTokenType(attribute?.tokenType ?? '');
