@@ -22,7 +22,7 @@ final surveyRepositoryProvider = Provider<SurveyRepository>((ref) {
 });
 
 abstract class SurveyRepository {
-  Future<void> getSurveys({
+  Future<SurveyDataResponse> getSurveys({
     required int pageNumber,
     required int pageSize,
   });
@@ -39,7 +39,7 @@ class SurveyRepositoryImpl extends SurveyRepository {
         _hiveStorage = hiveStorage;
 
   @override
-  Future<void> getSurveys(
+  Future<SurveyDataResponse> getSurveys(
       {required int pageNumber, required int pageSize}) async {
     try {
       final result = await _apiService.getSurveys(pageNumber, pageSize);
@@ -48,8 +48,8 @@ class SurveyRepositoryImpl extends SurveyRepository {
           result.toSurveys(),
           pageNumber.isFirstPage(),
         );
-        await _hiveStorage.saveNumberOfPage(result.meta.pages);
       }
+      return result;
     } catch (exception) {
       throw NetworkExceptions.fromDioException(exception);
     }

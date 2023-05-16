@@ -1,5 +1,6 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:survey_flutter/api/repository/survey_repository.dart';
+import 'package:survey_flutter/model/response/survey_data_response.dart';
 import 'package:survey_flutter/model/surveys_parameters.dart';
 import 'package:survey_flutter/usecases/base/base_use_case.dart';
 
@@ -12,13 +13,13 @@ class GetSurveysUseCase extends UseCase<void, SurveysParameters> {
   GetSurveysUseCase(this._surveyRepository);
 
   @override
-  Future<Result<void>> call(SurveysParameters params) async {
+  Future<Result<SurveyDataResponse>> call(SurveysParameters params) async {
     try {
-      await _surveyRepository.getSurveys(
+      final result = await _surveyRepository.getSurveys(
         pageNumber: params.pageNumber,
         pageSize: params.pageSize,
       );
-      return Success(null);
+      return Success(result);
     } catch (e) {
       return Failed(UseCaseException(e));
     }
