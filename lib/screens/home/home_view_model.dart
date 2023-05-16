@@ -44,7 +44,7 @@ class HomeViewModel extends AutoDisposeAsyncNotifier<void> {
   Stream<bool> get shouldShowShimmer => _shouldShowShimmer.stream;
 
   var _pageNumber = 0;
-  int? _numberOfPage = null;
+  int? _numberOfPage;
 
   @override
   FutureOr<void> build() {
@@ -99,7 +99,6 @@ class HomeViewModel extends AutoDisposeAsyncNotifier<void> {
   }
 
   void _getSurveysFromNetwork() async {
-
     final result = await ref.read(getSurveysUseCaseProvider).call(
           SurveysParameters(
             pageNumber: _pageNumber,
