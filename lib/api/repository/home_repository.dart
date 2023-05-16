@@ -4,11 +4,16 @@ import 'package:survey_flutter/api/exception/network_exceptions.dart';
 import 'package:survey_flutter/api/storage/shared_preference.dart';
 import 'package:survey_flutter/di/provider/dio_provider.dart';
 import 'package:survey_flutter/model/response/survey_data_response.dart';
+import 'package:survey_flutter/usecases/refresh_token_use_case.dart';
 
 final surveyRepositoryProvider = Provider<SurveyRepository>((ref) {
   final sharedPreference = ref.watch(sharedPreferenceProvider);
+  final refreshTokenUseCase = ref.watch(refreshTokenUseCaseProvider);
   return SurveyRepositoryImpl(
-    ApiService(DioProvider().getDioAuthorized(sharedPreference)),
+    ApiService(DioProvider().getDioAuthorized(
+      sharedPreference: sharedPreference,
+      refreshTokenUseCase: refreshTokenUseCase,
+    )),
   );
 });
 
