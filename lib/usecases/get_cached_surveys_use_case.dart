@@ -4,13 +4,13 @@ import 'package:survey_flutter/model/hives/survey.dart';
 import 'package:survey_flutter/model/surveys_parameters.dart';
 import 'package:survey_flutter/usecases/base/base_use_case.dart';
 
-final getCachedSurveyUseCaseProvider =
-    Provider((ref) => GetCachedSurveyUseCase(ref.watch(hiveStorageProvider)));
+final getCachedSurveysUseCaseProvider =
+    Provider((ref) => GetCachedSurveysUseCase(ref.watch(hiveStorageProvider)));
 
-class GetCachedSurveyUseCase extends UseCase<List<Survey>, SurveysParameters> {
+class GetCachedSurveysUseCase extends UseCase<List<Survey>, SurveysParameters> {
   final HiveStorage _hiveStorage;
 
-  GetCachedSurveyUseCase(this._hiveStorage);
+  GetCachedSurveysUseCase(this._hiveStorage);
 
   @override
   Future<Result<List<Survey>>> call(SurveysParameters params) async {

@@ -12,10 +12,10 @@ void main() {
   group('GetCachedSurveyUseCase', () {
     MockHiveStorage mockHiveStorage = MockHiveStorage();
 
-    late GetCachedSurveyUseCase getCachedSurveyUseCase;
+    late GetCachedSurveysUseCase getCachedSurveyUseCase;
 
-    setUp(
-        () => getCachedSurveyUseCase = GetCachedSurveyUseCase(mockHiveStorage));
+    setUp(() =>
+        getCachedSurveyUseCase = GetCachedSurveysUseCase(mockHiveStorage));
 
     test('When get cached surveys, it emits success', () async {
       when(mockHiveStorage.getSurveys(any)).thenAnswer((_) async => [
