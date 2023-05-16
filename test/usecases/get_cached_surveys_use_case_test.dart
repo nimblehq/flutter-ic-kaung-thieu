@@ -9,7 +9,7 @@ import '../mocks/generate_mocks.mocks.dart';
 import '../mocks/mock_util.dart';
 
 void main() {
-  group('GetCachedSurveyUseCase', () {
+  group('GetCachedSurveysUseCase', () {
     MockHiveStorage mockHiveStorage = MockHiveStorage();
 
     late GetCachedSurveysUseCase getCachedSurveyUseCase;
