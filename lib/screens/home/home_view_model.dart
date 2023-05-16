@@ -104,7 +104,7 @@ class HomeViewModel extends AutoDisposeAsyncNotifier<void> {
   }
 
   void _getCacheSurveys() async {
-    final result = await ref.read(getCachedSurveyUseCaseProvider).call(
+    final result = await ref.read(getCachedSurveysUseCaseProvider).call(
           SurveysParameters(
             pageNumber: _pageNumber,
             pageSize: pageSize,
