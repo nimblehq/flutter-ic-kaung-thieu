@@ -78,14 +78,19 @@ class HomeScreenState extends ConsumerState<HomeScreen> {
           return const HomeShimmerLoading();
         } else {
           return _buildHomeScreenContent(
-            surveys: surveys,
-            imageUrl: imageUrl,
-            isLoadMore: isLoadMore,
-            currentDate: currentDate,
-            onLoadMore: () {
-              widgetRef.read(homeViewModelProvider.notifier).getSurveyList();
-            },
-          );
+              surveys: surveys,
+              imageUrl: imageUrl,
+              isLoadMore: isLoadMore,
+              currentDate: currentDate,
+              onLoadMore: () {
+                widgetRef.read(homeViewModelProvider.notifier).getSurveyList();
+              },
+              onRefresh: () async {
+                setState(() {
+                  _selectedPage = 0;
+                });
+                widgetRef.read(homeViewModelProvider.notifier).refresh();
+              });
         }
       }),
       backgroundColor: Colors.black,
@@ -103,32 +108,42 @@ class HomeScreenState extends ConsumerState<HomeScreen> {
     required bool isLoadMore,
     required String currentDate,
     required VoidCallback onLoadMore,
+    required RefreshCallback onRefresh,
   }) {
-    return Stack(
-      alignment: Alignment.center,
-      fit: StackFit.expand,
-      children: [
-        if (surveys.isNotEmpty) ...[
-          PageView(
-            controller: _pageController,
-            onPageChanged: (page) {
-              setState(() {
-                _selectedPage = page;
-              });
-              if (page == surveys.length - 2) {
-                onLoadMore();
-              }
-            },
-            children: surveys
-                .map((survey) => _buildBackgroundImage(survey.coverImageUrl))
-                .toList(),
-          ),
-          _buildHeader(currentDate),
-          _buildUserAvatar(imageUrl),
-          _buildSurveyContent(surveys),
-          _buildLoadMoreIndicator(isLoadMore),
-        ]
-      ],
+    return RefreshIndicator(
+      onRefresh: onRefresh,
+      child: SingleChildScrollView(
+          physics: const AlwaysScrollableScrollPhysics(),
+          child: SizedBox(
+            height: MediaQuery.of(context).size.height,
+            child: Stack(
+              alignment: Alignment.center,
+              fit: StackFit.expand,
+              children: [
+                if (surveys.isNotEmpty) ...[
+                  PageView(
+                    controller: _pageController,
+                    onPageChanged: (page) {
+                      setState(() {
+                        _selectedPage = page;
+                      });
+                      if (page == surveys.length - 2) {
+                        onLoadMore();
+                      }
+                    },
+                    children: surveys
+                        .map((survey) =>
+                            _buildBackgroundImage(survey.coverImageUrl))
+                        .toList(),
+                  ),
+                  _buildHeader(currentDate),
+                  _buildUserAvatar(imageUrl),
+                  _buildSurveyContent(surveys),
+                  _buildLoadMoreIndicator(isLoadMore),
+                ]
+              ],
+            ),
+          )),
     );
   }
 
@@ -217,20 +232,22 @@ class HomeScreenState extends ConsumerState<HomeScreen> {
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          PageViewDotIndicator(
-            currentItem: _selectedPage,
-            count: surveys.length,
-            unselectedColor: Colors.white24,
-            selectedColor: Colors.white,
-            duration: const Duration(
-              milliseconds: Metrics.pageIndicatorAnimationDuration,
+          if (surveys.isNotEmpty) ...[
+            PageViewDotIndicator(
+              currentItem: _selectedPage,
+              count: surveys.length,
+              unselectedColor: Colors.white24,
+              selectedColor: Colors.white,
+              duration: const Duration(
+                milliseconds: Metrics.pageIndicatorAnimationDuration,
+              ),
+              alignment: Alignment.bottomLeft,
+              size: const Size(
+                Metrics.pageIndicatorSize,
+                Metrics.pageIndicatorSize,
+              ),
             ),
-            alignment: Alignment.bottomLeft,
-            size: const Size(
-              Metrics.pageIndicatorSize,
-              Metrics.pageIndicatorSize,
-            ),
-          ),
+          ],
           Padding(
             padding: const EdgeInsets.only(
                 left: Metrics.spacingDefault,

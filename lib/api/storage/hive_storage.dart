@@ -26,6 +26,8 @@ abstract class HiveStorage {
   Future<void> saveSurveys(List<Survey> surveys, bool shouldClear);
 
   Future<List<Survey>> getSurveys();
+
+  Future<int> clearSurveys();
 }
 
 class HiveStorageImpl extends HiveStorage {
@@ -41,5 +43,10 @@ class HiveStorageImpl extends HiveStorage {
   Future<List<Survey>> getSurveys() async {
     final surveys = surveysBox?.values.toList();
     return surveys ?? List.empty();
+  }
+
+  @override
+  Future<int> clearSurveys() async {
+    return await surveysBox?.clear() ?? 0;
   }
 }
