@@ -89,13 +89,13 @@ class HomeViewModel extends AutoDisposeAsyncNotifier<void> {
     if (_numberOfPage != null && _pageNumber > (_numberOfPage ?? 0)) {
       return;
     }
+    _getSurveysFromNetwork();
 
     if (_surveyCache.isEmpty) {
       showOrHideShimmer(true);
     } else {
       showOrHideLoadMore(true);
     }
-    _getSurveysFromNetwork();
   }
 
   void _getSurveysFromNetwork() async {
@@ -109,7 +109,7 @@ class HomeViewModel extends AutoDisposeAsyncNotifier<void> {
     if (result is Success) {
       final successValue = (result as Success<SurveyDataResponse>).value;
       _surveyCache.addAll(successValue.surveys
-          .map((survey) => survey.fromSurveyResponseToSurveyModel())
+          .map((survey) => survey.toSurveyModel())
           .toList());
       _numberOfPage = successValue.meta.pages;
       _surveys.add(_surveyCache);
@@ -126,9 +126,8 @@ class HomeViewModel extends AutoDisposeAsyncNotifier<void> {
 
     if (result is Success) {
       final cachedSurveys = (result as Success<List<Survey>>).value;
-      _surveyCache = cachedSurveys
-          .map((survey) => survey.fromSurveyToSurveyModel())
-          .toList();
+      _surveyCache =
+          cachedSurveys.map((survey) => survey.toSurveyModel()).toList();
       _surveys.add(_surveyCache);
     } else if (result is Failed) {
       _isError.add((result as Failed).getErrorMessage());

@@ -15,7 +15,7 @@ class SurveyModel {
 }
 
 extension SurveyMapping on Survey {
-  SurveyModel fromSurveyToSurveyModel() {
+  SurveyModel toSurveyModel() {
     return SurveyModel(
       title: title,
       description: description,
@@ -25,7 +25,7 @@ extension SurveyMapping on Survey {
 }
 
 extension SurveyResponseMapping on SurveyResponse {
-  SurveyModel fromSurveyResponseToSurveyModel() {
+  SurveyModel toSurveyModel() {
     return SurveyModel(
       title: title.orEmpty(),
       description: description.orEmpty(),
