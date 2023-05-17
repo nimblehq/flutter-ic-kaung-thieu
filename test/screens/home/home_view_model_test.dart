@@ -94,9 +94,11 @@ void main() {
       );
     });
 
-    test('When call getSurveysUseCase is failed, it calls getCachedSurveysUseCase', () async {
+    test(
+        'When call getSurveysUseCase is failed, it calls getCachedSurveysUseCase',
+        () async {
       final exception =
-      UseCaseException(const NetworkExceptions.unauthorisedRequest());
+          UseCaseException(const NetworkExceptions.unauthorisedRequest());
       when(mockGetSurveysUseCase.call(any))
           .thenAnswer((_) async => Failed(exception));
       when(mockGetCachedSurveysUseCase.call())
@@ -110,7 +112,9 @@ void main() {
       ]);
     });
 
-    test('When call getSurveysUseCase is success, it does not call getCachedSurveysUseCase', () async {
+    test(
+        'When call getSurveysUseCase is success, it does not call getCachedSurveysUseCase',
+        () async {
       when(mockGetSurveysUseCase.call(any))
           .thenAnswer((_) async => Success(MockUtil.surveyDataResponse));
       when(mockGetCachedSurveysUseCase.call())
