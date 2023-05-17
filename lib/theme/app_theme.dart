@@ -5,7 +5,12 @@ class AppTheme {
   static ThemeData get light => ThemeData(
       fontFamily: FontFamily.neuzeit,
       textTheme: const TextTheme(
-        bodyLarge: TextStyle(
+        titleLarge: TextStyle(
+          color: Colors.white,
+          fontSize: 34,
+          fontWeight: FontWeight.w800,
+        ),
+        bodyMedium: TextStyle(
           color: Colors.white,
           fontSize: 17,
           fontWeight: FontWeight.w400,

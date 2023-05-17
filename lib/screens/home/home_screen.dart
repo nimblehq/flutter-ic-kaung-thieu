@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:go_router/go_router.dart';
 import 'package:page_view_dot_indicator/page_view_dot_indicator.dart';
 import 'package:survey_flutter/gen/assets.gen.dart';
 import 'package:survey_flutter/model/survey_model.dart';
+import 'package:survey_flutter/screens/detail/detail_screen.dart';
 import 'package:survey_flutter/screens/home/home_view_model.dart';
 import 'package:survey_flutter/theme/constant.dart';
 
@@ -188,7 +190,7 @@ class HomeScreenState extends ConsumerState<HomeScreen> {
               ),
               child: Text(
                 _localizations.homeTodayTitle,
-                style: _textTheme.bodyLarge?.copyWith(
+                style: _textTheme.bodyMedium?.copyWith(
                   fontSize: Metrics.fontLarge,
                   fontWeight: FontWeight.bold,
                 ),
@@ -256,7 +258,7 @@ class HomeScreenState extends ConsumerState<HomeScreen> {
             child: Text(
               surveys[_selectedPage].title,
               maxLines: 2,
-              style: _textTheme.bodyLarge?.copyWith(
+              style: _textTheme.bodyMedium?.copyWith(
                 fontSize: Metrics.fontMedium,
                 fontWeight: FontWeight.bold,
               ),
@@ -278,7 +280,7 @@ class HomeScreenState extends ConsumerState<HomeScreen> {
                   child: Text(
                     surveys[_selectedPage].description,
                     maxLines: 2,
-                    style: _textTheme.bodyLarge?.copyWith(
+                    style: _textTheme.bodyMedium?.copyWith(
                       color: Colors.white70,
                       fontSize: Metrics.fontNormal,
                     ),
@@ -294,7 +296,8 @@ class HomeScreenState extends ConsumerState<HomeScreen> {
                 ),
                 child: FloatingActionButton(
                   onPressed: () {
-                    // TODO implement go to detail
+                    final id = surveys[_selectedPage].id;
+                    context.go('$routePathDetailScreen/$id');
                   },
                   backgroundColor: Colors.white,
                   child: Image.asset(Assets.images.icNavNext.path),

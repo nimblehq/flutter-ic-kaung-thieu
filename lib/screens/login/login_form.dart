@@ -29,9 +29,9 @@ class _LoginFormState extends ConsumerState<LoginForm> {
         autocorrect: false,
         decoration: FormFieldDecoration(
           hint: _localizations.emailInputHint,
-          hintTextStyle: _textTheme.bodyLarge,
+          hintTextStyle: _textTheme.bodyMedium,
         ),
-        style: _textTheme.bodyLarge,
+        style: _textTheme.bodyMedium,
         validator: (value) => ref
             .read(loginViewModelProvider.notifier)
             .checkEmail(value, _localizations.invalidEmailError),
@@ -45,9 +45,9 @@ class _LoginFormState extends ConsumerState<LoginForm> {
         obscureText: true,
         decoration: FormFieldDecoration(
           hint: _localizations.passwordInputHint,
-          hintTextStyle: _textTheme.bodyLarge,
+          hintTextStyle: _textTheme.bodyMedium,
         ),
-        style: _textTheme.bodyLarge,
+        style: _textTheme.bodyMedium,
         validator: (value) => ref
             .read(loginViewModelProvider.notifier)
             .checkPassword(value, _localizations.invalidPasswordError),
