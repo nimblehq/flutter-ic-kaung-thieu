@@ -5,6 +5,7 @@ import 'package:survey_flutter/api/exception/network_exceptions.dart';
 import 'package:survey_flutter/model/survey_model.dart';
 import 'package:survey_flutter/screens/home/home_view_model.dart';
 import 'package:survey_flutter/usecases/base/base_use_case.dart';
+import 'package:survey_flutter/usecases/clear_cached_surveys_use_case.dart';
 import 'package:survey_flutter/usecases/get_cached_surveys_use_case.dart';
 import 'package:survey_flutter/usecases/get_surveys_use_case.dart';
 
@@ -15,6 +16,8 @@ void main() {
   final MockGetCachedSurveysUseCase mockGetCachedSurveysUseCase =
       MockGetCachedSurveysUseCase();
   final MockGetSurveysUseCase mockGetSurveysUseCase = MockGetSurveysUseCase();
+  final MockClearCachedSurveysUseCase mockClearCachedSurveysUseCase =
+      MockClearCachedSurveysUseCase();
 
   late ProviderContainer container;
 
@@ -23,6 +26,8 @@ void main() {
       getCachedSurveysUseCaseProvider
           .overrideWithValue(mockGetCachedSurveysUseCase),
       getSurveysUseCaseProvider.overrideWithValue(mockGetSurveysUseCase),
+      clearCachedSurveysUseCaseProvider
+          .overrideWithValue(mockClearCachedSurveysUseCase),
     ]);
     container = providerContainer;
   });
@@ -124,6 +129,21 @@ void main() {
 
       final viewModel = container.read(homeViewModelProvider.notifier);
       await viewModel.getSurveyList();
+      verifyInOrder([
+        mockGetSurveysUseCase.call(any),
+      ]);
+    });
+
+    test('When call refresh, it call getCachedSurveysUseCase', () async {
+      when(mockGetSurveysUseCase.call(any))
+          .thenAnswer((_) async => Success(MockUtil.surveyDataResponse));
+      when(mockGetCachedSurveysUseCase.call())
+          .thenAnswer((_) async => Success([MockUtil.survey]));
+      when(mockClearCachedSurveysUseCase.call())
+          .thenAnswer((realInvocation) async => Success(1));
+
+      final viewModel = container.read(homeViewModelProvider.notifier);
+      await viewModel.refresh();
       verifyInOrder([
         mockGetSurveysUseCase.call(any),
       ]);
