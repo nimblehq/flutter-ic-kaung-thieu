@@ -2,6 +2,7 @@ import 'package:survey_flutter/model/hives/survey.dart';
 import 'package:survey_flutter/model/request/login_request.dart';
 import 'package:survey_flutter/model/response/login_data_response.dart';
 import 'package:survey_flutter/model/response/login_response.dart';
+import 'package:survey_flutter/model/response/meta_response.dart';
 import 'package:survey_flutter/model/response/survey_data_response.dart';
 import 'package:survey_flutter/model/response/survey_response.dart';
 
@@ -26,7 +27,9 @@ class MockUtil {
   );
 
   static SurveyDataResponse surveyDataResponse =
-      SurveyDataResponse([surveyResponse]);
+      SurveyDataResponse([surveyResponse], metaResponse);
+
+  static MetaResponse metaResponse = MetaResponse(2);
 
   static SurveyResponse surveyResponse = SurveyResponse(
     id: '1',
