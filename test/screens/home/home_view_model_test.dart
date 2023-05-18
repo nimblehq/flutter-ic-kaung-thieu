@@ -134,13 +134,14 @@ void main() {
       ]);
     });
 
-    test('When call refresh, it call getCachedSurveysUseCase', () async {
+    test('When calling refresh method, it calls getCachedSurveysUseCase',
+        () async {
       when(mockGetSurveysUseCase.call(any))
           .thenAnswer((_) async => Success(MockUtil.surveyDataResponse));
       when(mockGetCachedSurveysUseCase.call())
           .thenAnswer((_) async => Success([MockUtil.survey]));
       when(mockClearCachedSurveysUseCase.call())
-          .thenAnswer((realInvocation) async => Success(1));
+          .thenAnswer((_) async => Success(null));
 
       final viewModel = container.read(homeViewModelProvider.notifier);
       await viewModel.refresh();
