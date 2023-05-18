@@ -1,3 +1,4 @@
+import 'package:survey_flutter/model/hives/survey.dart';
 import 'package:survey_flutter/model/request/login_request.dart';
 import 'package:survey_flutter/model/response/login_data_response.dart';
 import 'package:survey_flutter/model/response/login_response.dart';
@@ -38,6 +39,21 @@ class MockUtil {
     createdAt: '',
     activeAt: '',
     inactiveAt: '',
+    surveyType: 'surveyType',
+  );
+
+  static Survey survey = Survey(
+    id: 'id',
+    type: 'type',
+    title: 'title',
+    description: 'description',
+    thankEmailAboveThreshold: 'thankEmailAboveThreshold',
+    thankEmailBelowThreshold: 'thankEmailBelowThreshold',
+    isActive: true,
+    coverImageUrl: 'coverImageUrl',
+    createdAt: 'createdAt',
+    activeAt: 'activeAt',
+    inactiveAt: 'inactiveAt',
     surveyType: 'surveyType',
   );
 }

@@ -9,14 +9,14 @@ import '../mocks/mock_util.dart';
 
 void main() {
   group('GetSurveyUseCase', () {
-    MockSurveyRepository mockHomeRepository = MockSurveyRepository();
+    MockSurveyRepository mockSurveyRepository = MockSurveyRepository();
 
     late GetSurveysUseCase getSurveysUseCase;
 
-    setUp(() => getSurveysUseCase = GetSurveysUseCase(mockHomeRepository));
+    setUp(() => getSurveysUseCase = GetSurveysUseCase(mockSurveyRepository));
 
     test('When get surveys successfully, it emits success', () async {
-      when(mockHomeRepository.getSurveys(
+      when(mockSurveyRepository.getSurveys(
         pageNumber: anyNamed('pageNumber'),
         pageSize: anyNamed('pageSize'),
       )).thenAnswer((_) async => MockUtil.surveyDataResponse);
@@ -27,7 +27,7 @@ void main() {
     });
 
     test('When get surveys unsuccessfully, it emits failed', () async {
-      when(mockHomeRepository.getSurveys(
+      when(mockSurveyRepository.getSurveys(
         pageNumber: anyNamed('pageNumber'),
         pageSize: anyNamed('pageSize'),
       )).thenThrow(MockDioError());

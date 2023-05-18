@@ -1,5 +1,6 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:survey_flutter/api/helpers/japx_helper.dart';
+import 'package:survey_flutter/model/hives/survey.dart';
 import 'package:survey_flutter/model/response/survey_response.dart';
 
 part 'survey_data_response.g.dart';
@@ -15,4 +16,9 @@ class SurveyDataResponse {
     final decodedJson = decodeJson(json);
     return _$SurveyDataResponseFromJson(decodedJson);
   }
+}
+
+extension SurveyDataResponseMapping on SurveyDataResponse {
+  List<Survey> toSurveys() =>
+      surveys.map((surveyResponse) => surveyResponse.toSurvey()).toList();
 }
