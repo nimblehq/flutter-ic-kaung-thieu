@@ -89,16 +89,19 @@ class HomeViewModel extends AutoDisposeAsyncNotifier<void> {
     if (_numberOfPage != null && _pageNumber > (_numberOfPage ?? 0)) {
       return;
     }
-    _getSurveysFromNetwork();
 
     if (_surveyCache.isEmpty) {
       showOrHideShimmer(true);
     } else {
       showOrHideLoadMore(true);
     }
+
+    await _getSurveysFromNetwork();
+    showOrHideShimmer(false);
+    showOrHideLoadMore(false);
   }
 
-  void _getSurveysFromNetwork() async {
+  Future<void> _getSurveysFromNetwork() async {
     final result = await ref.read(getSurveysUseCaseProvider).call(
           SurveysParameters(
             pageNumber: _pageNumber,
@@ -117,8 +120,6 @@ class HomeViewModel extends AutoDisposeAsyncNotifier<void> {
       _getCacheSurveys();
       _isError.add((result as Failed).getErrorMessage());
     }
-    showOrHideShimmer(false);
-    showOrHideLoadMore(false);
   }
 
   void _getCacheSurveys() async {
@@ -132,8 +133,6 @@ class HomeViewModel extends AutoDisposeAsyncNotifier<void> {
     } else if (result is Failed) {
       _isError.add((result as Failed).getErrorMessage());
     }
-    showOrHideShimmer(false);
-    showOrHideLoadMore(false);
   }
 
   Future<void> getProfile() async {
