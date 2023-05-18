@@ -58,8 +58,10 @@ class _LoginFormState extends ConsumerState<LoginForm> {
 
   ElevatedButton get _loginButton => ElevatedButton(
         style: ButtonStyle(
-          textStyle:
-              MaterialStateProperty.all(Theme.of(context).textTheme.labelLarge),
+          textStyle: MaterialStateProperty.all(Theme.of(context)
+              .textTheme
+              .labelMedium
+              ?.copyWith(color: Colors.red)),
           backgroundColor: MaterialStateProperty.all(Colors.white),
           foregroundColor: MaterialStateProperty.all(Colors.black),
           overlayColor: MaterialStateProperty.all(Colors.black12),
