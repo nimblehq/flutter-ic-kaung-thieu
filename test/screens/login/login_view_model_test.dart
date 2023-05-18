@@ -28,8 +28,6 @@ void main() {
     );
   });
 
-  setUpAll(() {});
-
   tearDown(() => container.dispose());
 
   group('LoginViewModel', () {
