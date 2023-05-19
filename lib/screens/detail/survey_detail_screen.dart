@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:survey_flutter/gen/assets.gen.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:survey_flutter/screens/detail/survey_question_content.dart';
+import 'package:survey_flutter/screens/detail/start_survey_content.dart';
 
 const routePathDetailScreen = '/home/survey_detail';
 
@@ -14,10 +15,6 @@ class SurveyDetailScreen extends StatefulWidget {
 }
 
 class SurveyDetailScreenState extends State<SurveyDetailScreen> {
-  TextTheme get _textTheme => Theme.of(context).textTheme;
-
-  AppLocalizations get _localizations => AppLocalizations.of(context)!;
-
   late PageController _pageController;
   int _selectedPage = 0;
 
@@ -49,16 +46,18 @@ class SurveyDetailScreenState extends State<SurveyDetailScreen> {
           },
           children: [
             // TODO replace with data from view model in choice question ticket
-            _buildStartSurveyContent(
+            StartSurveyContent(
               title: 'Working from home Check-In',
               description:
                   'We would like to know how you feel about our work from home (WFH) experience.',
+              onPressNext: goToNextPage,
             ),
             // TODO replace total page with value from view model in choice question ticket
-            _buildSurveyQuestionContent(
+            SurveyQuestionContent(
               title: 'How fulfilled did you feel during this WFH period?',
               page: _selectedPage,
               totalPage: 5,
+              onStartSurvey: goToNextPage,
             ),
           ],
         ),
@@ -66,149 +65,11 @@ class SurveyDetailScreenState extends State<SurveyDetailScreen> {
     ));
   }
 
-  Widget _buildSurveyQuestionContent(
-      {required String title, required int page, required int totalPage}) {
-    return Column(
-      children: [
-        _buildToolbar(false),
-        Align(
-          alignment: Alignment.topLeft,
-          child: Padding(
-            padding: const EdgeInsets.only(top: 40.5, left: 20, right: 20),
-            child: Text(
-              '$page/$totalPage',
-              style: _textTheme.labelSmall
-                  ?.copyWith(color: Colors.white.withOpacity(0.5)),
-            ),
-          ),
-        ),
-        Align(
-          alignment: Alignment.topLeft,
-          child: Padding(
-            padding: const EdgeInsets.only(top: 8, left: 20, right: 20),
-            child: Text(
-              title,
-              style: _textTheme.titleLarge,
-            ),
-          ),
-        ),
-        const Expanded(child: SizedBox.shrink()),
-        Align(
-          alignment: Alignment.centerRight,
-          child: Padding(
-            padding: const EdgeInsets.only(bottom: 34, right: 20),
-            child: SizedBox(
-              width: 56,
-              height: 56,
-              child: FloatingActionButton(
-                onPressed: () {
-                  _pageController.animateToPage(
-                    _selectedPage + 1,
-                    duration: const Duration(milliseconds: 200),
-                    curve: Curves.easeIn,
-                  );
-                },
-                backgroundColor: Colors.white,
-                child: Image.asset(Assets.images.icNavNext.path),
-              ),
-            ),
-          ),
-        ),
-      ],
-    );
-  }
-
-  Widget _buildStartSurveyContent({
-    required String title,
-    required String description,
-  }) {
-    return Column(
-      children: [
-        _buildToolbar(true),
-        Padding(
-          padding: const EdgeInsets.only(top: 30.5, left: 20, right: 20),
-          child: Text(
-            title,
-            style: _textTheme.titleLarge,
-          ),
-        ),
-        Padding(
-          padding: const EdgeInsets.only(top: 16, left: 20, right: 20),
-          child: Text(
-            description,
-            style: _textTheme.bodyMedium,
-          ),
-        ),
-        const Expanded(child: SizedBox.shrink()),
-        Align(
-          alignment: Alignment.centerRight,
-          child: Padding(
-            padding: const EdgeInsets.only(bottom: 34, right: 20),
-            child: SizedBox(
-              width: 140,
-              height: 56,
-              child: ElevatedButton(
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.white,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(10.0),
-                  ),
-                ),
-                onPressed: () {
-                  _pageController.animateToPage(
-                    _selectedPage + 1,
-                    duration: const Duration(milliseconds: 200),
-                    curve: Curves.easeIn,
-                  );
-                },
-                child: Text(
-                  _localizations.detailStartSurvey,
-                  style: _textTheme.labelLarge?.copyWith(color: Colors.black),
-                ),
-              ),
-            ),
-          ),
-        ),
-      ],
-    );
-  }
-
-  Widget _buildToolbar(bool showBack) {
-    return Stack(
-      alignment: Alignment.center,
-      children: [
-        if (showBack) ...[
-          Align(
-            alignment: Alignment.centerLeft,
-            child: Padding(
-              padding: const EdgeInsets.only(
-                left: 14,
-                top: 52,
-              ),
-              child: IconButton(
-                  icon: Image.asset(Assets.images.icBack.path),
-                  onPressed: () {
-                    Navigator.of(context).pop();
-                  }),
-            ),
-          ),
-        ] else ...[
-          Align(
-            alignment: Alignment.centerRight,
-            child: Padding(
-              padding: const EdgeInsets.only(
-                right: 16,
-                top: 52,
-              ),
-              child: IconButton(
-                  icon: Image.asset(Assets.images.icClose.path),
-                  onPressed: () {
-                    Navigator.of(context).pop();
-                  }),
-            ),
-          )
-        ]
-      ],
+  void goToNextPage() {
+    _pageController.animateToPage(
+      _selectedPage + 1,
+      duration: const Duration(milliseconds: 200),
+      curve: Curves.easeIn,
     );
   }
 
