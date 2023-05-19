@@ -20,6 +20,11 @@ class AppTheme {
           fontSize: 17,
           fontWeight: FontWeight.w800,
         ),
+        labelSmall: TextStyle(
+          color: Colors.white,
+          fontSize: 15,
+          fontWeight: FontWeight.w800,
+        ),
       ),
       textSelectionTheme: const TextSelectionThemeData(
         cursorColor: Colors.white,

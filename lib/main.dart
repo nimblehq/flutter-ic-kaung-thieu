@@ -4,7 +4,7 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:survey_flutter/api/storage/hive_storage.dart';
-import 'package:survey_flutter/screens/detail/detail_screen.dart';
+import 'package:survey_flutter/screens/detail/survey_detail_screen.dart';
 import 'package:survey_flutter/screens/home/home_screen.dart';
 import 'package:survey_flutter/theme/app_theme.dart';
 import 'package:survey_flutter/screens/login/login_screen.dart';
@@ -47,9 +47,10 @@ class MyApp extends StatelessWidget {
               const HomeScreen(),
           routes: [
             GoRoute(
-              path: 'detail/:surveyId',
+              path: 'survey_detail/:surveyId',
               builder: (BuildContext context, GoRouterState state) =>
-                  DetailScreen(surveyId: state.params["surveyId"].orEmpty()),
+                  SurveyDetailScreen(
+                      surveyId: state.params["surveyId"].orEmpty()),
             ),
           ]),
     ],
