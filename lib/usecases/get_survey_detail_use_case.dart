@@ -1,3 +1,4 @@
+// ignore_for_file: avoid_renaming_method_parameters
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:survey_flutter/api/repository/survey_repository.dart';
 import 'package:survey_flutter/model/response/survey_detail_data_response.dart';
@@ -12,9 +13,9 @@ class GetSurveyDetailUseCase extends UseCase<SurveyDetailDataResponse, String> {
   GetSurveyDetailUseCase(this._surveyRepository);
 
   @override
-  Future<Result<SurveyDetailDataResponse>> call(String params) async {
+  Future<Result<SurveyDetailDataResponse>> call(String surveyId) async {
     try {
-      final result = await _surveyRepository.getSurveyDetail(params);
+      final result = await _surveyRepository.getSurveyDetail(surveyId);
       return Success(result);
     } catch (e) {
       return Failed(UseCaseException(e));
