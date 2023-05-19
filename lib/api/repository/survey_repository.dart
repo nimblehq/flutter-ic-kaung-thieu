@@ -5,6 +5,7 @@ import 'package:survey_flutter/api/storage/hive_storage.dart';
 import 'package:survey_flutter/api/storage/shared_preference.dart';
 import 'package:survey_flutter/di/provider/dio_provider.dart';
 import 'package:survey_flutter/model/response/survey_data_response.dart';
+import 'package:survey_flutter/model/response/survey_detail_data_response.dart';
 import 'package:survey_flutter/usecases/refresh_token_use_case.dart';
 import 'package:survey_flutter/utils/int_extension.dart';
 
@@ -26,6 +27,8 @@ abstract class SurveyRepository {
     required int pageNumber,
     required int pageSize,
   });
+
+  Future<SurveyDetailDataResponse> getSurveyDetail(String surveyId);
 }
 
 class SurveyRepositoryImpl extends SurveyRepository {
@@ -49,6 +52,16 @@ class SurveyRepositoryImpl extends SurveyRepository {
           pageNumber.isFirstPage(),
         );
       }
+      return result;
+    } catch (exception) {
+      throw NetworkExceptions.fromDioException(exception);
+    }
+  }
+
+  @override
+  Future<SurveyDetailDataResponse> getSurveyDetail(String surveyId) async {
+    try {
+      final result = await _apiService.getSurveyDetail(surveyId);
       return result;
     } catch (exception) {
       throw NetworkExceptions.fromDioException(exception);
