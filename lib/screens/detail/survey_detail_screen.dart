@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:survey_flutter/gen/assets.gen.dart';
+import 'package:survey_flutter/screens/detail/multiple_choice_answers.dart';
 import 'package:survey_flutter/screens/detail/survey_question_content.dart';
 import 'package:survey_flutter/screens/detail/start_survey_content.dart';
 import 'package:survey_flutter/model/survey_question_model.dart';
@@ -79,6 +80,7 @@ class SurveyDetailScreenState extends State<SurveyDetailScreen> {
                       page: _selectedPage,
                       totalPage: surveyDetail.questions.length,
                       onPressNext: goToNextPage,
+                      child: _getQuestionContentChild(question),
                     ),
                   ]
                 ],
@@ -88,6 +90,28 @@ class SurveyDetailScreenState extends State<SurveyDetailScreen> {
         }
       }),
     );
+  }
+
+  Widget _getQuestionContentChild(SurveyQuestionModel question) {
+    return Consumer(builder: (_, widgetRef, child) {
+      switch (question.displayType) {
+        case DisplayType.choice:
+          return MultipleChoiceAnswers(
+            answers: question.answers,
+            onChoiceClick: (answerId) {
+              widgetRef
+                  .read(detailViewModelProvider.notifier)
+                  .updateChoiceAnswer(
+                    questionId: question.id,
+                    answerId: answerId,
+                    pickType: question.pick,
+                  );
+            },
+          );
+        default:
+          return const Expanded(child: SizedBox.shrink());
+      }
+    });
   }
 
   void goToNextPage() {

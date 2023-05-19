@@ -6,12 +6,14 @@ class SurveyQuestionContent extends StatefulWidget {
   final int page;
   final int totalPage;
   final VoidCallback onPressNext;
+  final Widget child;
 
   const SurveyQuestionContent({
     required this.title,
     required this.page,
     required this.totalPage,
     required this.onPressNext,
+    required this.child,
     super.key,
   });
 
@@ -48,7 +50,11 @@ class SurveyQuestionContentState extends State<SurveyQuestionContent> {
             ),
           ),
         ),
-        const Expanded(child: SizedBox.shrink()),
+        Expanded(
+          child: Center(
+            child: widget.child,
+          ),
+        ),
         Align(
           alignment: Alignment.centerRight,
           child: Padding(
