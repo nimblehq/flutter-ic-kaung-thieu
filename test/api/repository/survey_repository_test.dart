@@ -38,7 +38,7 @@ void main() {
           throwsA(isA<NetworkExceptions>()));
     });
 
-    test('When calling getSurveyDetail successfully, it emits surveys',
+    test('When calling getSurveyDetail successfully, it emits a survey',
         () async {
       when(mockApiService.getSurveyDetail(any)).thenAnswer(
           (_) async => SurveyDetailDataResponse(SurveyDetailResponse()));
