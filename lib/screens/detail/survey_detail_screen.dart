@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import 'package:survey_flutter/gen/assets.gen.dart';
 import 'package:survey_flutter/screens/detail/multiple_choice_answers.dart';
+import 'package:survey_flutter/screens/detail/success_submit_content.dart';
 import 'package:survey_flutter/screens/detail/survey_question_content.dart';
 import 'package:survey_flutter/screens/detail/start_survey_content.dart';
 import 'package:survey_flutter/model/survey_question_model.dart';
@@ -24,6 +26,8 @@ class SurveyDetailScreenState extends State<SurveyDetailScreen> {
 
   final _surveyDetailStreamProvider = StreamProvider.autoDispose(
       (ref) => ref.watch(surveyDetailViewModelProvider.notifier).surveyDetail);
+  final _isSubmitSuccessStreamProvider = StreamProvider.autoDispose((ref) =>
+      ref.watch(surveyDetailViewModelProvider.notifier).isSubmitSuccess);
 
   @override
   void initState() {
@@ -42,6 +46,8 @@ class SurveyDetailScreenState extends State<SurveyDetailScreen> {
     return Scaffold(
       body: Consumer(builder: (context, widgetRef, child) {
         var surveyDetail = widgetRef.watch(_surveyDetailStreamProvider).value;
+        var isSubmitSurveySuccess =
+            widgetRef.watch(_isSubmitSuccessStreamProvider).value;
 
         if (surveyDetail == null) {
           return Container(
@@ -54,6 +60,12 @@ class SurveyDetailScreenState extends State<SurveyDetailScreen> {
                 )
               ],
             ),
+          );
+        } else if (isSubmitSurveySuccess ?? false) {
+          return SurveySubmitSuccessScreen(
+            onAnimationEnd: () {
+              context.pop();
+            },
           );
         } else {
           return Stack(
@@ -79,7 +91,15 @@ class SurveyDetailScreenState extends State<SurveyDetailScreen> {
                       title: question.title,
                       page: _selectedPage,
                       totalPage: surveyDetail.questions.length,
-                      onPressNext: goToNextPage,
+                      onPressNext: () {
+                        if (_selectedPage == surveyDetail.questions.length) {
+                          widgetRef
+                              .read(surveyDetailViewModelProvider.notifier)
+                              .submitSurvey();
+                        } else {
+                          goToNextPage();
+                        }
+                      },
                       child: _getQuestionContentChild(question),
                     ),
                   ]

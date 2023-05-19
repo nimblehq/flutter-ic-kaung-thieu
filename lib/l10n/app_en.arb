@@ -14,5 +14,7 @@
 
     "homeTodayTitle": "Today",
 
-    "surveyDetailStartSurvey": "Start Survey"
+    "surveyDetailStartSurvey": "Start Survey",
+    "surveySubmit": "Submit",
+    "surveySubmitSuccessMsg": "Thanks for taking the survey."
 }

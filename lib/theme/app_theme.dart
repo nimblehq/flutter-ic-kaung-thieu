@@ -10,6 +10,11 @@ class AppTheme {
           fontSize: 34,
           fontWeight: FontWeight.w800,
         ),
+        titleMedium: TextStyle(
+          color: Colors.white,
+          fontSize: 28,
+          fontWeight: FontWeight.w800,
+        ),
         bodyMedium: TextStyle(
           color: Colors.white,
           fontSize: 17,
