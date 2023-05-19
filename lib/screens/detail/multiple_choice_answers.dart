@@ -47,7 +47,7 @@ class MultipleChoiceState extends State<MultipleChoiceAnswers> {
     required bool isAnswer,
     required VoidCallback onClick,
   }) {
-    TextStyle? textStyle() {
+    TextStyle? getTextStyle() {
       if (isSelected) {
         return _textTheme.labelLarge?.copyWith(color: Colors.white);
       } else {
@@ -58,7 +58,7 @@ class MultipleChoiceState extends State<MultipleChoiceAnswers> {
       }
     }
 
-    String imagePath() {
+    String getImagePath() {
       if (isAnswer) {
         if (isSelected) {
           return Assets.images.icChoice.path;
@@ -70,7 +70,7 @@ class MultipleChoiceState extends State<MultipleChoiceAnswers> {
       }
     }
 
-    Color dividerColor() {
+    Color getDividerColor() {
       if (isSelected) {
         return Colors.white;
       } else {
@@ -85,7 +85,7 @@ class MultipleChoiceState extends State<MultipleChoiceAnswers> {
         child: Column(
           children: [
             Divider(
-              color: dividerColor(),
+              color: getDividerColor(),
               thickness: 1,
             ),
             Padding(
@@ -94,14 +94,14 @@ class MultipleChoiceState extends State<MultipleChoiceAnswers> {
                 Expanded(
                   child: Text(
                     text,
-                    style: textStyle(),
+                    style: getTextStyle(),
                   ),
                 ),
-                Image.asset(imagePath()),
+                Image.asset(getImagePath()),
               ]),
             ),
             Divider(
-              color: dividerColor(),
+              color: getDividerColor(),
               thickness: 1,
             ),
           ],
