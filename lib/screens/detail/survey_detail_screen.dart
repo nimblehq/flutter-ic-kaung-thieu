@@ -2,19 +2,20 @@ import 'package:flutter/material.dart';
 import 'package:survey_flutter/gen/assets.gen.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
-const routePathDetailScreen = '/home/detail';
+const routePathDetailScreen = '/home/survey_detail';
 
-class DetailScreen extends StatefulWidget {
+class SurveyDetailScreen extends StatefulWidget {
   final String surveyId;
 
-  const DetailScreen({required this.surveyId, super.key});
+  const SurveyDetailScreen({required this.surveyId, super.key});
 
   @override
-  State<StatefulWidget> createState() => DetailScreenState();
+  State<StatefulWidget> createState() => SurveyDetailScreenState();
 }
 
-class DetailScreenState extends State<DetailScreen> {
+class SurveyDetailScreenState extends State<SurveyDetailScreen> {
   TextTheme get _textTheme => Theme.of(context).textTheme;
+
   AppLocalizations get _localizations => AppLocalizations.of(context)!;
 
   late PageController _pageController;
@@ -47,28 +48,48 @@ class DetailScreenState extends State<DetailScreen> {
             });
           },
           children: [
+            // TODO replace with data from view model in choice question ticket
             _buildStartSurveyContent(
               title: 'Working from home Check-In',
               description:
                   'We would like to know how you feel about our work from home (WFH) experience.',
             ),
+            // TODO replace total page with value from view model in choice question ticket
             _buildSurveyQuestionContent(
-                title: 'How fulfilled did you feel during this WFH period?'),
+              title: 'How fulfilled did you feel during this WFH period?',
+              page: _selectedPage,
+              totalPage: 5,
+            ),
           ],
         ),
       ],
     ));
   }
 
-  Widget _buildSurveyQuestionContent({required String title}) {
+  Widget _buildSurveyQuestionContent(
+      {required String title, required int page, required int totalPage}) {
     return Column(
       children: [
         _buildToolbar(false),
-        Padding(
-          padding: const EdgeInsets.only(top: 30.5, left: 20, right: 20),
-          child: Text(
-            title,
-            style: _textTheme.titleLarge,
+        Align(
+          alignment: Alignment.topLeft,
+          child: Padding(
+            padding: const EdgeInsets.only(top: 40.5, left: 20, right: 20),
+            child: Text(
+              '$page/$totalPage',
+              style: _textTheme.labelSmall
+                  ?.copyWith(color: Colors.white.withOpacity(0.5)),
+            ),
+          ),
+        ),
+        Align(
+          alignment: Alignment.topLeft,
+          child: Padding(
+            padding: const EdgeInsets.only(top: 8, left: 20, right: 20),
+            child: Text(
+              title,
+              style: _textTheme.titleLarge,
+            ),
           ),
         ),
         const Expanded(child: SizedBox.shrink()),

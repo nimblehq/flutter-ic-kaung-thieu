@@ -5,7 +5,7 @@ import 'package:go_router/go_router.dart';
 import 'package:page_view_dot_indicator/page_view_dot_indicator.dart';
 import 'package:survey_flutter/gen/assets.gen.dart';
 import 'package:survey_flutter/model/survey_model.dart';
-import 'package:survey_flutter/screens/detail/detail_screen.dart';
+import 'package:survey_flutter/screens/detail/survey_detail_screen.dart';
 import 'package:survey_flutter/screens/home/home_view_model.dart';
 import 'package:survey_flutter/theme/constant.dart';
 
