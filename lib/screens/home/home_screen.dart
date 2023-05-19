@@ -250,7 +250,7 @@ class HomeScreenState extends ConsumerState<HomeScreen> {
             mainAxisSize: MainAxisSize.max,
             crossAxisAlignment: CrossAxisAlignment.end,
             children: [
-              Flexible(
+              Expanded(
                 child: Padding(
                   padding: const EdgeInsets.fromLTRB(
                     Metrics.spacingDefault,
