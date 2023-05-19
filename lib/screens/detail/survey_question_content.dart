@@ -5,13 +5,13 @@ class SurveyQuestionContent extends StatefulWidget {
   final String title;
   final int page;
   final int totalPage;
-  final VoidCallback onStartSurvey;
+  final VoidCallback onPressNext;
 
   const SurveyQuestionContent({
     required this.title,
     required this.page,
     required this.totalPage,
-    required this.onStartSurvey,
+    required this.onPressNext,
     super.key,
   });
 
@@ -57,7 +57,7 @@ class SurveyQuestionContentState extends State<SurveyQuestionContent> {
               width: 56,
               height: 56,
               child: FloatingActionButton(
-                onPressed: widget.onStartSurvey,
+                onPressed: widget.onPressNext,
                 backgroundColor: Colors.white,
                 child: Image.asset(Assets.images.icNavNext.path),
               ),
