@@ -1,5 +1,8 @@
 import 'package:survey_flutter/model/hives/survey.dart';
 import 'package:survey_flutter/model/request/login_request.dart';
+import 'package:survey_flutter/model/request/submit_surveys_request.dart';
+import 'package:survey_flutter/model/request/survey_answer_request.dart';
+import 'package:survey_flutter/model/request/survey_question_request.dart';
 import 'package:survey_flutter/model/response/login_data_response.dart';
 import 'package:survey_flutter/model/response/login_response.dart';
 import 'package:survey_flutter/model/response/meta_response.dart';
@@ -58,5 +61,18 @@ class MockUtil {
     activeAt: 'activeAt',
     inactiveAt: 'inactiveAt',
     surveyType: 'surveyType',
+  );
+
+  static SurveyQuestionRequest surveyQuestionRequest = SurveyQuestionRequest(
+    id: 'id',
+    answers: List.empty(),
+  );
+
+  static SurveyAnswerRequest surveyAnswerRequest =
+      SurveyAnswerRequest(id: 'id');
+
+  static SubmitSurveysRequest submitSurveysRequest = SubmitSurveysRequest(
+    surveyId: 'surveyId',
+    questions: [surveyQuestionRequest],
   );
 }
