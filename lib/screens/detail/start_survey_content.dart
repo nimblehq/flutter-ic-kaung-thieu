@@ -5,12 +5,12 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 class StartSurveyContent extends StatefulWidget {
   final String title;
   final String description;
-  final VoidCallback onPressNext;
+  final VoidCallback onStartSurvey;
 
   const StartSurveyContent({
     required this.title,
     required this.description,
-    required this.onPressNext,
+    required this.onStartSurvey,
     super.key,
   });
 
@@ -58,7 +58,7 @@ class StartSurveyContentState extends State<StartSurveyContent> {
                       borderRadius: BorderRadius.circular(10.0),
                     ),
                   ),
-                  onPressed: widget.onPressNext,
+                  onPressed: widget.onStartSurvey,
                   child: Text(
                     _localizations.surveyDetailStartSurvey,
                     style: _textTheme.labelLarge?.copyWith(color: Colors.black),

@@ -50,14 +50,14 @@ class SurveyDetailScreenState extends State<SurveyDetailScreen> {
               title: 'Working from home Check-In',
               description:
                   'We would like to know how you feel about our work from home (WFH) experience.',
-              onPressNext: goToNextPage,
+              onStartSurvey: goToNextPage,
             ),
             // TODO replace total page with value from view model in choice question ticket
             SurveyQuestionContent(
               title: 'How fulfilled did you feel during this WFH period?',
               page: _selectedPage,
               totalPage: 5,
-              onStartSurvey: goToNextPage,
+              onPressNext: goToNextPage,
             ),
           ],
         ),
