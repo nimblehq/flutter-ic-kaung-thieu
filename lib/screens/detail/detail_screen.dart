@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:survey_flutter/gen/assets.gen.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 const routePathDetailScreen = '/home/detail';
 
@@ -14,6 +15,8 @@ class DetailScreen extends StatefulWidget {
 
 class DetailScreenState extends State<DetailScreen> {
   TextTheme get _textTheme => Theme.of(context).textTheme;
+  AppLocalizations get _localizations => AppLocalizations.of(context)!;
+
   late PageController _pageController;
   int _selectedPage = 0;
 
@@ -138,7 +141,7 @@ class DetailScreenState extends State<DetailScreen> {
                   );
                 },
                 child: Text(
-                  'Start Survey',
+                  _localizations.detailStartSurvey,
                   style: _textTheme.labelLarge?.copyWith(color: Colors.black),
                 ),
               ),
