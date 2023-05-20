@@ -36,5 +36,5 @@ abstract class ApiService {
   );
 
   @POST('api/v1/responses')
-  Future<void> submitSurveys(@Body() SubmitSurveysRequest submitSurveysRequest);
+  Future<void> submitSurvey(@Body() SubmitSurveyRequest submitSurveysRequest);
 }

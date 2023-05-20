@@ -18,7 +18,7 @@ void main() {
     test(
         'When calling submitSurveys with SubmitSurveysRequest successfully, it emits success',
         () async {
-      when(mockSurveyRepository.submitSurveys(any))
+      when(mockSurveyRepository.submitSurvey(any))
           .thenAnswer((_) => Future.value());
 
       final result =
@@ -29,7 +29,7 @@ void main() {
     test(
       'When calling submitSurveys with SubmitSurveysRequest unsuccessfully, it emits failed',
       () async {
-        when(mockSurveyRepository.submitSurveys(any)).thenThrow(MockDioError());
+        when(mockSurveyRepository.submitSurvey(any)).thenThrow(MockDioError());
 
         final result =
             await submitSurveysUseCase.call(MockUtil.submitSurveysRequest);

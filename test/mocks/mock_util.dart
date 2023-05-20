@@ -71,7 +71,7 @@ class MockUtil {
   static SurveyAnswerRequest surveyAnswerRequest =
       SurveyAnswerRequest(id: 'id');
 
-  static SubmitSurveysRequest submitSurveysRequest = SubmitSurveysRequest(
+  static SubmitSurveyRequest submitSurveysRequest = SubmitSurveyRequest(
     surveyId: 'surveyId',
     questions: [surveyQuestionRequest],
   );

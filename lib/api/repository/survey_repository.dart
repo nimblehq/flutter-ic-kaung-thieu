@@ -31,7 +31,7 @@ abstract class SurveyRepository {
 
   Future<SurveyDetailDataResponse> getSurveyDetail(String surveyId);
 
-  Future<void> submitSurveys(SubmitSurveysRequest submitSurveyRequest);
+  Future<void> submitSurvey(SubmitSurveyRequest submitSurveyRequest);
 }
 
 class SurveyRepositoryImpl extends SurveyRepository {
@@ -72,9 +72,9 @@ class SurveyRepositoryImpl extends SurveyRepository {
   }
 
   @override
-  Future<void> submitSurveys(SubmitSurveysRequest submitSurveyRequest) async {
+  Future<void> submitSurvey(SubmitSurveyRequest submitSurveyRequest) async {
     try {
-      final result = await _apiService.submitSurveys(submitSurveyRequest);
+      final result = await _apiService.submitSurvey(submitSurveyRequest);
       return result;
     } catch (exception) {
       throw NetworkExceptions.fromDioException(exception);

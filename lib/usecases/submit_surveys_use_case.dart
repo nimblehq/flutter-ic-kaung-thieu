@@ -7,15 +7,15 @@ final submitSurveysUseCaseProvider = Provider((ref) {
   return SubmitSurveysUseCase(ref.watch(surveyRepositoryProvider));
 });
 
-class SubmitSurveysUseCase extends UseCase<void, SubmitSurveysRequest> {
+class SubmitSurveysUseCase extends UseCase<void, SubmitSurveyRequest> {
   final SurveyRepository _surveyRepository;
 
   SubmitSurveysUseCase(this._surveyRepository);
 
   @override
-  Future<Result<void>> call(SubmitSurveysRequest params) async {
+  Future<Result<void>> call(SubmitSurveyRequest params) async {
     try {
-      final result = await _surveyRepository.submitSurveys(params);
+      final result = await _surveyRepository.submitSurvey(params);
       return Success(result);
     } catch (e) {
       return Failed(UseCaseException(e));

@@ -59,19 +59,19 @@ void main() {
 
     test('When calling submitSurvey successfully, it emits a success',
         () async {
-      when(mockApiService.submitSurveys(any)).thenAnswer((_) => Future.value());
+      when(mockApiService.submitSurvey(any)).thenAnswer((_) => Future.value());
 
-      await repository.submitSurveys(MockUtil.submitSurveysRequest);
+      await repository.submitSurvey(MockUtil.submitSurveysRequest);
 
-      verify(mockApiService.submitSurveys(any)).called(1);
+      verify(mockApiService.submitSurvey(any)).called(1);
     });
 
     test(
         'When calling submitSurvey unsuccessfully, it throws NetworkExceptions error ',
         () async {
-      when(mockApiService.submitSurveys(any)).thenThrow(MockDioError());
+      when(mockApiService.submitSurvey(any)).thenThrow(MockDioError());
 
-      expect(() => repository.submitSurveys(MockUtil.submitSurveysRequest),
+      expect(() => repository.submitSurvey(MockUtil.submitSurveysRequest),
           throwsA(isA<NetworkExceptions>()));
     });
   });

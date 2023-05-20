@@ -4,19 +4,19 @@ import 'package:survey_flutter/model/request/survey_question_request.dart';
 part 'submit_surveys_request.g.dart';
 
 @JsonSerializable()
-class SubmitSurveysRequest {
+class SubmitSurveyRequest {
   @JsonKey(name: 'survey_id')
   final String surveyId;
   @JsonKey(name: 'questions')
   final List<SurveyQuestionRequest> questions;
 
-  SubmitSurveysRequest({
+  SubmitSurveyRequest({
     required this.surveyId,
     required this.questions,
   });
 
-  factory SubmitSurveysRequest.fromJson(Map<String, dynamic> json) =>
-      _$SubmitSurveysRequestFromJson(json);
+  factory SubmitSurveyRequest.fromJson(Map<String, dynamic> json) =>
+      _$SubmitSurveyRequestFromJson(json);
 
-  Map<String, dynamic> toJson() => _$SubmitSurveysRequestToJson(this);
+  Map<String, dynamic> toJson() => _$SubmitSurveyRequestToJson(this);
 }
