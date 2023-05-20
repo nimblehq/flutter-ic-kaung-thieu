@@ -8,6 +8,7 @@ import 'package:survey_flutter/screens/detail/survey_question_content.dart';
 import 'package:survey_flutter/screens/detail/start_survey_content.dart';
 import 'package:survey_flutter/model/survey_question_model.dart';
 import 'package:survey_flutter/screens/detail/survey_detail_view_model.dart';
+import 'package:survey_flutter/screens/detail/text_area_answer.dart';
 
 const routePathDetailScreen = '/home/survey_detail';
 
@@ -88,7 +89,7 @@ class SurveyDetailScreenState extends State<SurveyDetailScreen> {
                   for (SurveyQuestionModel question
                       in surveyDetail.questions) ...[
                     SurveyQuestionContent(
-                      title: question.title,
+                      title: question.text,
                       page: _selectedPage,
                       totalPage: surveyDetail.questions.length,
                       onPressNext: () {
@@ -114,19 +115,28 @@ class SurveyDetailScreenState extends State<SurveyDetailScreen> {
 
   Widget _getQuestionContentChild(SurveyQuestionModel question) {
     return Consumer(builder: (_, widgetRef, child) {
+      final viewModel = widgetRef.read(surveyDetailViewModelProvider.notifier);
       switch (question.displayType) {
         case DisplayType.choice:
           return MultipleChoiceAnswers(
             answers: question.answers,
             onChoiceClick: (answerId) {
-              widgetRef
-                  .read(surveyDetailViewModelProvider.notifier)
-                  .updateChoiceAnswer(
-                    questionId: question.id,
-                    answerId: answerId,
-                    pickType: question.pick,
-                  );
+              viewModel.updateChoiceAnswer(
+                questionId: question.id,
+                answerId: answerId,
+                pickType: question.pick,
+              );
             },
+          );
+        case DisplayType.textArea:
+          return TextAreaAnswer(
+            onTextChange: (text) {
+              viewModel.updateTextAnswer(
+                  questionId: question.id,
+                  answerId: question.answers.first.id,
+                  answerText: text);
+            },
+            hint: question.shortText,
           );
         default:
           return const Expanded(child: SizedBox.shrink());
