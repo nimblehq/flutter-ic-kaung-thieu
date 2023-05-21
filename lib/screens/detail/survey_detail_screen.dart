@@ -5,7 +5,7 @@ import 'package:survey_flutter/screens/detail/multiple_choice_answers.dart';
 import 'package:survey_flutter/screens/detail/survey_question_content.dart';
 import 'package:survey_flutter/screens/detail/start_survey_content.dart';
 import 'package:survey_flutter/model/survey_question_model.dart';
-import 'package:survey_flutter/screens/detail/detail_view_model.dart';
+import 'package:survey_flutter/screens/detail/survey_detail_view_model.dart';
 
 const routePathDetailScreen = '/home/survey_detail';
 
@@ -23,7 +23,7 @@ class SurveyDetailScreenState extends State<SurveyDetailScreen> {
   int _selectedPage = 0;
 
   final _surveyDetailStreamProvider = StreamProvider.autoDispose(
-      (ref) => ref.watch(detailViewModelProvider.notifier).surveyDetail);
+      (ref) => ref.watch(surveyDetailViewModelProvider.notifier).surveyDetail);
 
   @override
   void initState() {
@@ -100,7 +100,7 @@ class SurveyDetailScreenState extends State<SurveyDetailScreen> {
             answers: question.answers,
             onChoiceClick: (answerId) {
               widgetRef
-                  .read(detailViewModelProvider.notifier)
+                  .read(surveyDetailViewModelProvider.notifier)
                   .updateChoiceAnswer(
                     questionId: question.id,
                     answerId: answerId,

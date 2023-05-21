@@ -5,11 +5,11 @@ import 'package:survey_flutter/model/survey_answer_model.dart';
 import 'package:survey_flutter/model/survey_detail_model.dart';
 import 'package:survey_flutter/model/survey_question_model.dart';
 
-final detailViewModelProvider =
-    AsyncNotifierProvider.autoDispose<DetailViewModel, void>(
-        DetailViewModel.new);
+final surveyDetailViewModelProvider =
+    AsyncNotifierProvider.autoDispose<SurveyDetailViewModel, void>(
+        SurveyDetailViewModel.new);
 
-class DetailViewModel extends AutoDisposeAsyncNotifier<void> {
+class SurveyDetailViewModel extends AutoDisposeAsyncNotifier<void> {
   SurveyDetailModel? _cache;
 
   final _surveyDetail = StreamController<SurveyDetailModel>();
