@@ -71,6 +71,7 @@ class SurveyDetailViewModel extends AutoDisposeAsyncNotifier<void> {
           }
         }
       }
+      _surveyDetail.add(_cache!);
     }
   }
 

@@ -9,6 +9,7 @@ import 'package:survey_flutter/screens/detail/start_survey_content.dart';
 import 'package:survey_flutter/model/survey_question_model.dart';
 import 'package:survey_flutter/screens/detail/survey_detail_view_model.dart';
 import 'package:survey_flutter/screens/detail/text_area_answer.dart';
+import 'package:survey_flutter/utils/app_extensions.dart';
 
 const routePathDetailScreen = '/home/survey_detail';
 
@@ -130,13 +131,14 @@ class SurveyDetailScreenState extends State<SurveyDetailScreen> {
           );
         case DisplayType.textArea:
           return TextAreaAnswer(
+            answer: question.answers.firstOrNull,
+            hint: question.shortText,
             onTextChange: (text) {
               viewModel.updateTextAnswer(
                   questionId: question.id,
-                  answerId: question.answers.first.id,
+                  answerId: question.answers.firstOrNull?.id ?? '',
                   answerText: text);
             },
-            hint: question.shortText,
           );
         default:
           return const Expanded(child: SizedBox.shrink());

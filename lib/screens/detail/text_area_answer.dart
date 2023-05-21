@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:survey_flutter/model/survey_answer_model.dart';
 
 class TextAreaAnswer extends StatefulWidget {
   final ValueChanged<String> onTextChange;
+  final SurveyAnswerModel? answer;
   final String hint;
 
   const TextAreaAnswer({
+    required this.answer,
     required this.hint,
     required this.onTextChange,
     super.key,
@@ -16,11 +19,10 @@ class TextAreaAnswer extends StatefulWidget {
 
 class TextAreaAnswerState extends State<TextAreaAnswer> {
   TextTheme get _textTheme => Theme.of(context).textTheme;
-  String _textValue = '';
 
   @override
   Widget build(BuildContext context) {
-    Color getBackgroundColor() => _textValue.isNotEmpty
+    Color getBackgroundColor() => widget.answer?.textAnswer?.isNotEmpty ?? false
         ? Colors.white.withOpacity(0.5)
         : Colors.white.withOpacity(0.4);
     return Padding(
@@ -43,11 +45,9 @@ class TextAreaAnswerState extends State<TextAreaAnswer> {
             hintStyle: _textTheme.bodyMedium
                 ?.copyWith(color: Colors.white.withOpacity(0.5))),
         onChanged: (text) {
-          setState(() {
-            _textValue = text;
-          });
           widget.onTextChange(text);
         },
+        textInputAction: TextInputAction.done,
       ),
     );
   }
