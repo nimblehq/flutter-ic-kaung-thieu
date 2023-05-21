@@ -21,7 +21,8 @@ class SurveyQuestionModel {
 enum DisplayType {
   choice('choice'),
   textArea('textarea'),
-  textField('textfield');
+  textField('textfield'),
+  nps('nps');
 
   final String typeValue;
 
@@ -58,6 +59,8 @@ extension DisplayTypeExtension on String {
       return DisplayType.textArea;
     } else if (this == DisplayType.textField.typeValue) {
       return DisplayType.textField;
+    } else if (this == DisplayType.nps.typeValue) {
+      return DisplayType.nps;
     } else {
       throw Exception('Unimplemented Display Type: $this');
     }
