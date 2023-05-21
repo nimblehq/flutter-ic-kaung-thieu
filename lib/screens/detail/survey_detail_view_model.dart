@@ -117,6 +117,17 @@ class SurveyDetailViewModel extends AutoDisposeAsyncNotifier<void> {
             answers: [
               SurveyAnswerModel(id: '1', text: ''),
             ]),
+        SurveyQuestionModel(
+            id: '4',
+            text: "Don't miss out on our Exclusive Promotions!",
+            shortText: 'Your thoughts',
+            pick: PickType.none,
+            displayType: DisplayType.textField,
+            answers: [
+              SurveyAnswerModel(id: '1', text: 'First Name'),
+              SurveyAnswerModel(id: '2', text: 'Mobile No.'),
+              SurveyAnswerModel(id: '3', text: 'Email'),
+            ]),
       ],
     );
     Future.delayed(const Duration(seconds: 2), () {

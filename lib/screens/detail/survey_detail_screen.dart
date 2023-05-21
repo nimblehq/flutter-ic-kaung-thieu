@@ -11,6 +11,7 @@ import 'package:survey_flutter/screens/detail/start_survey_content.dart';
 import 'package:survey_flutter/model/survey_question_model.dart';
 import 'package:survey_flutter/screens/detail/survey_detail_view_model.dart';
 import 'package:survey_flutter/screens/detail/text_area_answer.dart';
+import 'package:survey_flutter/screens/detail/text_field_answer.dart';
 
 const routePathDetailScreen = '/home/survey_detail';
 
@@ -144,6 +145,15 @@ class SurveyDetailScreenState extends State<SurveyDetailScreen> {
                       answerText: text);
             },
           );
+        case DisplayType.textField:
+          return TextFieldAnswer(
+              answers: question.answers,
+              onTextChange: (answerId, text) {
+                viewModel.updateTextAnswer(
+                    questionId: question.id,
+                    answerId: answerId,
+                    answerText: text);
+              });
         default:
           return const Expanded(child: SizedBox.shrink());
       }
