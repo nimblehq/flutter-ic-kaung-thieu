@@ -29,18 +29,24 @@ class StartSurveyContentState extends State<StartSurveyContent> {
       return Column(
         children: [
           _buildToolbar(true),
-          Padding(
-            padding: const EdgeInsets.only(top: 30.5, left: 20, right: 20),
-            child: Text(
-              widget.title,
-              style: _textTheme.titleLarge,
+          Align(
+            alignment: Alignment.centerLeft,
+            child: Padding(
+              padding: const EdgeInsets.only(top: 30.5, left: 30, right: 20),
+              child: Text(
+                widget.title,
+                style: _textTheme.titleLarge,
+              ),
             ),
           ),
-          Padding(
-            padding: const EdgeInsets.only(top: 16, left: 20, right: 20),
-            child: Text(
-              widget.description,
-              style: _textTheme.bodyMedium,
+          Align(
+            alignment: Alignment.centerLeft,
+            child: Padding(
+              padding: const EdgeInsets.only(top: 16, left: 34, right: 20),
+              child: Text(
+                widget.description,
+                style: _textTheme.bodyMedium,
+              ),
             ),
           ),
           const Expanded(child: SizedBox.shrink()),
