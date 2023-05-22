@@ -22,7 +22,11 @@ enum DisplayType {
   choice('choice'),
   textArea('textarea'),
   textField('textfield'),
-  nps('nps');
+  nps('nps'),
+  smiley('smiley'),
+  star('star'),
+  thumbs('thumbs'),
+  heart('heart');
 
   final String typeValue;
 

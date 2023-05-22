@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:survey_flutter/gen/assets.gen.dart';
+import 'package:survey_flutter/screens/detail/emoticon_choice_answers.dart';
 import 'package:survey_flutter/screens/detail/multiple_choice_answers.dart';
 import 'package:survey_flutter/screens/detail/success_submit_content.dart';
 import 'package:survey_flutter/screens/detail/nps_answer.dart';
@@ -169,6 +170,23 @@ class SurveyDetailScreenState extends State<SurveyDetailScreen> {
                     );
               },
               answers: question.answers);
+        case DisplayType.smiley:
+        case DisplayType.thumbs:
+        case DisplayType.heart:
+        case DisplayType.star:
+          return EmoticonChoiceAnswers(
+            onChoiceClick: (answerId) {
+              widgetRef
+                  .read(surveyDetailViewModelProvider.notifier)
+                  .updateChoiceAnswer(
+                    questionId: question.id,
+                    answerId: answerId,
+                    pickType: question.pick,
+                  );
+            },
+            answers: question.answers,
+            displayType: question.displayType,
+          );
         default:
           return const Expanded(child: SizedBox.shrink());
       }
