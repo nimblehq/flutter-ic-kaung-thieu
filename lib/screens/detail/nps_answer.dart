@@ -63,7 +63,7 @@ class NpsAnswerState extends State<NpsAnswer> {
                 style: _textTheme.labelMedium?.copyWith(color: () {
                   if (_selectedIndex != null &&
                       (_selectedIndex ?? 0) >=
-                          widget.answers.length / 2.round()) {
+                          (widget.answers.length / 2).round()) {
                     return Colors.white;
                   } else {
                     return Colors.white.withOpacity(0.5);
