@@ -180,6 +180,19 @@ class SurveyDetailViewModel extends AutoDisposeAsyncNotifier<void> {
             ]),
         SurveyQuestionModel(
             id: '8',
+            text: 'How did WFH change your productivity?',
+            shortText: '',
+            pick: PickType.one,
+            displayType: DisplayType.dropdown,
+            answers: [
+              SurveyAnswerModel(id: '1', text: 'Afghanistan'),
+              SurveyAnswerModel(id: '2', text: 'Albania'),
+              SurveyAnswerModel(id: '3', text: 'Algeria'),
+              SurveyAnswerModel(id: '4', text: 'American Samoa'),
+              SurveyAnswerModel(id: '5', text: 'Andorra'),
+            ]),
+        SurveyQuestionModel(
+            id: '9',
             text: 'Please share with us what you think about our service',
             shortText: 'Your thoughts',
             pick: PickType.none,
@@ -188,7 +201,7 @@ class SurveyDetailViewModel extends AutoDisposeAsyncNotifier<void> {
               SurveyAnswerModel(id: '1', text: ''),
             ]),
         SurveyQuestionModel(
-            id: '9',
+            id: '10',
             text: "Don't miss out on our Exclusive Promotions!",
             shortText: 'Your thoughts',
             pick: PickType.none,

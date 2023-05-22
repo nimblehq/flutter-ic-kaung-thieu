@@ -6,6 +6,7 @@ import 'package:go_router/go_router.dart';
 import 'package:survey_flutter/gen/assets.gen.dart';
 import 'package:survey_flutter/screens/detail/emoticon_choice_answers.dart';
 import 'package:survey_flutter/screens/detail/multiple_choice_answers.dart';
+import 'package:survey_flutter/screens/detail/picker_answers.dart';
 import 'package:survey_flutter/screens/detail/success_submit_content.dart';
 import 'package:survey_flutter/screens/detail/nps_answer.dart';
 import 'package:survey_flutter/screens/detail/survey_question_content.dart';
@@ -187,6 +188,18 @@ class SurveyDetailScreenState extends State<SurveyDetailScreen> {
             answers: question.answers,
             displayType: question.displayType,
           );
+        case DisplayType.dropdown:
+          return PickerAnswers(
+              answers: question.answers,
+              onChoiceClick: (answerId) {
+                widgetRef
+                    .read(surveyDetailViewModelProvider.notifier)
+                    .updateChoiceAnswer(
+                      questionId: question.id,
+                      answerId: answerId,
+                      pickType: question.pick,
+                    );
+              });
         default:
           return const Expanded(child: SizedBox.shrink());
       }

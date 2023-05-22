@@ -26,7 +26,8 @@ enum DisplayType {
   smiley('smiley'),
   star('star'),
   thumbs('thumbs'),
-  heart('heart');
+  heart('heart'),
+  dropdown('dropdown');
 
   final String typeValue;
 
