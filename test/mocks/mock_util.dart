@@ -1,6 +1,6 @@
 import 'package:survey_flutter/model/hives/survey.dart';
 import 'package:survey_flutter/model/request/login_request.dart';
-import 'package:survey_flutter/model/request/submit_surveys_request.dart';
+import 'package:survey_flutter/model/request/submit_survey_request.dart';
 import 'package:survey_flutter/model/request/survey_answer_request.dart';
 import 'package:survey_flutter/model/request/survey_question_request.dart';
 import 'package:survey_flutter/model/response/login_data_response.dart';
@@ -71,7 +71,7 @@ class MockUtil {
   static SurveyAnswerRequest surveyAnswerRequest =
       SurveyAnswerRequest(id: 'id');
 
-  static SubmitSurveyRequest submitSurveysRequest = SubmitSurveyRequest(
+  static SubmitSurveyRequest submitSurveyRequest = SubmitSurveyRequest(
     surveyId: 'surveyId',
     questions: [surveyQuestionRequest],
   );

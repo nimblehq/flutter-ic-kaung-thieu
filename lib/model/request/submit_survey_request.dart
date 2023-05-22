@@ -1,7 +1,7 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:survey_flutter/model/request/survey_question_request.dart';
 
-part 'submit_surveys_request.g.dart';
+part 'submit_survey_request.g.dart';
 
 @JsonSerializable()
 class SubmitSurveyRequest {

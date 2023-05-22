@@ -1,38 +1,38 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
 import 'package:survey_flutter/usecases/base/base_use_case.dart';
-import 'package:survey_flutter/usecases/submit_surveys_use_case.dart';
+import 'package:survey_flutter/usecases/submit_survey_use_case.dart';
 
 import '../mocks/generate_mocks.mocks.dart';
 import '../mocks/mock_util.dart';
 
 void main() {
-  group('SubmitSurveysUseCase', () {
+  group('SubmitSurveyUseCase', () {
     MockSurveyRepository mockSurveyRepository = MockSurveyRepository();
 
-    late SubmitSurveysUseCase submitSurveysUseCase;
+    late SubmitSurveyUseCase submitSurveyUseCase;
 
     setUp(() =>
-        submitSurveysUseCase = SubmitSurveysUseCase(mockSurveyRepository));
+        submitSurveyUseCase = SubmitSurveyUseCase(mockSurveyRepository));
 
     test(
-        'When calling submitSurveys with SubmitSurveysRequest successfully, it emits success',
+        'When calling submitSurvey with SubmitSurveyRequest successfully, it emits success',
         () async {
       when(mockSurveyRepository.submitSurvey(any))
           .thenAnswer((_) => Future.value());
 
       final result =
-          await submitSurveysUseCase.call(MockUtil.submitSurveysRequest);
+          await submitSurveyUseCase.call(MockUtil.submitSurveyRequest);
       expect(result, isA<Success>());
     });
 
     test(
-      'When calling submitSurveys with SubmitSurveysRequest unsuccessfully, it emits failed',
+      'When calling submitSurvey with SubmitSurveyRequest unsuccessfully, it emits failed',
       () async {
         when(mockSurveyRepository.submitSurvey(any)).thenThrow(MockDioError());
 
         final result =
-            await submitSurveysUseCase.call(MockUtil.submitSurveysRequest);
+            await submitSurveyUseCase.call(MockUtil.submitSurveyRequest);
         expect(result, isA<Failed>());
       },
     );

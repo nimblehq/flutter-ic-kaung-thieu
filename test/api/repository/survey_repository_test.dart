@@ -61,7 +61,7 @@ void main() {
         () async {
       when(mockApiService.submitSurvey(any)).thenAnswer((_) => Future.value());
 
-      await repository.submitSurvey(MockUtil.submitSurveysRequest);
+      await repository.submitSurvey(MockUtil.submitSurveyRequest);
 
       verify(mockApiService.submitSurvey(any)).called(1);
     });
@@ -71,7 +71,7 @@ void main() {
         () async {
       when(mockApiService.submitSurvey(any)).thenThrow(MockDioError());
 
-      expect(() => repository.submitSurvey(MockUtil.submitSurveysRequest),
+      expect(() => repository.submitSurvey(MockUtil.submitSurveyRequest),
           throwsA(isA<NetworkExceptions>()));
     });
   });
