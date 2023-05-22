@@ -13,8 +13,10 @@ class SurveyDetailViewModel extends AutoDisposeAsyncNotifier<void> {
   SurveyDetailModel? _cache;
 
   final _surveyDetail = StreamController<SurveyDetailModel>();
-
   Stream<SurveyDetailModel> get surveyDetail => _surveyDetail.stream;
+
+  final _isSubmitSuccess = StreamController<bool>();
+  Stream<bool> get isSubmitSuccess => _isSubmitSuccess.stream;
 
   @override
   FutureOr<void> build() {
@@ -22,6 +24,10 @@ class SurveyDetailViewModel extends AutoDisposeAsyncNotifier<void> {
     ref.onDispose(() {
       _surveyDetail.close();
     });
+  }
+
+  void submitSurvey() {
+    _isSubmitSuccess.add(true);
   }
 
   void updateChoiceAnswer({

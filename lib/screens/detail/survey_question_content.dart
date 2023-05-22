@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:survey_flutter/gen/assets.gen.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class SurveyQuestionContent extends StatefulWidget {
   final String title;
@@ -23,6 +24,7 @@ class SurveyQuestionContent extends StatefulWidget {
 
 class SurveyQuestionContentState extends State<SurveyQuestionContent> {
   TextTheme get _textTheme => Theme.of(context).textTheme;
+  AppLocalizations get _localizations => AppLocalizations.of(context)!;
 
   @override
   Widget build(BuildContext context) {
@@ -59,15 +61,34 @@ class SurveyQuestionContentState extends State<SurveyQuestionContent> {
           alignment: Alignment.centerRight,
           child: Padding(
             padding: const EdgeInsets.only(bottom: 34, right: 20),
-            child: SizedBox(
-              width: 56,
-              height: 56,
-              child: FloatingActionButton(
-                onPressed: widget.onPressNext,
-                backgroundColor: Colors.white,
-                child: Image.asset(Assets.images.icNavNext.path),
-              ),
-            ),
+            child: widget.page == widget.totalPage
+                ? SizedBox(
+                    width: 140,
+                    height: 56,
+                    child: ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.white,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10.0),
+                        ),
+                      ),
+                      onPressed: widget.onPressNext,
+                      child: Text(
+                        _localizations.surveySubmit,
+                        style: _textTheme.labelMedium
+                            ?.copyWith(color: Colors.black),
+                      ),
+                    ),
+                  )
+                : SizedBox(
+                    width: 56,
+                    height: 56,
+                    child: FloatingActionButton(
+                      onPressed: widget.onPressNext,
+                      backgroundColor: Colors.white,
+                      child: Image.asset(Assets.images.icNavNext.path),
+                    ),
+                  ),
           ),
         ),
       ],
