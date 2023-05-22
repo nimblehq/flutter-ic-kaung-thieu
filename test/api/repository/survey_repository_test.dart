@@ -56,5 +56,23 @@ void main() {
       expect(() => repository.getSurveyDetail('surveyId'),
           throwsA(isA<NetworkExceptions>()));
     });
+
+    test('When calling submitSurvey successfully, it emits a success',
+        () async {
+      when(mockApiService.submitSurvey(any)).thenAnswer((_) => Future.value());
+
+      await repository.submitSurvey(MockUtil.submitSurveyRequest);
+
+      verify(mockApiService.submitSurvey(any)).called(1);
+    });
+
+    test(
+        'When calling submitSurvey unsuccessfully, it throws NetworkExceptions error ',
+        () async {
+      when(mockApiService.submitSurvey(any)).thenThrow(MockDioError());
+
+      expect(() => repository.submitSurvey(MockUtil.submitSurveyRequest),
+          throwsA(isA<NetworkExceptions>()));
+    });
   });
 }

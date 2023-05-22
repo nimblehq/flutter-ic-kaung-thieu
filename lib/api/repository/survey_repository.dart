@@ -4,6 +4,7 @@ import 'package:survey_flutter/api/exception/network_exceptions.dart';
 import 'package:survey_flutter/api/storage/hive_storage.dart';
 import 'package:survey_flutter/api/storage/shared_preference.dart';
 import 'package:survey_flutter/di/provider/dio_provider.dart';
+import 'package:survey_flutter/model/request/submit_survey_request.dart';
 import 'package:survey_flutter/model/response/survey_data_response.dart';
 import 'package:survey_flutter/model/response/survey_detail_data_response.dart';
 import 'package:survey_flutter/usecases/refresh_token_use_case.dart';
@@ -29,6 +30,8 @@ abstract class SurveyRepository {
   });
 
   Future<SurveyDetailDataResponse> getSurveyDetail(String surveyId);
+
+  Future<void> submitSurvey(SubmitSurveyRequest submitSurveyRequest);
 }
 
 class SurveyRepositoryImpl extends SurveyRepository {
@@ -62,6 +65,16 @@ class SurveyRepositoryImpl extends SurveyRepository {
   Future<SurveyDetailDataResponse> getSurveyDetail(String surveyId) async {
     try {
       final result = await _apiService.getSurveyDetail(surveyId);
+      return result;
+    } catch (exception) {
+      throw NetworkExceptions.fromDioException(exception);
+    }
+  }
+
+  @override
+  Future<void> submitSurvey(SubmitSurveyRequest submitSurveyRequest) async {
+    try {
+      final result = await _apiService.submitSurvey(submitSurveyRequest);
       return result;
     } catch (exception) {
       throw NetworkExceptions.fromDioException(exception);
