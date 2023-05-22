@@ -149,10 +149,12 @@ class SurveyDetailScreenState extends State<SurveyDetailScreen> {
           return TextFieldAnswer(
               answers: question.answers,
               onTextChange: (answerId, text) {
-                viewModel.updateTextAnswer(
-                    questionId: question.id,
-                    answerId: answerId,
-                    answerText: text);
+                widgetRef
+                    .read(surveyDetailViewModelProvider.notifier)
+                    .updateTextAnswer(
+                        questionId: question.id,
+                        answerId: answerId,
+                        answerText: text);
               });
         default:
           return const Expanded(child: SizedBox.shrink());
