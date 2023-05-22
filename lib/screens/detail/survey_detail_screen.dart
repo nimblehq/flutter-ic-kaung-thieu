@@ -1,3 +1,5 @@
+// ignore: depend_on_referenced_packages
+import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -9,7 +11,6 @@ import 'package:survey_flutter/screens/detail/start_survey_content.dart';
 import 'package:survey_flutter/model/survey_question_model.dart';
 import 'package:survey_flutter/screens/detail/survey_detail_view_model.dart';
 import 'package:survey_flutter/screens/detail/text_area_answer.dart';
-import 'package:survey_flutter/utils/app_extensions.dart';
 
 const routePathDetailScreen = '/home/survey_detail';
 
@@ -116,17 +117,18 @@ class SurveyDetailScreenState extends State<SurveyDetailScreen> {
 
   Widget _getQuestionContentChild(SurveyQuestionModel question) {
     return Consumer(builder: (_, widgetRef, child) {
-      final viewModel = widgetRef.read(surveyDetailViewModelProvider.notifier);
       switch (question.displayType) {
         case DisplayType.choice:
           return MultipleChoiceAnswers(
             answers: question.answers,
             onChoiceClick: (answerId) {
-              viewModel.updateChoiceAnswer(
-                questionId: question.id,
-                answerId: answerId,
-                pickType: question.pick,
-              );
+              widgetRef
+                  .read(surveyDetailViewModelProvider.notifier)
+                  .updateChoiceAnswer(
+                    questionId: question.id,
+                    answerId: answerId,
+                    pickType: question.pick,
+                  );
             },
           );
         case DisplayType.textArea:
@@ -134,10 +136,12 @@ class SurveyDetailScreenState extends State<SurveyDetailScreen> {
             answer: question.answers.firstOrNull,
             hint: question.shortText,
             onTextChange: (text) {
-              viewModel.updateTextAnswer(
-                  questionId: question.id,
-                  answerId: question.answers.firstOrNull?.id ?? '',
-                  answerText: text);
+              widgetRef
+                  .read(surveyDetailViewModelProvider.notifier)
+                  .updateTextAnswer(
+                      questionId: question.id,
+                      answerId: question.answers.firstOrNull?.id ?? '',
+                      answerText: text);
             },
           );
         default:
