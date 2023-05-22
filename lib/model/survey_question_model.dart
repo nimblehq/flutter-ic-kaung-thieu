@@ -74,6 +74,8 @@ extension DisplayTypeExtension on String {
       return DisplayType.thumbs;
     } else if (this == DisplayType.heart.typeValue) {
       return DisplayType.heart;
+    } else if (this == DisplayType.dropdown.typeValue) {
+      return DisplayType.dropdown;
     } else {
       throw Exception('Unimplemented Display Type: $this');
     }
