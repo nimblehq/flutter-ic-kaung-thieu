@@ -1,7 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:survey_flutter/gen/assets.gen.dart';
+import 'package:survey_flutter/screens/detail/multiple_choice_answers.dart';
 import 'package:survey_flutter/screens/detail/survey_question_content.dart';
 import 'package:survey_flutter/screens/detail/start_survey_content.dart';
+import 'package:survey_flutter/model/survey_question_model.dart';
+import 'package:survey_flutter/screens/detail/survey_detail_view_model.dart';
 
 const routePathDetailScreen = '/home/survey_detail';
 
@@ -18,6 +22,9 @@ class SurveyDetailScreenState extends State<SurveyDetailScreen> {
   late PageController _pageController;
   int _selectedPage = 0;
 
+  final _surveyDetailStreamProvider = StreamProvider.autoDispose(
+      (ref) => ref.watch(surveyDetailViewModelProvider.notifier).surveyDetail);
+
   @override
   void initState() {
     _pageController = PageController(initialPage: _selectedPage);
@@ -33,36 +40,78 @@ class SurveyDetailScreenState extends State<SurveyDetailScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        body: Stack(
-      children: [
-        _buildBackgroundImage('https://picsum.photos/376/812'),
-        PageView(
-          physics: const NeverScrollableScrollPhysics(),
-          controller: _pageController,
-          onPageChanged: (page) {
-            setState(() {
-              _selectedPage = page;
-            });
-          },
-          children: [
-            // TODO replace with data from view model in choice question ticket
-            StartSurveyContent(
-              title: 'Working from home Check-In',
-              description:
-                  'We would like to know how you feel about our work from home (WFH) experience.',
-              onStartSurvey: goToNextPage,
+      body: Consumer(builder: (context, widgetRef, child) {
+        var surveyDetail = widgetRef.watch(_surveyDetailStreamProvider).value;
+
+        if (surveyDetail == null) {
+          return Container(
+            decoration: const BoxDecoration(color: Colors.black),
+            constraints: const BoxConstraints.expand(),
+            child: Stack(
+              children: const [
+                Center(
+                  child: CircularProgressIndicator(),
+                )
+              ],
             ),
-            // TODO replace total page with value from view model in choice question ticket
-            SurveyQuestionContent(
-              title: 'How fulfilled did you feel during this WFH period?',
-              page: _selectedPage,
-              totalPage: 5,
-              onPressNext: goToNextPage,
-            ),
-          ],
-        ),
-      ],
-    ));
+          );
+        } else {
+          return Stack(
+            children: [
+              _buildBackgroundImage(surveyDetail.coverImageUrl),
+              PageView(
+                physics: const NeverScrollableScrollPhysics(),
+                controller: _pageController,
+                onPageChanged: (page) {
+                  setState(() {
+                    _selectedPage = page;
+                  });
+                },
+                children: [
+                  StartSurveyContent(
+                    title: surveyDetail.title,
+                    description: surveyDetail.description,
+                    onStartSurvey: goToNextPage,
+                  ),
+                  for (SurveyQuestionModel question
+                      in surveyDetail.questions) ...[
+                    SurveyQuestionContent(
+                      title: question.title,
+                      page: _selectedPage,
+                      totalPage: surveyDetail.questions.length,
+                      onPressNext: goToNextPage,
+                      child: _getQuestionContentChild(question),
+                    ),
+                  ]
+                ],
+              ),
+            ],
+          );
+        }
+      }),
+    );
+  }
+
+  Widget _getQuestionContentChild(SurveyQuestionModel question) {
+    return Consumer(builder: (_, widgetRef, child) {
+      switch (question.displayType) {
+        case DisplayType.choice:
+          return MultipleChoiceAnswers(
+            answers: question.answers,
+            onChoiceClick: (answerId) {
+              widgetRef
+                  .read(surveyDetailViewModelProvider.notifier)
+                  .updateChoiceAnswer(
+                    questionId: question.id,
+                    answerId: answerId,
+                    pickType: question.pick,
+                  );
+            },
+          );
+        default:
+          return const Expanded(child: SizedBox.shrink());
+      }
+    });
   }
 
   void goToNextPage() {

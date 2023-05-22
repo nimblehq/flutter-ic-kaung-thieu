@@ -61,7 +61,8 @@ class StartSurveyContentState extends State<StartSurveyContent> {
                   onPressed: widget.onStartSurvey,
                   child: Text(
                     _localizations.surveyDetailStartSurvey,
-                    style: _textTheme.labelLarge?.copyWith(color: Colors.black),
+                    style:
+                        _textTheme.labelMedium?.copyWith(color: Colors.black),
                   ),
                 ),
               ),

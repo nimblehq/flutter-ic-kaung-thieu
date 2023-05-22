@@ -63,7 +63,7 @@ class AuthRepositoryImpl extends AuthRepository {
       final refreshToken = await _sharedPreference.getRefreshToken() ?? '';
       final result = await _apiService.refreshToken(
         AuthRequest(
-          grantType: _grantType,
+          grantType: 'refresh_token',
           refreshToken: refreshToken,
           clientId: FlutterConfigPlus.get('CLIENT_ID'),
           clientSecret: FlutterConfigPlus.get('CLIENT_SECRET'),
