@@ -12,5 +12,7 @@
     "loginFailAlertTitle": "Unable to log in",
     "loginFailAlertMessage": "There's something wrong. Please try again!",
 
-    "homeTodayTitle": "Today"
+    "homeTodayTitle": "Today",
+
+    "surveyDetailStartSurvey": "Start Survey"
 }
