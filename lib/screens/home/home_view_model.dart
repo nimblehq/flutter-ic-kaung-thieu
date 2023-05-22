@@ -8,6 +8,7 @@ import 'package:survey_flutter/model/survey_model.dart';
 import 'package:survey_flutter/model/profile_model.dart';
 import 'package:survey_flutter/model/surveys_parameters.dart';
 import 'package:survey_flutter/usecases/base/base_use_case.dart';
+import 'package:survey_flutter/usecases/clear_cached_surveys_use_case.dart';
 import 'package:survey_flutter/usecases/get_cached_surveys_use_case.dart';
 import 'package:survey_flutter/usecases/get_surveys_use_case.dart';
 
@@ -20,27 +21,21 @@ class HomeViewModel extends AutoDisposeAsyncNotifier<void> {
   var _surveyCache = <SurveyModel>[];
 
   final _surveys = StreamController<List<SurveyModel>>();
-
   Stream<List<SurveyModel>> get surveys => _surveys.stream;
 
   final _profile = StreamController<ProfileModel>();
-
   Stream<ProfileModel> get profile => _profile.stream;
 
   final _currentDate = StreamController<String>();
-
   Stream<String> get currentDate => _currentDate.stream;
 
   final _isError = StreamController<String>();
-
   Stream<String> get isError => _isError.stream;
 
   final _isLoadMore = StreamController<bool>();
-
   Stream<bool> get isLoadMore => _isLoadMore.stream;
 
   final _shouldShowShimmer = StreamController<bool>();
-
   Stream<bool> get shouldShowShimmer => _shouldShowShimmer.stream;
 
   var _pageNumber = 0;
@@ -60,7 +55,6 @@ class HomeViewModel extends AutoDisposeAsyncNotifier<void> {
   }
 
   void fetchData() {
-    _surveyCache.clear();
     getSurveyList();
     getProfile();
     getCurrentDate();
@@ -76,6 +70,14 @@ class HomeViewModel extends AutoDisposeAsyncNotifier<void> {
 
   void clearError() {
     _isError.add('');
+  }
+
+  Future<void> refresh() async {
+    _pageNumber = 0;
+    _numberOfPage = null;
+    _surveyCache.clear();
+    ref.read(clearCachedSurveysUseCaseProvider).call();
+    fetchData();
   }
 
   Future<void> getCurrentDate() async {
