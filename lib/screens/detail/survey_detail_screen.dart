@@ -160,11 +160,13 @@ class SurveyDetailScreenState extends State<SurveyDetailScreen> {
         case DisplayType.nps:
           return NpsAnswer(
               onChoiceClick: (answerId) {
-                viewModel.updateChoiceAnswer(
-                  questionId: question.id,
-                  answerId: answerId,
-                  pickType: PickType.one,
-                );
+                widgetRef
+                    .read(surveyDetailViewModelProvider.notifier)
+                    .updateChoiceAnswer(
+                      questionId: question.id,
+                      answerId: answerId,
+                      pickType: PickType.one,
+                    );
               },
               answers: question.answers);
         default:
