@@ -13,9 +13,11 @@ class SurveyDetailViewModel extends AutoDisposeAsyncNotifier<void> {
   SurveyDetailModel? _cache;
 
   final _surveyDetail = StreamController<SurveyDetailModel>();
+
   Stream<SurveyDetailModel> get surveyDetail => _surveyDetail.stream;
 
   final _isSubmitSuccess = StreamController<bool>();
+
   Stream<bool> get isSubmitSuccess => _isSubmitSuccess.stream;
 
   @override
@@ -85,6 +87,13 @@ class SurveyDetailViewModel extends AutoDisposeAsyncNotifier<void> {
       questions: [
         SurveyQuestionModel(
             id: '1',
+            text: 'Question Intro',
+            shortText: '',
+            pick: PickType.none,
+            displayType: DisplayType.intro,
+            answers: []),
+        SurveyQuestionModel(
+            id: '2',
             text: 'Question Multi Choice',
             shortText: '',
             pick: PickType.one,
@@ -98,7 +107,7 @@ class SurveyDetailViewModel extends AutoDisposeAsyncNotifier<void> {
               SurveyAnswerModel(id: '6', text: 'Choice 6'),
             ]),
         SurveyQuestionModel(
-            id: '2',
+            id: '3',
             text: 'Question Multi Choice',
             shortText: '',
             pick: PickType.any,
@@ -109,7 +118,7 @@ class SurveyDetailViewModel extends AutoDisposeAsyncNotifier<void> {
               SurveyAnswerModel(id: '3', text: 'Choice 3'),
             ]),
         SurveyQuestionModel(
-            id: '3',
+            id: '4',
             text: 'Question Nps',
             shortText: '',
             pick: PickType.one,
@@ -127,7 +136,7 @@ class SurveyDetailViewModel extends AutoDisposeAsyncNotifier<void> {
               SurveyAnswerModel(id: '10', text: '10'),
             ]),
         SurveyQuestionModel(
-            id: '4',
+            id: '5',
             text: 'How did WFH change your productivity?',
             shortText: '',
             pick: PickType.one,
@@ -140,7 +149,7 @@ class SurveyDetailViewModel extends AutoDisposeAsyncNotifier<void> {
               SurveyAnswerModel(id: '5', text: '5'),
             ]),
         SurveyQuestionModel(
-            id: '5',
+            id: '6',
             text: 'How did WFH change your productivity?',
             shortText: '',
             pick: PickType.one,
@@ -153,7 +162,7 @@ class SurveyDetailViewModel extends AutoDisposeAsyncNotifier<void> {
               SurveyAnswerModel(id: '5', text: '5'),
             ]),
         SurveyQuestionModel(
-            id: '6',
+            id: '7',
             text: 'How did WFH change your productivity?',
             shortText: '',
             pick: PickType.one,
@@ -166,7 +175,7 @@ class SurveyDetailViewModel extends AutoDisposeAsyncNotifier<void> {
               SurveyAnswerModel(id: '5', text: '5'),
             ]),
         SurveyQuestionModel(
-            id: '7',
+            id: '8',
             text: 'How did WFH change your productivity?',
             shortText: '',
             pick: PickType.one,
@@ -179,7 +188,7 @@ class SurveyDetailViewModel extends AutoDisposeAsyncNotifier<void> {
               SurveyAnswerModel(id: '5', text: '5'),
             ]),
         SurveyQuestionModel(
-            id: '8',
+            id: '9',
             text: 'How did WFH change your productivity?',
             shortText: '',
             pick: PickType.one,
@@ -192,7 +201,7 @@ class SurveyDetailViewModel extends AutoDisposeAsyncNotifier<void> {
               SurveyAnswerModel(id: '5', text: 'Andorra'),
             ]),
         SurveyQuestionModel(
-            id: '9',
+            id: '10',
             text: 'Please share with us what you think about our service',
             shortText: 'Your thoughts',
             pick: PickType.none,
@@ -201,7 +210,7 @@ class SurveyDetailViewModel extends AutoDisposeAsyncNotifier<void> {
               SurveyAnswerModel(id: '1', text: ''),
             ]),
         SurveyQuestionModel(
-            id: '10',
+            id: '11',
             text: "Don't miss out on our Exclusive Promotions!",
             shortText: 'Your thoughts',
             pick: PickType.none,
@@ -211,6 +220,13 @@ class SurveyDetailViewModel extends AutoDisposeAsyncNotifier<void> {
               SurveyAnswerModel(id: '2', text: 'Mobile No.'),
               SurveyAnswerModel(id: '3', text: 'Email'),
             ]),
+        SurveyQuestionModel(
+            id: '12',
+            text: 'Question Outro',
+            shortText: '',
+            pick: PickType.none,
+            displayType: DisplayType.outro,
+            answers: []),
       ],
     );
     Future.delayed(const Duration(seconds: 2), () {
