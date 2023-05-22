@@ -12,8 +12,8 @@ void main() {
 
     late SubmitSurveyUseCase submitSurveyUseCase;
 
-    setUp(() =>
-        submitSurveyUseCase = SubmitSurveyUseCase(mockSurveyRepository));
+    setUp(
+        () => submitSurveyUseCase = SubmitSurveyUseCase(mockSurveyRepository));
 
     test(
         'When calling submitSurvey with SubmitSurveyRequest successfully, it emits success',
