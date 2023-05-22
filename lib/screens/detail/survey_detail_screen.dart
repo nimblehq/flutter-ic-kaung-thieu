@@ -18,16 +18,17 @@ import 'package:survey_flutter/screens/detail/text_field_answer.dart';
 
 const routePathDetailScreen = '/home/survey_detail';
 
-class SurveyDetailScreen extends StatefulWidget {
+class SurveyDetailScreen extends ConsumerStatefulWidget {
   final String surveyId;
 
   const SurveyDetailScreen({required this.surveyId, super.key});
 
   @override
-  State<StatefulWidget> createState() => SurveyDetailScreenState();
+  ConsumerState<ConsumerStatefulWidget> createState() =>
+      SurveyDetailScreenState();
 }
 
-class SurveyDetailScreenState extends State<SurveyDetailScreen> {
+class SurveyDetailScreenState extends ConsumerState<SurveyDetailScreen> {
   late PageController _pageController;
   int _selectedPage = 0;
 
@@ -35,9 +36,14 @@ class SurveyDetailScreenState extends State<SurveyDetailScreen> {
       (ref) => ref.watch(surveyDetailViewModelProvider.notifier).surveyDetail);
   final _isSubmitSuccessStreamProvider = StreamProvider.autoDispose((ref) =>
       ref.watch(surveyDetailViewModelProvider.notifier).isSubmitSuccess);
+  final _isErrorStreamProvider = StreamProvider.autoDispose(
+      (ref) => ref.watch(surveyDetailViewModelProvider.notifier).isError);
 
   @override
   void initState() {
+    ref
+        .read(surveyDetailViewModelProvider.notifier)
+        .getSurveyDetail(widget.surveyId);
     _pageController = PageController(initialPage: _selectedPage);
     super.initState();
   }
@@ -50,6 +56,15 @@ class SurveyDetailScreenState extends State<SurveyDetailScreen> {
 
   @override
   Widget build(BuildContext context) {
+    ref.listen<AsyncValue<String>>(_isErrorStreamProvider, (previous, next) {
+      final error = next.value ?? '';
+      if (error.isNotEmpty) {
+        WidgetsBinding.instance
+            .addPostFrameCallback((_) => createSnackBar(error));
+        ref.read(surveyDetailViewModelProvider.notifier).clearError();
+      }
+    });
+
     return Scaffold(
       body: Consumer(builder: (context, widgetRef, child) {
         var surveyDetail = widgetRef.watch(_surveyDetailStreamProvider).value;
@@ -99,10 +114,11 @@ class SurveyDetailScreenState extends State<SurveyDetailScreen> {
                       page: _selectedPage,
                       totalPage: surveyDetail.questions.length,
                       onPressNext: () {
+                        FocusManager.instance.primaryFocus?.unfocus();
                         if (_selectedPage == surveyDetail.questions.length) {
                           widgetRef
                               .read(surveyDetailViewModelProvider.notifier)
-                              .submitSurvey();
+                              .submitSurvey(widget.surveyId);
                         } else {
                           goToNextPage();
                         }
@@ -117,6 +133,11 @@ class SurveyDetailScreenState extends State<SurveyDetailScreen> {
         }
       }),
     );
+  }
+
+  void createSnackBar(String message) {
+    final snackBar = SnackBar(content: Text(message));
+    ScaffoldMessenger.of(context).showSnackBar(snackBar);
   }
 
   Widget _getQuestionContentChild(SurveyQuestionModel question) {

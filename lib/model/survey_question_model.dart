@@ -1,4 +1,6 @@
+import 'package:survey_flutter/model/response/question_response.dart';
 import 'package:survey_flutter/model/survey_answer_model.dart';
+import 'package:survey_flutter/utils/string_extension.dart';
 
 class SurveyQuestionModel {
   final String id;
@@ -18,7 +20,23 @@ class SurveyQuestionModel {
   });
 }
 
+extension SurveyQuestionModelExtension on List<QuestionResponse> {
+  List<SurveyQuestionModel> toSurveyQuestionModels() {
+    return map(
+      (question) => SurveyQuestionModel(
+          id: question.id.orEmpty(),
+          text: question.text.orEmpty(),
+          shortText: question.shortText.orEmpty(),
+          pick: question.pick?.toPickType() ?? PickType.none,
+          displayType:
+              question.displayType?.toDisplayType() ?? DisplayType.undefined,
+          answers: question.answers?.toSurveyAnswerModels() ?? []),
+    ).toList();
+  }
+}
+
 enum DisplayType {
+  undefined(''),
   choice('choice'),
   textArea('textarea'),
   textField('textfield'),
