@@ -46,14 +46,17 @@ class SurveySubmitSuccessState extends State<SurveySubmitSuccessScreen>
           crossAxisAlignment: CrossAxisAlignment.center,
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Lottie.network(_lottieUrl,
-                width: 200,
-                height: 200,
-                controller: _controller, onLoaded: (composition) {
-              _controller
-                ..duration = composition.duration
-                ..forward().whenComplete(widget.onAnimationEnd);
-            }),
+            Lottie.network(
+              _lottieUrl,
+              width: 200,
+              height: 200,
+              controller: _controller,
+              onLoaded: (composition) {
+                _controller
+                  ..duration = composition.duration
+                  ..forward().whenComplete(widget.onAnimationEnd);
+              },
+            ),
             Text(
               _localizations.surveySubmitSuccessMsg,
               style: _textTheme.titleMedium,
