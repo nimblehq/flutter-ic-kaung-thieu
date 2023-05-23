@@ -23,31 +23,35 @@ class EmoticonChoiceAnswersState extends State<EmoticonChoiceAnswers> {
 
   @override
   Widget build(BuildContext context) {
+    bool isSelectedEmoticon(int index) {
+      if (_selectedIndex == index) {
+        return true;
+      }
+      if (widget.displayType != DisplayType.smiley &&
+          _selectedIndex != null &&
+          index < (_selectedIndex ?? 0)) {
+        return true;
+      }
+      return false;
+    }
+
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
         for (int index = 0; index < 5; index++) ...[
           TextButton(
-              onPressed: () {
-                setState(() {
-                  _selectedIndex = index;
-                });
-                widget.onChoiceClick(widget.answers[index].id);
-              },
-              child: _buildText(
-                  index: index,
-                  isSelected: () {
-                    if (_selectedIndex == index) {
-                      return true;
-                    }
-                    if (widget.displayType != DisplayType.smiley &&
-                        _selectedIndex != null &&
-                        index < (_selectedIndex ?? 0)) {
-                      return true;
-                    }
-                    return false;
-                  }()))
+            onPressed: () {
+              setState(() {
+                _selectedIndex = index;
+              });
+              widget.onChoiceClick(widget.answers[index].id);
+            },
+            child: _buildText(
+              index: index,
+              isSelected: isSelectedEmoticon(index),
+            ),
+          )
         ]
       ],
     );
