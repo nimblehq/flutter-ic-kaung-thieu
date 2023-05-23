@@ -1,3 +1,5 @@
+// ignore: depend_on_referenced_packages
+import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -8,6 +10,7 @@ import 'package:survey_flutter/screens/detail/survey_question_content.dart';
 import 'package:survey_flutter/screens/detail/start_survey_content.dart';
 import 'package:survey_flutter/model/survey_question_model.dart';
 import 'package:survey_flutter/screens/detail/survey_detail_view_model.dart';
+import 'package:survey_flutter/screens/detail/text_area_answer.dart';
 
 const routePathDetailScreen = '/home/survey_detail';
 
@@ -88,7 +91,7 @@ class SurveyDetailScreenState extends State<SurveyDetailScreen> {
                   for (SurveyQuestionModel question
                       in surveyDetail.questions) ...[
                     SurveyQuestionContent(
-                      title: question.title,
+                      title: question.text,
                       page: _selectedPage,
                       totalPage: surveyDetail.questions.length,
                       onPressNext: () {
@@ -126,6 +129,19 @@ class SurveyDetailScreenState extends State<SurveyDetailScreen> {
                     answerId: answerId,
                     pickType: question.pick,
                   );
+            },
+          );
+        case DisplayType.textArea:
+          return TextAreaAnswer(
+            answer: question.answers.firstOrNull,
+            hint: question.shortText,
+            onTextChange: (text) {
+              widgetRef
+                  .read(surveyDetailViewModelProvider.notifier)
+                  .updateTextAnswer(
+                      questionId: question.id,
+                      answerId: question.answers.firstOrNull?.id ?? '',
+                      answerText: text);
             },
           );
         default:

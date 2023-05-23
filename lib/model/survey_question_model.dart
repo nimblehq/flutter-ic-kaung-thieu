@@ -2,14 +2,16 @@ import 'package:survey_flutter/model/survey_answer_model.dart';
 
 class SurveyQuestionModel {
   final String id;
-  final String title;
+  final String text;
+  final String shortText;
   final PickType pick;
   final DisplayType displayType;
   final List<SurveyAnswerModel> answers;
 
   SurveyQuestionModel({
     required this.id,
-    required this.title,
+    required this.text,
+    required this.shortText,
     required this.pick,
     required this.displayType,
     required this.answers,
@@ -17,7 +19,8 @@ class SurveyQuestionModel {
 }
 
 enum DisplayType {
-  choice('choice');
+  choice('choice'),
+  textArea('textarea');
 
   final String typeValue;
 
@@ -50,6 +53,8 @@ extension DisplayTypeExtension on String {
   DisplayType toDisplayType() {
     if (this == DisplayType.choice.typeValue) {
       return DisplayType.choice;
+    } else if (this == DisplayType.textArea.typeValue) {
+      return DisplayType.textArea;
     } else {
       throw Exception('Unimplemented Display Type: $this');
     }

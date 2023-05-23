@@ -55,6 +55,26 @@ class SurveyDetailViewModel extends AutoDisposeAsyncNotifier<void> {
     }
   }
 
+  void updateTextAnswer({
+    required String questionId,
+    required String answerId,
+    required String answerText,
+  }) {
+    if (_cache != null) {
+      for (var question in _cache!.questions) {
+        if (question.id == questionId) {
+          for (var answer in question.answers) {
+            if (answer.id == answerId) {
+              answer.isAnswer = true;
+              answer.textAnswer = answerText;
+            }
+          }
+        }
+      }
+      _surveyDetail.add(_cache!);
+    }
+  }
+
   Future<void> fetchMockDetail() async {
     final detail = SurveyDetailModel(
       id: 'id',
@@ -65,26 +85,37 @@ class SurveyDetailViewModel extends AutoDisposeAsyncNotifier<void> {
       questions: [
         SurveyQuestionModel(
             id: '1',
-            title: 'Question Multi Choice',
-            pick: 'one'.toPickType(),
-            displayType: 'choice'.toDisplayType(),
+            text: 'Question Multi Choice',
+            shortText: '',
+            pick: PickType.one,
+            displayType: DisplayType.choice,
             answers: [
-              SurveyAnswerModel(id: '1', title: 'Choice 1'),
-              SurveyAnswerModel(id: '2', title: 'Choice 2'),
-              SurveyAnswerModel(id: '3', title: 'Choice 3'),
-              SurveyAnswerModel(id: '4', title: 'Choice 4'),
-              SurveyAnswerModel(id: '5', title: 'Choice 5'),
-              SurveyAnswerModel(id: '6', title: 'Choice 6'),
+              SurveyAnswerModel(id: '1', text: 'Choice 1'),
+              SurveyAnswerModel(id: '2', text: 'Choice 2'),
+              SurveyAnswerModel(id: '3', text: 'Choice 3'),
+              SurveyAnswerModel(id: '4', text: 'Choice 4'),
+              SurveyAnswerModel(id: '5', text: 'Choice 5'),
+              SurveyAnswerModel(id: '6', text: 'Choice 6'),
             ]),
         SurveyQuestionModel(
             id: '2',
-            title: 'Question Multi Choice',
-            pick: 'any'.toPickType(),
-            displayType: 'choice'.toDisplayType(),
+            text: 'Question Multi Choice',
+            shortText: '',
+            pick: PickType.any,
+            displayType: DisplayType.choice,
             answers: [
-              SurveyAnswerModel(id: '1', title: 'Choice 1'),
-              SurveyAnswerModel(id: '2', title: 'Choice 2'),
-              SurveyAnswerModel(id: '3', title: 'Choice 3'),
+              SurveyAnswerModel(id: '1', text: 'Choice 1'),
+              SurveyAnswerModel(id: '2', text: 'Choice 2'),
+              SurveyAnswerModel(id: '3', text: 'Choice 3'),
+            ]),
+        SurveyQuestionModel(
+            id: '2',
+            text: 'Please share with us what you think about our service',
+            shortText: 'Your thoughts',
+            pick: PickType.none,
+            displayType: DisplayType.textArea,
+            answers: [
+              SurveyAnswerModel(id: '1', text: ''),
             ]),
       ],
     );
