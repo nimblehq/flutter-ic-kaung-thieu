@@ -18,5 +18,8 @@
     "surveySubmit": "Submit",
     "surveySubmitSuccessMsg": "Thanks for taking the survey.",
     "surveyNpsNotAtAllLikely": "Not at all Likely",
-    "surveyNpsExtremelyLikely": "Extremely Likely"
+    "surveyNpsExtremelyLikely": "Extremely Likely",
+
+    "surveySubmitErrorTitle": "Unable to submit",
+    "surveySubmitErrorMsg": "There's something wrong. Please try again!"
 }
