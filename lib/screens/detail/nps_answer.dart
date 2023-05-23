@@ -47,28 +47,24 @@ class NpsAnswerState extends State<NpsAnswer> {
             children: [
               Text(
                 _localizations.surveyNpsNotAtAllLikely,
-                style: _textTheme.labelMedium?.copyWith(color: () {
-                  if (_selectedIndex != null &&
-                      (_selectedIndex ?? 0) <
-                          widget.answers.length / 2.round()) {
-                    return Colors.white;
-                  } else {
-                    return Colors.white.withOpacity(0.5);
-                  }
-                }()),
+                style: _textTheme.labelMedium?.copyWith(
+                  color: _selectedIndex != null &&
+                          (_selectedIndex ?? 0) <
+                              widget.answers.length / 2.round()
+                      ? Colors.white
+                      : Colors.white.withOpacity(0.5),
+                ),
               ),
               const Expanded(child: SizedBox.shrink()),
               Text(
                 _localizations.surveyNpsExtremelyLikely,
-                style: _textTheme.labelMedium?.copyWith(color: () {
-                  if (_selectedIndex != null &&
-                      (_selectedIndex ?? 0) >=
-                          (widget.answers.length / 2).round()) {
-                    return Colors.white;
-                  } else {
-                    return Colors.white.withOpacity(0.5);
-                  }
-                }()),
+                style: _textTheme.labelMedium?.copyWith(
+                  color: _selectedIndex != null &&
+                          (_selectedIndex ?? 0) >=
+                              (widget.answers.length / 2).round()
+                      ? Colors.white
+                      : Colors.white.withOpacity(0.5),
+                ),
               ),
             ],
           ),
@@ -84,6 +80,21 @@ class NpsAnswerState extends State<NpsAnswer> {
     required int index,
   }) {
     const radius = Radius.circular(10);
+    BorderRadiusGeometry? getBorderRadius() {
+      if (isStartItem) {
+        return const BorderRadius.only(
+          topLeft: radius,
+          bottomLeft: radius,
+        );
+      } else if (isEndItem) {
+        return const BorderRadius.only(
+          bottomRight: radius,
+          topRight: radius,
+        );
+      }
+      return null;
+    }
+
     return GestureDetector(
       onTap: () {
         setState(() {
@@ -96,33 +107,17 @@ class NpsAnswerState extends State<NpsAnswer> {
         height: 56,
         decoration: BoxDecoration(
           border: Border.all(color: Colors.white),
-          borderRadius: () {
-            if (isStartItem) {
-              return const BorderRadius.only(
-                topLeft: radius,
-                bottomLeft: radius,
-              );
-            } else if (isEndItem) {
-              return const BorderRadius.only(
-                bottomRight: radius,
-                topRight: radius,
-              );
-            }
-          }(),
+          borderRadius: getBorderRadius(),
         ),
         child: Center(
           child: Text(
             answer.text,
-            style: () {
-              if (_selectedIndex != null && index <= (_selectedIndex ?? 0)) {
-                return _textTheme.labelLarge;
-              } else {
-                return _textTheme.labelLarge?.copyWith(
-                  fontWeight: FontWeight.w400,
-                  color: Colors.white.withOpacity(0.5),
-                );
-              }
-            }(),
+            style: _selectedIndex != null && index <= (_selectedIndex ?? 0)
+                ? _textTheme.labelLarge
+                : _textTheme.labelLarge?.copyWith(
+                    fontWeight: FontWeight.w400,
+                    color: Colors.white.withOpacity(0.5),
+                  ),
           ),
         ),
       ),
