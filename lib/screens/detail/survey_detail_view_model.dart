@@ -27,9 +27,6 @@ class SurveyDetailViewModel extends AutoDisposeAsyncNotifier<void> {
 
   Stream<bool> get isSubmitSuccess => _isSubmitSuccess.stream;
 
-  final _isSubmitError = StreamController<bool>();
-  Stream<bool> get isSubmitError => _isSubmitError.stream;
-
   final _isError = StreamController<String>();
   Stream<String> get isError => _isError.stream;
 
@@ -43,18 +40,19 @@ class SurveyDetailViewModel extends AutoDisposeAsyncNotifier<void> {
   Future<void> submitSurvey(String surveyId) async {
     final questionsRequest = _cache?.questions.map((question) =>
         SurveyQuestionRequest(
-            id: question.id, answers: findAnswers(question.answers)));
+            id: question.id, answers: _findAnswers(question.answers)));
     SubmitSurveyRequest request = SubmitSurveyRequest(
         surveyId: surveyId, questions: questionsRequest?.toList() ?? []);
     final result = await ref.read(submitSurveyUseCaseProvider).call(request);
     if (result is Success) {
       _isSubmitSuccess.add(true);
     } else {
-      _isSubmitError.add(true);
+      _isSubmitSuccess.add(false);
     }
   }
 
-  List<SurveyAnswerRequest> findAnswers(List<SurveyAnswerModel> surveyAnswers) {
+  List<SurveyAnswerRequest> _findAnswers(
+      List<SurveyAnswerModel> surveyAnswers) {
     final result = <SurveyAnswerRequest>[];
     for (var answer in surveyAnswers) {
       if (answer.isAnswer) {
