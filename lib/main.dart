@@ -3,14 +3,18 @@ import 'package:flutter_config_plus/flutter_config_plus.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:survey_flutter/api/storage/hive_storage.dart';
+import 'package:survey_flutter/screens/detail/survey_detail_screen.dart';
 import 'package:survey_flutter/screens/home/home_screen.dart';
 import 'package:survey_flutter/theme/app_theme.dart';
 import 'package:survey_flutter/screens/login/login_screen.dart';
 import 'package:survey_flutter/screens/splash/splash.dart';
+import 'package:survey_flutter/utils/string_extension.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await FlutterConfigPlus.loadEnvVariables();
+  setupHive();
   runApp(
     ProviderScope(
       child: MyApp(),
@@ -38,10 +42,17 @@ class MyApp extends StatelessWidget {
         ),
       ),
       GoRoute(
-        path: routePathHomeScreen,
-        builder: (BuildContext context, GoRouterState state) =>
-            const HomeScreen(),
-      )
+          path: routePathHomeScreen,
+          builder: (BuildContext context, GoRouterState state) =>
+              const HomeScreen(),
+          routes: [
+            GoRoute(
+              path: 'survey_detail/:surveyId',
+              builder: (BuildContext context, GoRouterState state) =>
+                  SurveyDetailScreen(
+                      surveyId: state.params["surveyId"].orEmpty()),
+            ),
+          ]),
     ],
   );
 

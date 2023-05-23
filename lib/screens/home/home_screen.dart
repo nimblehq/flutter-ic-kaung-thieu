@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:go_router/go_router.dart';
 import 'package:page_view_dot_indicator/page_view_dot_indicator.dart';
 import 'package:survey_flutter/gen/assets.gen.dart';
 import 'package:survey_flutter/model/survey_model.dart';
+import 'package:survey_flutter/screens/detail/survey_detail_screen.dart';
 import 'package:survey_flutter/screens/home/home_view_model.dart';
 import 'package:survey_flutter/theme/constant.dart';
 
@@ -78,14 +80,19 @@ class HomeScreenState extends ConsumerState<HomeScreen> {
           return const HomeShimmerLoading();
         } else {
           return _buildHomeScreenContent(
-            surveys: surveys,
-            imageUrl: imageUrl,
-            isLoadMore: isLoadMore,
-            currentDate: currentDate,
-            onLoadMore: () {
-              widgetRef.read(homeViewModelProvider.notifier).getSurveyList();
-            },
-          );
+              surveys: surveys,
+              imageUrl: imageUrl,
+              isLoadMore: isLoadMore,
+              currentDate: currentDate,
+              onLoadMore: () {
+                widgetRef.read(homeViewModelProvider.notifier).getSurveyList();
+              },
+              onRefresh: () async {
+                setState(() {
+                  _selectedPage = 0;
+                });
+                widgetRef.read(homeViewModelProvider.notifier).refresh();
+              });
         }
       }),
       backgroundColor: Colors.black,
@@ -103,32 +110,42 @@ class HomeScreenState extends ConsumerState<HomeScreen> {
     required bool isLoadMore,
     required String currentDate,
     required VoidCallback onLoadMore,
+    required RefreshCallback onRefresh,
   }) {
-    return Stack(
-      alignment: Alignment.center,
-      fit: StackFit.expand,
-      children: [
-        if (surveys.isNotEmpty) ...[
-          PageView(
-            controller: _pageController,
-            onPageChanged: (page) {
-              setState(() {
-                _selectedPage = page;
-              });
-              if (page == surveys.length - 2) {
-                onLoadMore();
-              }
-            },
-            children: surveys
-                .map((survey) => _buildBackgroundImage(survey.coverImageUrl))
-                .toList(),
-          ),
-          _buildHeader(currentDate),
-          _buildUserAvatar(imageUrl),
-          _buildSurveyContent(surveys),
-          _buildLoadMoreIndicator(isLoadMore),
-        ]
-      ],
+    return RefreshIndicator(
+      onRefresh: onRefresh,
+      child: SingleChildScrollView(
+          physics: const AlwaysScrollableScrollPhysics(),
+          child: SizedBox(
+            height: MediaQuery.of(context).size.height,
+            child: Stack(
+              alignment: Alignment.center,
+              fit: StackFit.expand,
+              children: [
+                if (surveys.isNotEmpty) ...[
+                  PageView(
+                    controller: _pageController,
+                    onPageChanged: (page) {
+                      setState(() {
+                        _selectedPage = page;
+                      });
+                      if (page == surveys.length - 2) {
+                        onLoadMore();
+                      }
+                    },
+                    children: surveys
+                        .map((survey) =>
+                            _buildBackgroundImage(survey.coverImageUrl))
+                        .toList(),
+                  ),
+                  _buildHeader(currentDate),
+                  _buildUserAvatar(imageUrl),
+                  _buildSurveyContent(surveys),
+                  _buildLoadMoreIndicator(isLoadMore),
+                ]
+              ],
+            ),
+          )),
     );
   }
 
@@ -173,7 +190,7 @@ class HomeScreenState extends ConsumerState<HomeScreen> {
               ),
               child: Text(
                 _localizations.homeTodayTitle,
-                style: _textTheme.bodyLarge?.copyWith(
+                style: _textTheme.bodyMedium?.copyWith(
                   fontSize: Metrics.fontLarge,
                   fontWeight: FontWeight.bold,
                 ),
@@ -217,20 +234,22 @@ class HomeScreenState extends ConsumerState<HomeScreen> {
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          PageViewDotIndicator(
-            currentItem: _selectedPage,
-            count: surveys.length,
-            unselectedColor: Colors.white24,
-            selectedColor: Colors.white,
-            duration: const Duration(
-              milliseconds: Metrics.pageIndicatorAnimationDuration,
+          if (surveys.isNotEmpty) ...[
+            PageViewDotIndicator(
+              currentItem: _selectedPage,
+              count: surveys.length,
+              unselectedColor: Colors.white24,
+              selectedColor: Colors.white,
+              duration: const Duration(
+                milliseconds: Metrics.pageIndicatorAnimationDuration,
+              ),
+              alignment: Alignment.bottomLeft,
+              size: const Size(
+                Metrics.pageIndicatorSize,
+                Metrics.pageIndicatorSize,
+              ),
             ),
-            alignment: Alignment.bottomLeft,
-            size: const Size(
-              Metrics.pageIndicatorSize,
-              Metrics.pageIndicatorSize,
-            ),
-          ),
+          ],
           Padding(
             padding: const EdgeInsets.only(
                 left: Metrics.spacingDefault,
@@ -239,7 +258,7 @@ class HomeScreenState extends ConsumerState<HomeScreen> {
             child: Text(
               surveys[_selectedPage].title,
               maxLines: 2,
-              style: _textTheme.bodyLarge?.copyWith(
+              style: _textTheme.bodyMedium?.copyWith(
                 fontSize: Metrics.fontMedium,
                 fontWeight: FontWeight.bold,
               ),
@@ -250,7 +269,7 @@ class HomeScreenState extends ConsumerState<HomeScreen> {
             mainAxisSize: MainAxisSize.max,
             crossAxisAlignment: CrossAxisAlignment.end,
             children: [
-              Flexible(
+              Expanded(
                 child: Padding(
                   padding: const EdgeInsets.fromLTRB(
                     Metrics.spacingDefault,
@@ -261,7 +280,7 @@ class HomeScreenState extends ConsumerState<HomeScreen> {
                   child: Text(
                     surveys[_selectedPage].description,
                     maxLines: 2,
-                    style: _textTheme.bodyLarge?.copyWith(
+                    style: _textTheme.bodyMedium?.copyWith(
                       color: Colors.white70,
                       fontSize: Metrics.fontNormal,
                     ),
@@ -277,7 +296,8 @@ class HomeScreenState extends ConsumerState<HomeScreen> {
                 ),
                 child: FloatingActionButton(
                   onPressed: () {
-                    // TODO implement go to detail
+                    final id = surveys[_selectedPage].id;
+                    context.go('$routePathDetailScreen/$id');
                   },
                   backgroundColor: Colors.white,
                   child: Image.asset(Assets.images.icNavNext.path),

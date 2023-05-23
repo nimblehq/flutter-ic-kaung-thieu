@@ -1,17 +1,23 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:survey_flutter/gen/assets.gen.dart';
+import 'package:survey_flutter/screens/home/home_screen.dart';
 import 'package:survey_flutter/screens/login/login_screen.dart';
+import 'package:survey_flutter/screens/splash/splash_view_model.dart';
 
-class SplashScreen extends StatefulWidget {
+class SplashScreen extends ConsumerStatefulWidget {
   const SplashScreen({Key? key}) : super(key: key);
 
   @override
-  State<StatefulWidget> createState() => SplashScreenState();
+  ConsumerState<ConsumerStatefulWidget> createState() => _SplashScreenState();
 }
 
-class SplashScreenState extends State<SplashScreen> {
+class _SplashScreenState extends ConsumerState<SplashScreen> {
   double _logoOpacity = 0;
+
+  final _isAlreadyLoggedInStream = StreamProvider.autoDispose<bool>(
+      (ref) => ref.watch(splashViewModelProvider.notifier).isAlreadyLoggedIn);
 
   @override
   void initState() {
@@ -36,14 +42,24 @@ class SplashScreenState extends State<SplashScreen> {
               Assets.images.splashBackground.path,
               fit: BoxFit.cover,
             ),
-            AnimatedOpacity(
-              opacity: _logoOpacity,
-              duration: const Duration(seconds: 1),
-              child: Image.asset(
-                Assets.images.nimbleLogoWhite.path,
-              ),
-              onEnd: () => context.go(routePathLoginScreen),
-            ),
+            Consumer(builder: (_, widgetRef, child) {
+              final isLoggedIn =
+                  widgetRef.watch(_isAlreadyLoggedInStream).value ?? false;
+              return AnimatedOpacity(
+                opacity: _logoOpacity,
+                duration: const Duration(seconds: 1),
+                child: Image.asset(
+                  Assets.images.nimbleLogoWhite.path,
+                ),
+                onEnd: () {
+                  if (isLoggedIn) {
+                    context.go(routePathHomeScreen);
+                  } else {
+                    context.go(routePathLoginScreen);
+                  }
+                },
+              );
+            })
           ],
         );
       }),

@@ -29,9 +29,9 @@ class _LoginFormState extends ConsumerState<LoginForm> {
         autocorrect: false,
         decoration: FormFieldDecoration(
           hint: _localizations.emailInputHint,
-          hintTextStyle: _textTheme.bodyLarge,
+          hintTextStyle: _textTheme.bodyMedium,
         ),
-        style: _textTheme.bodyLarge,
+        style: _textTheme.bodyMedium,
         validator: (value) => ref
             .read(loginViewModelProvider.notifier)
             .checkEmail(value, _localizations.invalidEmailError),
@@ -45,9 +45,9 @@ class _LoginFormState extends ConsumerState<LoginForm> {
         obscureText: true,
         decoration: FormFieldDecoration(
           hint: _localizations.passwordInputHint,
-          hintTextStyle: _textTheme.bodyLarge,
+          hintTextStyle: _textTheme.bodyMedium,
         ),
-        style: _textTheme.bodyLarge,
+        style: _textTheme.bodyMedium,
         validator: (value) => ref
             .read(loginViewModelProvider.notifier)
             .checkPassword(value, _localizations.invalidPasswordError),
@@ -58,8 +58,10 @@ class _LoginFormState extends ConsumerState<LoginForm> {
 
   ElevatedButton get _loginButton => ElevatedButton(
         style: ButtonStyle(
-          textStyle:
-              MaterialStateProperty.all(Theme.of(context).textTheme.labelLarge),
+          textStyle: MaterialStateProperty.all(Theme.of(context)
+              .textTheme
+              .labelMedium
+              ?.copyWith(color: Colors.red)),
           backgroundColor: MaterialStateProperty.all(Colors.white),
           foregroundColor: MaterialStateProperty.all(Colors.black),
           overlayColor: MaterialStateProperty.all(Colors.black12),
