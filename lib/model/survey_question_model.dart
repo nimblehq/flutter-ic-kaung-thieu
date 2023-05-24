@@ -27,7 +27,9 @@ enum DisplayType {
   star('star'),
   thumbs('thumbs'),
   heart('heart'),
-  dropdown('dropdown');
+  dropdown('dropdown'),
+  intro('intro'),
+  outro('outro');
 
   final String typeValue;
 
@@ -76,8 +78,10 @@ extension DisplayTypeExtension on String {
       return DisplayType.heart;
     } else if (this == DisplayType.dropdown.typeValue) {
       return DisplayType.dropdown;
+    } else if (this == DisplayType.intro.typeValue) {
+      return DisplayType.intro;
     } else {
-      throw Exception('Unimplemented Display Type: $this');
+      return DisplayType.outro;
     }
   }
 }
