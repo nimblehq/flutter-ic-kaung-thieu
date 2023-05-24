@@ -6,6 +6,7 @@ import 'package:go_router/go_router.dart';
 import 'package:survey_flutter/gen/assets.gen.dart';
 import 'package:survey_flutter/screens/detail/multiple_choice_answers.dart';
 import 'package:survey_flutter/screens/detail/success_submit_content.dart';
+import 'package:survey_flutter/screens/detail/nps_answer.dart';
 import 'package:survey_flutter/screens/detail/survey_question_content.dart';
 import 'package:survey_flutter/screens/detail/start_survey_content.dart';
 import 'package:survey_flutter/model/survey_question_model.dart';
@@ -156,6 +157,18 @@ class SurveyDetailScreenState extends State<SurveyDetailScreen> {
                         answerId: answerId,
                         answerText: text);
               });
+        case DisplayType.nps:
+          return NpsAnswer(
+              onChoiceClick: (answerId) {
+                widgetRef
+                    .read(surveyDetailViewModelProvider.notifier)
+                    .updateChoiceAnswer(
+                      questionId: question.id,
+                      answerId: answerId,
+                      pickType: PickType.one,
+                    );
+              },
+              answers: question.answers);
         default:
           return const Expanded(child: SizedBox.shrink());
       }

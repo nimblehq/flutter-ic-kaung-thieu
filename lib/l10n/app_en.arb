@@ -16,5 +16,7 @@
 
     "surveyDetailStartSurvey": "Start Survey",
     "surveySubmit": "Submit",
-    "surveySubmitSuccessMsg": "Thanks for taking the survey."
+    "surveySubmitSuccessMsg": "Thanks for taking the survey.",
+    "surveyNpsNotAtAllLikely": "Not at all Likely",
+    "surveyNpsExtremelyLikely": "Extremely Likely"
 }
