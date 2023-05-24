@@ -22,7 +22,11 @@ enum DisplayType {
   choice('choice'),
   textArea('textarea'),
   textField('textfield'),
-  nps('nps');
+  nps('nps'),
+  smiley('smiley'),
+  star('star'),
+  thumbs('thumbs'),
+  heart('heart');
 
   final String typeValue;
 
@@ -61,6 +65,14 @@ extension DisplayTypeExtension on String {
       return DisplayType.textField;
     } else if (this == DisplayType.nps.typeValue) {
       return DisplayType.nps;
+    } else if (this == DisplayType.smiley.typeValue) {
+      return DisplayType.smiley;
+    } else if (this == DisplayType.star.typeValue) {
+      return DisplayType.star;
+    } else if (this == DisplayType.thumbs.typeValue) {
+      return DisplayType.thumbs;
+    } else if (this == DisplayType.heart.typeValue) {
+      return DisplayType.heart;
     } else {
       throw Exception('Unimplemented Display Type: $this');
     }
