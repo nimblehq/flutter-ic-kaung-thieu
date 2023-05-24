@@ -93,6 +93,17 @@ class SurveyDetailScreenState extends ConsumerState<SurveyDetailScreen> {
         var isSubmitSurveySuccess =
             widgetRef.watch(_isSubmitSuccessStreamProvider).value;
 
+        void onPressNext() {
+          FocusManager.instance.primaryFocus?.unfocus();
+          if (_selectedPage == surveyDetail?.questions.length) {
+            widgetRef
+                .read(surveyDetailViewModelProvider.notifier)
+                .submitSurvey(widget.surveyId);
+          } else {
+            goToNextPage();
+          }
+        }
+
         if (surveyDetail == null) {
           return Container(
             decoration: const BoxDecoration(color: Colors.black),
@@ -137,23 +148,12 @@ class SurveyDetailScreenState extends ConsumerState<SurveyDetailScreen> {
                             title: question.text,
                             page: _selectedPage,
                             totalPage: surveyDetail.questions.length,
-                            onPressNext: goToNextPage)
+                            onPressNext: onPressNext)
                         : SurveyQuestionContent(
                             title: question.text,
                             page: _selectedPage,
                             totalPage: surveyDetail.questions.length,
-                            onPressNext: () {
-                              FocusManager.instance.primaryFocus?.unfocus();
-                              if (_selectedPage ==
-                                  surveyDetail.questions.length) {
-                                widgetRef
-                                    .read(
-                                        surveyDetailViewModelProvider.notifier)
-                                    .submitSurvey(widget.surveyId);
-                              } else {
-                                goToNextPage();
-                              }
-                            },
+                            onPressNext: onPressNext,
                             child: _getQuestionContentChild(question),
                           ),
                   ]
