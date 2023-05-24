@@ -44,11 +44,7 @@ class SurveyDetailViewModel extends AutoDisposeAsyncNotifier<void> {
     SubmitSurveyRequest request = SubmitSurveyRequest(
         surveyId: surveyId, questions: questionsRequest?.toList() ?? []);
     final result = await ref.read(submitSurveyUseCaseProvider).call(request);
-    if (result is Success) {
-      _isSubmitSuccess.add(true);
-    } else {
-      _isSubmitSuccess.add(false);
-    }
+    _isSubmitSuccess.add(result is Success);
   }
 
   List<SurveyAnswerRequest> _findAnswers(
@@ -112,11 +108,8 @@ class SurveyDetailViewModel extends AutoDisposeAsyncNotifier<void> {
     final result =
         await ref.read(getSurveyDetailUseCaseProvider).call(surveyId);
 
-    if (result is Success) {
-      final value = (result as Success<SurveyDetailDataResponse>)
-          .value
-          .surveyDetailResponse
-          ?.toSurveyDetailModel();
+    if (result is Success<SurveyDetailDataResponse>) {
+      final value = result.value.surveyDetailResponse?.toSurveyDetailModel();
 
       if (value != null) {
         _cache = value;
