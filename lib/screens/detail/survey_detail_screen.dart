@@ -10,6 +10,7 @@ import 'package:survey_flutter/screens/detail/multiple_choice_answers.dart';
 import 'package:survey_flutter/screens/detail/picker_answers.dart';
 import 'package:survey_flutter/screens/detail/success_submit_content.dart';
 import 'package:survey_flutter/screens/detail/nps_answer.dart';
+import 'package:survey_flutter/screens/detail/survey_intro_outro_content.dart';
 import 'package:survey_flutter/screens/detail/survey_question_content.dart';
 import 'package:survey_flutter/screens/detail/start_survey_content.dart';
 import 'package:survey_flutter/model/survey_question_model.dart';
@@ -130,22 +131,31 @@ class SurveyDetailScreenState extends ConsumerState<SurveyDetailScreen> {
                   ),
                   for (SurveyQuestionModel question
                       in surveyDetail.questions) ...[
-                    SurveyQuestionContent(
-                      title: question.text,
-                      page: _selectedPage,
-                      totalPage: surveyDetail.questions.length,
-                      onPressNext: () {
-                        FocusManager.instance.primaryFocus?.unfocus();
-                        if (_selectedPage == surveyDetail.questions.length) {
-                          widgetRef
-                              .read(surveyDetailViewModelProvider.notifier)
-                              .submitSurvey(widget.surveyId);
-                        } else {
-                          goToNextPage();
-                        }
-                      },
-                      child: _getQuestionContentChild(question),
-                    ),
+                    (question.displayType == DisplayType.intro ||
+                            question.displayType == DisplayType.outro)
+                        ? SurveyIntroOutroContent(
+                            title: question.text,
+                            page: _selectedPage,
+                            totalPage: surveyDetail.questions.length,
+                            onPressNext: goToNextPage)
+                        : SurveyQuestionContent(
+                            title: question.text,
+                            page: _selectedPage,
+                            totalPage: surveyDetail.questions.length,
+                            onPressNext: () {
+                              FocusManager.instance.primaryFocus?.unfocus();
+                              if (_selectedPage ==
+                                  surveyDetail.questions.length) {
+                                widgetRef
+                                    .read(
+                                        surveyDetailViewModelProvider.notifier)
+                                    .submitSurvey(widget.surveyId);
+                              } else {
+                                goToNextPage();
+                              }
+                            },
+                            child: _getQuestionContentChild(question),
+                          ),
                   ]
                 ],
               ),
