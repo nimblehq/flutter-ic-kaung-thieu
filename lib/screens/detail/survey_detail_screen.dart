@@ -253,7 +253,7 @@ class SurveyDetailScreenState extends ConsumerState<SurveyDetailScreen> {
                     );
               });
         default:
-          return const Expanded(child: SizedBox.shrink());
+          return const SizedBox();
       }
     });
   }
