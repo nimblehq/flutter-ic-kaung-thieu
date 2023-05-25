@@ -2,6 +2,7 @@
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:go_router/go_router.dart';
 import 'package:survey_flutter/gen/assets.gen.dart';
 import 'package:survey_flutter/screens/detail/emoticon_choice_answers.dart';
@@ -15,6 +16,7 @@ import 'package:survey_flutter/model/survey_question_model.dart';
 import 'package:survey_flutter/screens/detail/survey_detail_view_model.dart';
 import 'package:survey_flutter/screens/detail/text_area_answer.dart';
 import 'package:survey_flutter/screens/detail/text_field_answer.dart';
+import 'package:survey_flutter/screens/widgets/alert_dialog.dart';
 
 const routePathDetailScreen = '/home/survey_detail';
 
@@ -29,6 +31,8 @@ class SurveyDetailScreen extends ConsumerStatefulWidget {
 }
 
 class SurveyDetailScreenState extends ConsumerState<SurveyDetailScreen> {
+  AppLocalizations get _localizations => AppLocalizations.of(context)!;
+
   late PageController _pageController;
   int _selectedPage = 0;
 
@@ -62,6 +66,23 @@ class SurveyDetailScreenState extends ConsumerState<SurveyDetailScreen> {
         WidgetsBinding.instance
             .addPostFrameCallback((_) => createSnackBar(error));
         ref.read(surveyDetailViewModelProvider.notifier).clearError();
+      }
+    });
+
+    ref.listen<AsyncValue<bool>>(_isSubmitSuccessStreamProvider,
+        (previous, next) {
+      final isSuccess = next.value ?? false;
+      if (!isSuccess) {
+        showAlertDialog(
+            context: context,
+            title: _localizations.surveySubmitErrorTitle,
+            message: _localizations.surveySubmitErrorMsg,
+            actions: [
+              TextButton(
+                child: Text(_localizations.okText),
+                onPressed: () => Navigator.pop(context),
+              ),
+            ]);
       }
     });
 
