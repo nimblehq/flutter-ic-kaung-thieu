@@ -9,8 +9,10 @@ import 'package:survey_flutter/api/storage/shared_preference.dart';
 import 'package:survey_flutter/model/surveys_parameters.dart';
 import 'package:survey_flutter/usecases/clear_cached_surveys_use_case.dart';
 import 'package:survey_flutter/usecases/get_cached_surveys_use_case.dart';
+import 'package:survey_flutter/usecases/get_survey_detail_use_case.dart';
 import 'package:survey_flutter/usecases/get_surveys_use_case.dart';
 import 'package:survey_flutter/usecases/login_use_case.dart';
+import 'package:survey_flutter/usecases/submit_survey_use_case.dart';
 
 import '../util/async_listener.dart';
 
@@ -28,6 +30,8 @@ import '../util/async_listener.dart';
   GetCachedSurveysUseCase,
   SurveysParameters,
   ClearCachedSurveysUseCase,
+  GetSurveyDetailUseCase,
+  SubmitSurveyUseCase,
 ])
 main() {
   // empty class to generate mock repository classes

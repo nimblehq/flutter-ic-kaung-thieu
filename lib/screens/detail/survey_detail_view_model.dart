@@ -1,9 +1,16 @@
 import 'dart:async';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:survey_flutter/model/request/submit_survey_request.dart';
+import 'package:survey_flutter/model/request/survey_answer_request.dart';
+import 'package:survey_flutter/model/request/survey_question_request.dart';
+import 'package:survey_flutter/model/response/survey_detail_data_response.dart';
 import 'package:survey_flutter/model/survey_answer_model.dart';
 import 'package:survey_flutter/model/survey_detail_model.dart';
 import 'package:survey_flutter/model/survey_question_model.dart';
+import 'package:survey_flutter/usecases/base/base_use_case.dart';
+import 'package:survey_flutter/usecases/get_survey_detail_use_case.dart';
+import 'package:survey_flutter/usecases/submit_survey_use_case.dart';
 
 final surveyDetailViewModelProvider =
     AsyncNotifierProvider.autoDispose<SurveyDetailViewModel, void>(
@@ -20,16 +27,36 @@ class SurveyDetailViewModel extends AutoDisposeAsyncNotifier<void> {
 
   Stream<bool> get isSubmitSuccess => _isSubmitSuccess.stream;
 
+  final _isError = StreamController<String>();
+  Stream<String> get isError => _isError.stream;
+
   @override
   FutureOr<void> build() {
-    fetchMockDetail();
     ref.onDispose(() {
       _surveyDetail.close();
     });
   }
 
-  void submitSurvey() {
-    _isSubmitSuccess.add(true);
+  Future<void> submitSurvey(String surveyId) async {
+    final questionsRequest = _cache?.questions.map((question) =>
+        SurveyQuestionRequest(
+            id: question.id, answers: _findAnswers(question.answers)));
+    SubmitSurveyRequest request = SubmitSurveyRequest(
+        surveyId: surveyId, questions: questionsRequest?.toList() ?? []);
+    final result = await ref.read(submitSurveyUseCaseProvider).call(request);
+    _isSubmitSuccess.add(result is Success);
+  }
+
+  List<SurveyAnswerRequest> _findAnswers(
+      List<SurveyAnswerModel> surveyAnswers) {
+    final result = <SurveyAnswerRequest>[];
+    for (var answer in surveyAnswers) {
+      if (answer.isAnswer) {
+        result
+            .add(SurveyAnswerRequest(id: answer.id, answer: answer.textAnswer));
+      }
+    }
+    return result;
   }
 
   void updateChoiceAnswer({
@@ -77,161 +104,25 @@ class SurveyDetailViewModel extends AutoDisposeAsyncNotifier<void> {
     }
   }
 
-  Future<void> fetchMockDetail() async {
-    final detail = SurveyDetailModel(
-      id: 'id',
-      title: 'Working from home Check-In',
-      description:
-          'We would like to know how you feel about our work from home (WFH) experience.',
-      coverImageUrl: 'https://picsum.photos/376/812',
-      questions: [
-        SurveyQuestionModel(
-            id: '1',
-            text: 'Question Intro',
-            shortText: '',
-            pick: PickType.none,
-            displayType: DisplayType.intro,
-            answers: []),
-        SurveyQuestionModel(
-            id: '2',
-            text: 'Question Multi Choice',
-            shortText: '',
-            pick: PickType.one,
-            displayType: DisplayType.choice,
-            answers: [
-              SurveyAnswerModel(id: '1', text: 'Choice 1'),
-              SurveyAnswerModel(id: '2', text: 'Choice 2'),
-              SurveyAnswerModel(id: '3', text: 'Choice 3'),
-              SurveyAnswerModel(id: '4', text: 'Choice 4'),
-              SurveyAnswerModel(id: '5', text: 'Choice 5'),
-              SurveyAnswerModel(id: '6', text: 'Choice 6'),
-            ]),
-        SurveyQuestionModel(
-            id: '3',
-            text: 'Question Multi Choice',
-            shortText: '',
-            pick: PickType.any,
-            displayType: DisplayType.choice,
-            answers: [
-              SurveyAnswerModel(id: '1', text: 'Choice 1'),
-              SurveyAnswerModel(id: '2', text: 'Choice 2'),
-              SurveyAnswerModel(id: '3', text: 'Choice 3'),
-            ]),
-        SurveyQuestionModel(
-            id: '4',
-            text: 'Question Nps',
-            shortText: '',
-            pick: PickType.one,
-            displayType: DisplayType.nps,
-            answers: [
-              SurveyAnswerModel(id: '1', text: '1'),
-              SurveyAnswerModel(id: '2', text: '2'),
-              SurveyAnswerModel(id: '3', text: '3'),
-              SurveyAnswerModel(id: '4', text: '4'),
-              SurveyAnswerModel(id: '5', text: '5'),
-              SurveyAnswerModel(id: '6', text: '6'),
-              SurveyAnswerModel(id: '7', text: '7'),
-              SurveyAnswerModel(id: '8', text: '8'),
-              SurveyAnswerModel(id: '9', text: '9'),
-              SurveyAnswerModel(id: '10', text: '10'),
-            ]),
-        SurveyQuestionModel(
-            id: '5',
-            text: 'How did WFH change your productivity?',
-            shortText: '',
-            pick: PickType.one,
-            displayType: DisplayType.smiley,
-            answers: [
-              SurveyAnswerModel(id: '1', text: '1'),
-              SurveyAnswerModel(id: '2', text: '2'),
-              SurveyAnswerModel(id: '3', text: '3'),
-              SurveyAnswerModel(id: '4', text: '4'),
-              SurveyAnswerModel(id: '5', text: '5'),
-            ]),
-        SurveyQuestionModel(
-            id: '6',
-            text: 'How did WFH change your productivity?',
-            shortText: '',
-            pick: PickType.one,
-            displayType: DisplayType.heart,
-            answers: [
-              SurveyAnswerModel(id: '1', text: '1'),
-              SurveyAnswerModel(id: '2', text: '2'),
-              SurveyAnswerModel(id: '3', text: '3'),
-              SurveyAnswerModel(id: '4', text: '4'),
-              SurveyAnswerModel(id: '5', text: '5'),
-            ]),
-        SurveyQuestionModel(
-            id: '7',
-            text: 'How did WFH change your productivity?',
-            shortText: '',
-            pick: PickType.one,
-            displayType: DisplayType.thumbs,
-            answers: [
-              SurveyAnswerModel(id: '1', text: '1'),
-              SurveyAnswerModel(id: '2', text: '2'),
-              SurveyAnswerModel(id: '3', text: '3'),
-              SurveyAnswerModel(id: '4', text: '4'),
-              SurveyAnswerModel(id: '5', text: '5'),
-            ]),
-        SurveyQuestionModel(
-            id: '8',
-            text: 'How did WFH change your productivity?',
-            shortText: '',
-            pick: PickType.one,
-            displayType: DisplayType.star,
-            answers: [
-              SurveyAnswerModel(id: '1', text: '1'),
-              SurveyAnswerModel(id: '2', text: '2'),
-              SurveyAnswerModel(id: '3', text: '3'),
-              SurveyAnswerModel(id: '4', text: '4'),
-              SurveyAnswerModel(id: '5', text: '5'),
-            ]),
-        SurveyQuestionModel(
-            id: '9',
-            text: 'How did WFH change your productivity?',
-            shortText: '',
-            pick: PickType.one,
-            displayType: DisplayType.dropdown,
-            answers: [
-              SurveyAnswerModel(id: '1', text: 'Afghanistan'),
-              SurveyAnswerModel(id: '2', text: 'Albania'),
-              SurveyAnswerModel(id: '3', text: 'Algeria'),
-              SurveyAnswerModel(id: '4', text: 'American Samoa'),
-              SurveyAnswerModel(id: '5', text: 'Andorra'),
-            ]),
-        SurveyQuestionModel(
-            id: '10',
-            text: 'Please share with us what you think about our service',
-            shortText: 'Your thoughts',
-            pick: PickType.none,
-            displayType: DisplayType.textArea,
-            answers: [
-              SurveyAnswerModel(id: '1', text: ''),
-            ]),
-        SurveyQuestionModel(
-            id: '11',
-            text: "Don't miss out on our Exclusive Promotions!",
-            shortText: 'Your thoughts',
-            pick: PickType.none,
-            displayType: DisplayType.textField,
-            answers: [
-              SurveyAnswerModel(id: '1', text: 'First Name'),
-              SurveyAnswerModel(id: '2', text: 'Mobile No.'),
-              SurveyAnswerModel(id: '3', text: 'Email'),
-            ]),
-        SurveyQuestionModel(
-            id: '12',
-            text: 'Question Outro',
-            shortText: '',
-            pick: PickType.none,
-            displayType: DisplayType.outro,
-            answers: []),
-      ],
-    );
-    Future.delayed(const Duration(seconds: 2), () {
-      _cache = detail;
-      _surveyDetail.add(detail);
-    });
+  Future<void> getSurveyDetail(String surveyId) async {
+    final result =
+        await ref.read(getSurveyDetailUseCaseProvider).call(surveyId);
+
+    if (result is Success<SurveyDetailDataResponse>) {
+      final value = result.value.surveyDetailResponse?.toSurveyDetailModel();
+
+      if (value != null) {
+        _cache = value;
+        _surveyDetail.add(value);
+      } else {
+        _isError.add('Unknown error: Null');
+      }
+    } else if (result is Failed) {
+      _isError.add((result as Failed).getErrorMessage());
+    }
+  }
+
+  void clearError() {
+    _isError.add('');
   }
 }
