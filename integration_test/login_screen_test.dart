@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:integration_test/integration_test.dart';
 import 'package:mockito/mockito.dart';
+import 'package:survey_flutter/model/response/survey_data_response.dart';
+import 'package:survey_flutter/model/response/survey_response.dart';
 import 'package:survey_flutter/screens/login/login_form.dart';
 import 'package:survey_flutter/usecases/base/base_use_case.dart';
 
@@ -14,6 +16,25 @@ void main() {
   testWidgets('LoginScreenTest', (WidgetTester tester) async {
     when(TestUtil.mockLoginUseCase.call(any))
         .thenAnswer((_) async => Success(MockUtil.loginDataResponse));
+    when(TestUtil.mockGetSurveysUseCase.call(any)).thenAnswer(
+      (_) async => Success(
+        SurveyDataResponse(
+          [
+            SurveyResponse(
+              id: '1',
+              title: 'Scarlett Bangkok',
+              coverImageUrl: mockCoverImageUrl,
+            ),
+            SurveyResponse(
+              id: '2',
+              title: 'ibis Bangkok Riverside',
+              coverImageUrl: mockCoverImageUrl,
+            ),
+          ],
+          MockUtil.metaResponse,
+        ),
+      ),
+    );
     await tester.pumpWidget(TestUtil.pumpWidgetWithRealApp('/'));
     await tester.pump(const Duration(seconds: 2));
     await tester.pump(const Duration(seconds: 1));
