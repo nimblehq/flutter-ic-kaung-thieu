@@ -7,7 +7,7 @@ Box<Survey>? surveysBox;
 
 void setupHive() async {
   await Hive.initFlutter();
-  Hive.registerAdapter(SurveyAdapter());
+  Hive.registerAdapter(SurveyAdapter(), override: true);
 }
 
 final hiveStorageProvider = Provider((ref) {
