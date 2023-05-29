@@ -43,6 +43,10 @@ class TestUtil {
     return ProviderScope(
       overrides: [
         loginUseCaseProvider.overrideWithValue(mockLoginUseCase),
+        getSurveysUseCaseProvider.overrideWithValue(mockGetSurveysUseCase),
+        getSurveyDetailUseCaseProvider
+            .overrideWithValue(mockGetSurveyDetailUseCase),
+        submitSurveyUseCaseProvider.overrideWithValue(mockSubmitSurveyUseCase),
       ],
       child: MaterialApp(
         localizationsDelegates: AppLocalizations.localizationsDelegates,
