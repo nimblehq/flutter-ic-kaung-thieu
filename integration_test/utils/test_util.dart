@@ -5,14 +5,20 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:survey_flutter/api/storage/hive_storage.dart';
 import 'package:survey_flutter/main.dart';
 import 'package:package_info_plus/package_info_plus.dart';
+import 'package:survey_flutter/usecases/get_survey_detail_use_case.dart';
 import 'package:survey_flutter/usecases/get_surveys_use_case.dart';
 import 'package:survey_flutter/usecases/login_use_case.dart';
+import 'package:survey_flutter/usecases/submit_survey_use_case.dart';
 
 import '../../test/mocks/generate_mocks.mocks.dart';
 
 class TestUtil {
   static MockLoginUseCase mockLoginUseCase = MockLoginUseCase();
   static MockGetSurveysUseCase mockGetSurveysUseCase = MockGetSurveysUseCase();
+  static MockGetSurveyDetailUseCase mockGetSurveyDetailUseCase =
+      MockGetSurveyDetailUseCase();
+  static MockSubmitSurveyUseCase mockSubmitSurveyUseCase =
+      MockSubmitSurveyUseCase();
 
   /// This is useful when we test the whole app with the real configs(styling,
   /// localization, routes, etc)
@@ -22,6 +28,9 @@ class TestUtil {
       overrides: [
         loginUseCaseProvider.overrideWithValue(mockLoginUseCase),
         getSurveysUseCaseProvider.overrideWithValue(mockGetSurveysUseCase),
+        getSurveyDetailUseCaseProvider
+            .overrideWithValue(mockGetSurveyDetailUseCase),
+        submitSurveyUseCaseProvider.overrideWithValue(mockSubmitSurveyUseCase),
       ],
       child: MyApp(),
     );
