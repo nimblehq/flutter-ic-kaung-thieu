@@ -2,7 +2,9 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:integration_test/integration_test.dart';
+import 'package:lottie/lottie.dart';
 import 'package:mockito/mockito.dart';
+import 'package:survey_flutter/api/exception/network_exceptions.dart';
 import 'package:survey_flutter/gen/assets.gen.dart';
 import 'package:survey_flutter/model/response/answer_response.dart';
 import 'package:survey_flutter/model/response/question_response.dart';
@@ -565,6 +567,112 @@ void main() {
         ),
         findsOneWidget,
       );
+    });
+
+    testWidgets(
+        'When submit survey button is clicked and submits the answers successfully, it shows lottie',
+        (tester) async {
+      when(TestUtil.mockGetSurveyDetailUseCase.call(any)).thenAnswer(
+        (_) async => Success(
+          SurveyDetailDataResponse(
+            SurveyDetailResponse(
+              title: 'welcome survey',
+              coverImageUrl: mockCoverImageUrl,
+              questions: [
+                QuestionResponse(
+                  text: 'outro',
+                  displayType: DisplayType.outro.typeValue,
+                ),
+              ],
+            ),
+          ),
+        ),
+      );
+
+      when(TestUtil.mockSubmitSurveyUseCase.call(any))
+          .thenAnswer((_) async => Success(null));
+
+      await tester
+          .pumpWidget(TestUtil.pumpWidgetWithShellApp(const SurveyDetailScreen(
+        surveyId: 'id',
+      )));
+      await tester.pumpAndSettle();
+
+      final startSurveyButton = find.byType(ElevatedButton);
+      await tester.tap(startSurveyButton);
+      await tester.pumpAndSettle();
+
+      expect(
+        find.byWidgetPredicate(
+          (Widget widget) => widget is Text && widget.data == 'outro',
+        ),
+        findsOneWidget,
+      );
+
+      final submitButton = find.byType(ElevatedButton);
+      await tester.tap(submitButton);
+      await tester.pumpAndSettle();
+
+      expect(
+        find.byType(Lottie),
+        findsOneWidget,
+      );
+      await tester.pumpAndSettle();
+      await tester.pumpAndSettle();
+    });
+
+    testWidgets(
+        'When submit survey button is clicked and submits the answers unsuccessfully, it shows error dialog',
+        (tester) async {
+      when(TestUtil.mockGetSurveyDetailUseCase.call(any)).thenAnswer(
+        (_) async => Success(
+          SurveyDetailDataResponse(
+            SurveyDetailResponse(
+              title: 'welcome survey',
+              coverImageUrl: mockCoverImageUrl,
+              questions: [
+                QuestionResponse(
+                  text: 'outro',
+                  displayType: DisplayType.outro.typeValue,
+                ),
+              ],
+            ),
+          ),
+        ),
+      );
+
+      when(TestUtil.mockSubmitSurveyUseCase.call(any)).thenAnswer((_) async =>
+          Failed(
+              UseCaseException(const NetworkExceptions.unauthorisedRequest())));
+
+      await tester
+          .pumpWidget(TestUtil.pumpWidgetWithShellApp(const SurveyDetailScreen(
+        surveyId: 'id',
+      )));
+      await tester.pumpAndSettle();
+
+      final startSurveyButton = find.byType(ElevatedButton);
+      await tester.tap(startSurveyButton);
+      await tester.pumpAndSettle();
+
+      expect(
+        find.byWidgetPredicate(
+          (Widget widget) => widget is Text && widget.data == 'outro',
+        ),
+        findsOneWidget,
+      );
+
+      final submitButton = find.byType(ElevatedButton);
+      await tester.tap(submitButton);
+      await tester.pumpAndSettle();
+
+      expect(
+        find.byWidgetPredicate(
+            (widget) => widget is Text && widget.data == 'Unable to submit'),
+        findsOneWidget,
+      );
+      await tester.pumpAndSettle();
+      await tester.pumpAndSettle();
     });
   });
 }
