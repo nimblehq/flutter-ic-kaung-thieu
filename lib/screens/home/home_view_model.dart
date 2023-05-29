@@ -10,6 +10,7 @@ import 'package:survey_flutter/model/surveys_parameters.dart';
 import 'package:survey_flutter/usecases/base/base_use_case.dart';
 import 'package:survey_flutter/usecases/clear_cached_surveys_use_case.dart';
 import 'package:survey_flutter/usecases/get_cached_surveys_use_case.dart';
+import 'package:survey_flutter/usecases/get_profile_url_use_case.dart';
 import 'package:survey_flutter/usecases/get_surveys_use_case.dart';
 
 const pageSize = 5;
@@ -138,9 +139,13 @@ class HomeViewModel extends AutoDisposeAsyncNotifier<void> {
   }
 
   Future<void> getProfile() async {
-    // TODO replace with usecase in integration ticket
-    Future.delayed(const Duration(seconds: 5), () {
-      _profile.add(ProfileModel(imageUrl: 'https://picsum.photos/id/64/100'));
-    });
+    final result = await ref.read(getProfileUrlUseCaseProvider).call();
+
+    if (result is Success) {
+      final profileUrl = (result as Success<String>).value;
+      _profile.add(ProfileModel(imageUrl: profileUrl));
+    } else if (result is Failed) {
+      _isError.add((result as Failed).getErrorMessage());
+    }
   }
 }
