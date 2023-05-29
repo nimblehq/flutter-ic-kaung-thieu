@@ -22,7 +22,7 @@ void main() {
     IntegrationTestWidgetsFlutterBinding.ensureInitialized();
 
     testWidgets(
-        'When navigated to survey detail, it shows survey detail info and start survey button',
+        'When navigating to survey detail, it shows survey detail info and start survey button',
         (tester) async {
       when(TestUtil.mockGetSurveyDetailUseCase.call(any)).thenAnswer(
         (_) async => Success(
@@ -44,6 +44,12 @@ void main() {
 
       expect(
         find.byType(ElevatedButton),
+        findsOneWidget,
+      );
+
+      expect(
+        find.byWidgetPredicate(
+            (widget) => widget is Text && widget.data == 'welcome survey'),
         findsOneWidget,
       );
     });
@@ -532,7 +538,8 @@ void main() {
       expect(find.byType(CupertinoPicker), findsOneWidget);
     });
 
-    testWidgets('When survey reached the end, it shows outro type question',
+    testWidgets(
+        'When survey questions reached the end, it shows outro type question',
         (tester) async {
       when(TestUtil.mockGetSurveyDetailUseCase.call(any)).thenAnswer(
         (_) async => Success(
