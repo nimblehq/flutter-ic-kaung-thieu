@@ -9,6 +9,9 @@ import 'package:survey_flutter/screens/widgets/form_field_decoration.dart';
 import 'package:survey_flutter/theme/constant.dart';
 import 'package:survey_flutter/utils/keyboard_manager.dart';
 
+const emailTextFormKey = 'emailTextFormKey';
+const passwordTextFormKey = 'passwordTextFormKey';
+
 class LoginForm extends ConsumerStatefulWidget {
   const LoginForm({Key? key}) : super(key: key);
 
@@ -25,6 +28,7 @@ class _LoginFormState extends ConsumerState<LoginForm> {
   TextTheme get _textTheme => Theme.of(context).textTheme;
 
   TextFormField get _emailTextField => TextFormField(
+        key: const Key(emailTextFormKey),
         keyboardType: TextInputType.emailAddress,
         autocorrect: false,
         decoration: FormFieldDecoration(
@@ -41,6 +45,7 @@ class _LoginFormState extends ConsumerState<LoginForm> {
       );
 
   TextFormField get _passwordTextField => TextFormField(
+        key: const Key(passwordTextFormKey),
         autocorrect: false,
         obscureText: true,
         decoration: FormFieldDecoration(

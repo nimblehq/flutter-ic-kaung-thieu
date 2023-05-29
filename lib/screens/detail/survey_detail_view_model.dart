@@ -1,9 +1,16 @@
 import 'dart:async';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:survey_flutter/model/request/submit_survey_request.dart';
+import 'package:survey_flutter/model/request/survey_answer_request.dart';
+import 'package:survey_flutter/model/request/survey_question_request.dart';
+import 'package:survey_flutter/model/response/survey_detail_data_response.dart';
 import 'package:survey_flutter/model/survey_answer_model.dart';
 import 'package:survey_flutter/model/survey_detail_model.dart';
 import 'package:survey_flutter/model/survey_question_model.dart';
+import 'package:survey_flutter/usecases/base/base_use_case.dart';
+import 'package:survey_flutter/usecases/get_survey_detail_use_case.dart';
+import 'package:survey_flutter/usecases/submit_survey_use_case.dart';
 
 final surveyDetailViewModelProvider =
     AsyncNotifierProvider.autoDispose<SurveyDetailViewModel, void>(
@@ -13,21 +20,43 @@ class SurveyDetailViewModel extends AutoDisposeAsyncNotifier<void> {
   SurveyDetailModel? _cache;
 
   final _surveyDetail = StreamController<SurveyDetailModel>();
+
   Stream<SurveyDetailModel> get surveyDetail => _surveyDetail.stream;
 
   final _isSubmitSuccess = StreamController<bool>();
+
   Stream<bool> get isSubmitSuccess => _isSubmitSuccess.stream;
+
+  final _isError = StreamController<String>();
+  Stream<String> get isError => _isError.stream;
 
   @override
   FutureOr<void> build() {
-    fetchMockDetail();
     ref.onDispose(() {
       _surveyDetail.close();
     });
   }
 
-  void submitSurvey() {
-    _isSubmitSuccess.add(true);
+  Future<void> submitSurvey(String surveyId) async {
+    final questionsRequest = _cache?.questions.map((question) =>
+        SurveyQuestionRequest(
+            id: question.id, answers: _findAnswers(question.answers)));
+    SubmitSurveyRequest request = SubmitSurveyRequest(
+        surveyId: surveyId, questions: questionsRequest?.toList() ?? []);
+    final result = await ref.read(submitSurveyUseCaseProvider).call(request);
+    _isSubmitSuccess.add(result is Success);
+  }
+
+  List<SurveyAnswerRequest> _findAnswers(
+      List<SurveyAnswerModel> surveyAnswers) {
+    final result = <SurveyAnswerRequest>[];
+    for (var answer in surveyAnswers) {
+      if (answer.isAnswer) {
+        result
+            .add(SurveyAnswerRequest(id: answer.id, answer: answer.textAnswer));
+      }
+    }
+    return result;
   }
 
   void updateChoiceAnswer({
@@ -55,42 +84,45 @@ class SurveyDetailViewModel extends AutoDisposeAsyncNotifier<void> {
     }
   }
 
-  Future<void> fetchMockDetail() async {
-    final detail = SurveyDetailModel(
-      id: 'id',
-      title: 'Working from home Check-In',
-      description:
-          'We would like to know how you feel about our work from home (WFH) experience.',
-      coverImageUrl: 'https://picsum.photos/376/812',
-      questions: [
-        SurveyQuestionModel(
-            id: '1',
-            title: 'Question Multi Choice',
-            pick: 'one'.toPickType(),
-            displayType: 'choice'.toDisplayType(),
-            answers: [
-              SurveyAnswerModel(id: '1', title: 'Choice 1'),
-              SurveyAnswerModel(id: '2', title: 'Choice 2'),
-              SurveyAnswerModel(id: '3', title: 'Choice 3'),
-              SurveyAnswerModel(id: '4', title: 'Choice 4'),
-              SurveyAnswerModel(id: '5', title: 'Choice 5'),
-              SurveyAnswerModel(id: '6', title: 'Choice 6'),
-            ]),
-        SurveyQuestionModel(
-            id: '2',
-            title: 'Question Multi Choice',
-            pick: 'any'.toPickType(),
-            displayType: 'choice'.toDisplayType(),
-            answers: [
-              SurveyAnswerModel(id: '1', title: 'Choice 1'),
-              SurveyAnswerModel(id: '2', title: 'Choice 2'),
-              SurveyAnswerModel(id: '3', title: 'Choice 3'),
-            ]),
-      ],
-    );
-    Future.delayed(const Duration(seconds: 2), () {
-      _cache = detail;
-      _surveyDetail.add(detail);
-    });
+  void updateTextAnswer({
+    required String questionId,
+    required String answerId,
+    required String answerText,
+  }) {
+    if (_cache != null) {
+      for (var question in _cache!.questions) {
+        if (question.id == questionId) {
+          for (var answer in question.answers) {
+            if (answer.id == answerId) {
+              answer.isAnswer = true;
+              answer.textAnswer = answerText;
+            }
+          }
+        }
+      }
+      _surveyDetail.add(_cache!);
+    }
+  }
+
+  Future<void> getSurveyDetail(String surveyId) async {
+    final result =
+        await ref.read(getSurveyDetailUseCaseProvider).call(surveyId);
+
+    if (result is Success<SurveyDetailDataResponse>) {
+      final value = result.value.surveyDetailResponse?.toSurveyDetailModel();
+
+      if (value != null) {
+        _cache = value;
+        _surveyDetail.add(value);
+      } else {
+        _isError.add('Unknown error: Null');
+      }
+    } else if (result is Failed) {
+      _isError.add((result as Failed).getErrorMessage());
+    }
+  }
+
+  void clearError() {
+    _isError.add('');
   }
 }

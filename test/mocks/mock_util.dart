@@ -6,8 +6,13 @@ import 'package:survey_flutter/model/request/survey_question_request.dart';
 import 'package:survey_flutter/model/response/login_data_response.dart';
 import 'package:survey_flutter/model/response/login_response.dart';
 import 'package:survey_flutter/model/response/meta_response.dart';
+import 'package:survey_flutter/model/response/profile_data_response.dart';
+import 'package:survey_flutter/model/response/profile_response.dart';
 import 'package:survey_flutter/model/response/survey_data_response.dart';
 import 'package:survey_flutter/model/response/survey_response.dart';
+
+const mockCoverImageUrl =
+    'https://dhdbhh0jsld0o.cloudfront.net/m/6ea42840403875928db3_';
 
 class MockUtil {
   static LoginRequest loginRequest = LoginRequest(
@@ -74,5 +79,13 @@ class MockUtil {
   static SubmitSurveyRequest submitSurveyRequest = SubmitSurveyRequest(
     surveyId: 'surveyId',
     questions: [surveyQuestionRequest],
+  );
+
+  static ProfileDataResponse profileDataResponse = ProfileDataResponse(
+    ProfileResponse(
+      id: '1',
+      email: 'abc@gmail.com',
+      avatarUrl: 'avatar',
+    ),
   );
 }

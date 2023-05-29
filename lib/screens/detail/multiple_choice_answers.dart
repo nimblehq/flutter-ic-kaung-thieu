@@ -29,7 +29,7 @@ class MultipleChoiceState extends State<MultipleChoiceAnswers> {
         itemBuilder: (BuildContext context, int index) {
           final answer = widget.answers[index];
           return _buildChoiceItem(
-              text: answer.title,
+              text: answer.text,
               isSelected: _selectedIndex == index,
               isAnswer: answer.isAnswer,
               onClick: () {

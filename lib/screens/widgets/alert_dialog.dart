@@ -23,8 +23,16 @@ Future<void> showAlertDialog({
       context: context,
       barrierDismissible: false,
       builder: (BuildContext context) => AlertDialog(
-        title: Text(title),
-        content: Text(message),
+        title: Text(
+          title,
+        ),
+        titleTextStyle: const TextStyle(
+            fontSize: 20, fontWeight: FontWeight.w800, color: Colors.black),
+        content: Text(
+          message,
+        ),
+        contentTextStyle: const TextStyle(
+            fontSize: 17, fontWeight: FontWeight.w300, color: Colors.black),
         actions: actions,
       ),
     );
