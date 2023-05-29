@@ -15,7 +15,7 @@ void main() {
     setUp(() =>
         getProfileUrlUseCase = GetProfileUrlUseCase(mockSurveyRepository));
 
-    test('When get profile successfully, it emits success', () async {
+    test('When calling profile successfully, it emits success', () async {
       when(mockSurveyRepository.getProfile())
           .thenAnswer((_) async => MockUtil.profileDataResponse);
 
@@ -23,7 +23,7 @@ void main() {
       expect(result is Success, true);
     });
 
-    test('When get profile unsuccessfully, it emits failed', () async {
+    test('When calling profile unsuccessfully, it emits failed', () async {
       when(mockSurveyRepository.getProfile()).thenThrow(MockDioError());
 
       final result = await getProfileUrlUseCase.call();
