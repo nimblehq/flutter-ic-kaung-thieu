@@ -9,6 +9,9 @@ import 'package:survey_flutter/model/response/meta_response.dart';
 import 'package:survey_flutter/model/response/survey_data_response.dart';
 import 'package:survey_flutter/model/response/survey_response.dart';
 
+const mockCoverImageUrl =
+    'https://dhdbhh0jsld0o.cloudfront.net/m/6ea42840403875928db3_';
+
 class MockUtil {
   static LoginRequest loginRequest = LoginRequest(
       grantType: 'password',
