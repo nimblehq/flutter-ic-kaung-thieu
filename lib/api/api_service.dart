@@ -3,6 +3,7 @@ import 'package:survey_flutter/model/request/login_request.dart';
 import 'package:survey_flutter/model/request/auth_request.dart';
 import 'package:survey_flutter/model/request/submit_survey_request.dart';
 import 'package:survey_flutter/model/response/login_data_response.dart';
+import 'package:survey_flutter/model/response/profile_data_response.dart';
 import 'package:survey_flutter/model/response/survey_data_response.dart';
 import 'package:survey_flutter/model/response/survey_detail_data_response.dart';
 import 'package:survey_flutter/model/response/user_response.dart';
@@ -37,4 +38,7 @@ abstract class ApiService {
 
   @POST('api/v1/responses')
   Future<void> submitSurvey(@Body() SubmitSurveyRequest submitSurveyRequest);
+
+  @GET('api/v1/me')
+  Future<ProfileDataResponse> getProfile();
 }
