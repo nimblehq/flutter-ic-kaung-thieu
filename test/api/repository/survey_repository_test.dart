@@ -2,6 +2,8 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
 import 'package:survey_flutter/api/exception/network_exceptions.dart';
 import 'package:survey_flutter/api/repository/survey_repository.dart';
+import 'package:survey_flutter/model/response/profile_data_response.dart';
+import 'package:survey_flutter/model/response/profile_response.dart';
 import 'package:survey_flutter/model/response/survey_detail_data_response.dart';
 import 'package:survey_flutter/model/response/survey_detail_response.dart';
 
@@ -73,6 +75,23 @@ void main() {
 
       expect(() => repository.submitSurvey(MockUtil.submitSurveyRequest),
           throwsA(isA<NetworkExceptions>()));
+    });
+
+    test('When calling getProfile successfully, it emits a success', () async {
+      when(mockApiService.getProfile())
+          .thenAnswer((_) async => ProfileDataResponse(ProfileResponse()));
+
+      final result = await repository.getProfile();
+
+      expect(result, isA<ProfileDataResponse>());
+    });
+
+    test(
+        'When calling getProfile unsuccessfully, it throws NetworkExceptions error ',
+        () async {
+      when(mockApiService.getProfile()).thenThrow(MockDioError());
+
+      expect(() => repository.getProfile(), throwsA(isA<NetworkExceptions>()));
     });
   });
 }
